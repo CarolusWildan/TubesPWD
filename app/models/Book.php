@@ -32,7 +32,7 @@ class Book {
     }
 
     // GET BY ID
-    public function getById($book_id) {
+    public function getById($book_id): array|bool|null {
         $sql = "SELECT * FROM {$this->table} WHERE book_id = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $book_id);
