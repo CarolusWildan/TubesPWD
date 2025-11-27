@@ -52,7 +52,7 @@ class Borrow {
     // ==================================
     public function getAll() {
         $sql = "SELECT b.borrow_id, u.user_name, bk.title, l.librarian_name, 
-                       b.borrow_date, b.due_date, b.status
+                    b.borrow_date, b.due_date
                 FROM {$this->table} b
                 JOIN user u ON b.user_id = u.user_id
                 JOIN book bk ON b.book_id = bk.book_id
