@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../config/database.php';
+require_once "../app/init.php";
 
 class Borrow {
     private $conn;
