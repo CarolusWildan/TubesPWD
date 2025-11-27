@@ -4,8 +4,12 @@ $user = "root";
 $pass = "";
 $db   = "db_perpustakaan";
 
-$conn = new mysqli($host, $user, $pass, $db);
-
-if($conn->connect_error){
-    die("Koneksi gagal: " . $conn->connect_error);
+//connect to database
+try{
+  $conn = new mysqli( $host, $user, $pass, $db);
+  
+}catch(PDOException $e){
+  echo "Connection failed: " . $e->getMessage();
 }
+
+$conn = null;
