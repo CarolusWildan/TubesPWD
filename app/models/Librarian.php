@@ -14,36 +14,43 @@ class Librarian
     // REGISTER LIBRARIAN (ADMIN / STAFF)
     // ====================================================
     public function register(
-        string $name,
-        string $username,
-        string $password,
-        string $role,        // ADMIN / STAFF (dipilih di form)
-        string $phone,
-        string $address,
-        string $status = 'ACTIVE'
+    string $name,
+    string $username,
+    string $password,
+    string $role,
+    string $phone,
+    string $address,
+    string $status = 'ACTIVE'
     ): bool {
+
+        // 1. Query INSERT
         $sql = "INSERT INTO {$this->table}
                 (librarian_name, librarian_username, librarian_password,
-                 librarian_role, librarian_phone, librarian_address, librarian_status)
+                librarian_role, librarian_phone, librarian_address, librarian_status)
                 VALUES (?, ?, ?, ?, ?, ?, ?)";
 
+        // 2. Prepare query
         $stmt = $this->conn->prepare($sql);
 
+        // 3. HASH PASSWORD → INI TEMPAT YANG BENAR
         $hashed = password_hash($password, PASSWORD_DEFAULT);
 
+        // 4. Bind parameter untuk query
         $stmt->bind_param(
             "sssssss",
             $name,
             $username,
-            $hashed,
+            $hashed,     // password yang sudah di-hash masuk di sini
             $role,
             $phone,
             $address,
             $status
         );
 
+        // 5. Eksekusi query
         return $stmt->execute();
     }
+
 
     // ====================================================
     // LOGIN LIBRARIAN
