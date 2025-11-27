@@ -36,7 +36,7 @@ class AuthController
     // PROSES LOGIN (POST)
     // route: index.php?controller=auth&action=login
     // ====================================================
-    public function login()
+    public function login() 
     {
         $username = $_POST['username'] ?? null;
         $password = $_POST['password'] ?? null;
