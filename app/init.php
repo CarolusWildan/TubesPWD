@@ -12,6 +12,10 @@ foreach ($helperFiles as $file) {
     require_once $file;
 }
 
+foreach (glob(BASE_PATH . "/app/models/*.php") as $file) {
+    require_once $file;
+}
+
 // Auto start session
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
