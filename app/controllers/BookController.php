@@ -16,9 +16,9 @@ class BookController
     }
 
     // GET /books?id=1
-    public function show($id)
+    public function show($book_id)
     {
-        $book = Book::findById($id);
+        $book = Book::getById($book_id);
 
         if (!$book) {
             echo json_encode([
@@ -62,15 +62,24 @@ class BookController
     }
 
     // POST /books/update?id=1
-    public function update($id)
+    public function update($book_id)
     {
+        $book = Book::getById($book_id);
+        if (!$book) {
+            echo json_encode([
+                "status" => "error",
+                "message" => "Book not found"
+            ]);
+            return;
+        }
         $title  = $_POST['title'] ?? null;
         $author = $_POST['author'] ?? null;
-        $year   = $_POST['publish_year'] ?? null;
+        $publish_year   = $_POST['publish_year'] ?? null;
         $category = $_POST['category'] ?? null;
         $cover = $_POST['cover'] ?? null;
 
-        $updated = Book::update($id, $title, $author, $year, $category, $cover);
+
+        $updated = Book::update($book_id, $title, $author, $publish_year, $category, $cover);
 
         echo json_encode([
             "status" => $updated ? "success" : "error",
@@ -79,9 +88,9 @@ class BookController
     }
 
     // GET /books/delete?id=1
-    public function delete($id)
+    public function delete($book_id)
     {
-        $deleted = Book::delete($id);
+        $deleted = Book::delete($book_id);
 
         echo json_encode([
             "status" => $deleted ? "success" : "error",
