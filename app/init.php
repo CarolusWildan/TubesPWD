@@ -24,3 +24,5 @@ foreach (glob(BASE_PATH . "/app/controllers/*.php") as $file) {
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+
