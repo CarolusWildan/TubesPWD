@@ -1,3 +1,49 @@
+<?php
+require_once __DIR__ . "/../app/init.php";
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$controller = $_GET['controller'] ?? null;
+$action     = $_GET['action']     ?? null;
+
+// Kalau yang diminta adalah AUTH (login/logout)
+if ($controller === 'auth') {
+    $authController = new AuthController($conn);
+
+    switch ($action) {
+        case 'login':
+            // proses login (POST)
+            $authController->login();
+            break;
+
+        case 'logout':
+            $authController->logout();
+            break;
+    }
+
+    // HENTIKAN SCRIPT DI SINI
+    exit;
+}
+
+if (!isset($_SESSION['role'])) {
+    header("Location: index.php?controller=auth&action=login");
+    exit;
+}
+?>
+
+<?php if (isset($_SESSION['alert_success'])) : ?>
+  <script>
+      alert("<?php echo $_SESSION['alert_success']; ?>");
+  </script>
+  <?php 
+      // PENTING: Hapus pesan setelah ditampilkan
+      // Supaya kalau di-refresh, alertnya tidak muncul lagi
+      unset($_SESSION['alert_success']); 
+  ?>
+<?php endif; ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>

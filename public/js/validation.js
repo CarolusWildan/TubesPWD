@@ -1,11 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("loginForm");
-  if (!form) return; // kalau bukan halaman login, jangan apa-apa
+  if (!form) return; // kalau bukan halaman login, biarkan saja
 
   form.addEventListener("submit", function (e) {
     const username = form.username.value.trim();
     const password = form.password.value.trim();
-    const role     = form.role.value.trim();
 
     const errors = [];
 
@@ -17,18 +16,11 @@ document.addEventListener("DOMContentLoaded", function () {
     // Cek password
     if (!password) {
       errors.push("Password wajib diisi.");
-    } else if (password.length < 6) {
-      errors.push("Password minimal 6 karakter.");
-    }
-
-    // Cek role
-    if (!role) {
-      errors.push("Silakan pilih role (user atau librarian).");
     }
 
     if (errors.length > 0) {
-      e.preventDefault(); // stop submit ke PHP
-      alert(errors.join("\n")); // tampilkan semua error
+      e.preventDefault(); // stop pengiriman ke PHP
+      alert(errors.join("\n"));
     }
   });
 });

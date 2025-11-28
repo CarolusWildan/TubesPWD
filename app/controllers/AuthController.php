@@ -17,105 +17,65 @@ class AuthController
         }
     }
 
-    // ====================================================
-    // TAMPILKAN FORM LOGIN
-    // route: index.php?controller=auth&action=loginForm
-    // ====================================================
-    public function loginForm()
-    {
-        // kalau sudah login, boleh langsung diarahkan ke halaman lain
-        // if (isset($_SESSION['role'])) {
-        //     header("Location: index.php");
-        //     exit;
-        // }
-
-        include "../views/auth/login.php";
-    }
-
-    // ====================================================
-    // PROSES LOGIN (POST)
-    // route: index.php?controller=auth&action=login
-    // ====================================================
-    public function login() 
-    {
-        $username = $_POST['username'] ?? null;
-        $password = $_POST['password'] ?? null;
-        $role     = $_POST['role']     ?? null; // "user" atau "librarian"
-
-        if (!$username || !$password || !$role) {
-            echo "<script>alert('Username, password, dan role wajib diisi'); history.back();</script>";
-            return;
-        }
-
-        if ($role === 'user') {
-            // ------------- LOGIN MAHASISWA -------------
-            $user = $this->userModel->login($username, $password);
-
-            if (!$user) {
-                echo "<script>alert('Login gagal: username atau password user salah'); history.back();</script>";
-                return;
-            }
-
-            // sesuaikan dengan enum di DB: 'ACTIVE' / 'INACTIVE' atau 'active' / 'inactive'
-            if (strtoupper($user['user_status']) !== 'ACTIVE') {
-                echo "<script>alert('Akun user belum aktif'); history.back();</script>";
-                return;
-            }
-
-            $_SESSION['role']      = 'user';
-            $_SESSION['user_id']   = $user['user_id'];
-            $_SESSION['user_name'] = $user['user_name'];
-            $_SESSION['username']  = $user['username'];
-
-            // setelah login user, arahkan ke halaman utama user
-            header("Location: index.php");
-            exit;
-
-        } elseif ($role === 'librarian') {
-            // ------------- LOGIN LIBRARIAN -------------
-            $lib = $this->librarianModel->login($username, $password);
-
-            if (!$lib) {
-                echo "<script>alert('Login gagal: username atau password librarian salah'); history.back();</script>";
-                return;
-            }
-
-            // kalau kamu sudah tambah kolom librarian_status
-            if (isset($lib['librarian_status']) && strtoupper($lib['librarian_status']) !== 'ACTIVE') {
-                echo "<script>alert('Akun librarian tidak aktif'); history.back();</script>";
-                return;
-            }
-
-            $_SESSION['role']               = 'librarian';
-            $_SESSION['librarian_id']       = $lib['librarian_id'];
-            $_SESSION['librarian_name']     = $lib['librarian_name'];
-            $_SESSION['librarian_username'] = $lib['librarian_username'];
-            $_SESSION['librarian_role']     = $lib['librarian_role'] ?? 'STAFF'; // ADMIN / STAFF
-
-            // setelah login librarian, bisa arahkan ke dashboard admin
-            header("Location: index.php"); // atau: index.php?controller=dashboard&action=admin
-            exit;
-
-        } else {
-            echo "<script>alert('Role tidak dikenali'); history.back();</script>";
-            return;
-        }
-    }
-
-    // ====================================================
-    // LOGOUT
-    // route: index.php?controller=auth&action=logout
-    // ====================================================
-    public function logout()
+    public function login()
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
+        // HARUS POST, kalau bukan POST balikin ke form
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            require_once 'login.php'; 
+            return; // Stop function disini agar kode bawah tidak jalan
+        }
+        //ambil data username dan pass dari form
+        $username = $_POST['username'] ?? null;
+        $password = $_POST['password'] ?? null;
+
+        // ===============================
+        // 1. Coba login sebagai LIBRARIAN
+        // ===============================
+        $lib = $this->librarianModel->loginLib($username, $password);
+
+        if ($lib) {
+            $_SESSION['role']               = 'librarian';
+            $_SESSION['librarian_id']       = $lib['librarian_id'];
+            $_SESSION['librarian_name']     = $lib['librarian_name'] ?? null;
+            $_SESSION['librarian_username'] = $lib['librarian_username'] ?? $username;
+            $_SESSION['librarian_role']     = $lib['librarian_role'] ?? 'STAFF';
+            $_SESSION['alert_success'] = "Selamat Datang, Librarian " . ($lib['librarian_name'] ?? $username);
+            header("Location: index.php"); 
+            exit;
+        }
+
+        // ===============================
+        // 2. Kalau bukan librarian, cek USER
+        // ===============================
+        $user = $this->userModel->loginUser($username, $password);
+
+        if ($user) {
+            $_SESSION['role']      = 'user';
+            $_SESSION['user_id']   = $user['user_id'];
+            $_SESSION['username']  = $user['username']   ?? $username;
+            $_SESSION['alert_success'] = "Selamat Datang, " . ($user['username'] ?? $username);
+            header("Location: index.php"); 
+            exit;
+        }
+
+        // ===============================
+        // 3. Kalau dua-duanya gagal
+        // ===============================
+        $error_message = "Username atau Password salah!";
+        require 'login.php';
+        return;
+    }
+
+    public function logout()
+    {
         session_unset();
         session_destroy();
 
-        header("Location: index.php?controller=auth&action=loginForm");
+        header("Location: index.php?controller=auth&action=login");
         exit;
     }
 }

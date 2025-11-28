@@ -55,21 +55,25 @@ class Librarian
     // ====================================================
     // LOGIN LIBRARIAN
     // ====================================================
-    public function login(string $username, string $password)
+    public function loginLib(string $username, string $password)
     {
+      if ($username === '' || $password === '') {
+          return null;
+      }
+
         $sql = "SELECT * FROM {$this->table} WHERE librarian_username = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s", $username);
         $stmt->execute();
 
         $lib = $stmt->get_result()->fetch_assoc();
-        if (!$lib) return false;
+        if (!$lib) return null;
 
         if (password_verify($password, $lib['librarian_password'])) {
             return $lib;
         }
 
-        return false;
+        return null;
     }
 
     // ====================================================
@@ -78,7 +82,7 @@ class Librarian
     public function getAll(): array
     {
         $sql = "SELECT librarian_id, librarian_name, librarian_username,
-                       librarian_role, librarian_phone, librarian_status, created_at
+                      librarian_role, librarian_phone, librarian_status, created_at
                 FROM {$this->table}
                 ORDER BY librarian_id DESC";
 
