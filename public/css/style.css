@@ -199,6 +199,9 @@ body {
     overflow: hidden;
     backdrop-filter: blur(2px);
 }
+.right-panel {
+    overflow-y: auto;
+}
 
 /* LEFT PANEL */
 .left-panel {
