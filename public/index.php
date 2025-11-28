@@ -62,7 +62,7 @@ if (!isset($_SESSION['role'])) {
 
     <!-- HERO -->
     <section class="hero">
-        <img src="./asset/fotoBeranda.png" alt="Bookshelf" />
+        <img src="./asset/background.png" alt="Bookshelf" />
     </section>
 
     <!-- SEARCH BAR -->
@@ -80,22 +80,22 @@ if (!isset($_SESSION['role'])) {
 
         <div class="book-list">
             <div class="book-card">
-                <img src="./asset/Buku1.jpg" />
+                <img src="./asset/coverPeter.jpg" />
                 <p>PETER AND THE WOLF</p>
             </div>
 
             <div class="book-card">
-                <img src="./asset/Buku3.jpeg" />
+                <img src="./asset/coverWibu.jpeg" />
                 <p>THE PROPHET</p>
             </div>
 
             <div class="book-card">
-                <img src="./asset/Buku2.jpg" />
+                <img src="./asset/coverPurpose.jpg" />
                 <p>PURPOSE</p>
             </div>
 
             <div class="book-card">
-                <img src="./asset/Buku4.jpg" />
+                <img src="./asset/coverMonk.jpg" />
                 <p>THE MONK Of MOKHA</p>
             </div>
         </div>
