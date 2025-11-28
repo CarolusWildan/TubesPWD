@@ -21,6 +21,10 @@ if ($controller === 'auth') {
         case 'logout':
             $authController->logout();
             break;
+        
+        case 'register':
+            $authController->registerProcess();
+            break;
     }
 
     // HENTIKAN SCRIPT DI SINI
