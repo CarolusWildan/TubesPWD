@@ -1,3 +1,8 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -24,18 +29,29 @@
         <!-- RIGHT SECTION -->
         <div class="right-panel">
             <h2>Login</h2>
+          
+            <form id="loginForm" action="index.php?controller=auth&action=login" method="POST">
+              <label>Username</label>
+              <input type="text" name="username" placeholder="Masukkan Username" required>
 
-            <form>
-                <label>Username</label>
-                <input type="text" placeholder="Masukkan Username">
+              <label>Password</label>
+              <input type="password" name="password" placeholder="Masukkan Password" required>
 
-                <label>Password</label>
-                <input type="password" placeholder="Masukkan Password">
-
-                <button type="submit" class="btn-login">Masuk</button>
-            </form>
+              <button type="submit" class="btn-login">Masuk</button>
+          </form>
+          <?php if (isset($error_message)) : ?>
+            <script>
+              // Munculkan pop-up alert browser
+              alert("<?php echo $error_message; ?>");
+            </script>
+            <?php 
+              // PENTING: Hapus pesan setelah ditampilkan
+              // Supaya kalau di-refresh, alertnya tidak muncul lagi
+              unset($error_message); 
+            ?>
+            <?php endif; ?>
         </div>
-
+        <script src="js/validation.js"></script>
     </div>
 </div>
 

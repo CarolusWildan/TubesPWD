@@ -12,19 +12,18 @@ class User {
     // ====================================================
     // REGISTER USER (Mahasiswa)
     // ====================================================
-    public function register($name, $address, $phone, $username, $password, $activation_token) {
+    public function register($address, $phone, $username, $password, $activation_token) {
 
         $sql = "INSERT INTO {$this->table} 
-                (user_name, user_address, user_phone, registration_date, username, password, user_status, activation_token)
-                VALUES (?, ?, ?, NOW(), ?, ?, 'INACTIVE', ?)";
+                (user_address, user_phone, registration_date, username, password, user_status, activation_token)
+                VALUES (?, ?, NOW(), ?, ?, 'INACTIVE', ?)";
 
         $stmt = $this->conn->prepare($sql);
 
         $hashed = password_hash($password, PASSWORD_DEFAULT);
 
         $stmt->bind_param(
-            "ssssss",
-            $name,
+            "sssss",
             $address,
             $phone,
             $username,
@@ -38,7 +37,7 @@ class User {
     // ====================================================
     // LOGIN USER
     // ====================================================
-    public function login($username, $password) {
+    public function loginUser($username, $password): array|bool|null {
         $sql = "SELECT * FROM {$this->table} WHERE username = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s", $username);
@@ -46,20 +45,20 @@ class User {
 
         $user = $stmt->get_result()->fetch_assoc();
 
-        if (!$user) return false;
+        if (!$user) return null;
 
         if (password_verify($password, $user['password'])) {
             return $user; 
         }
 
-        return false;
+        return null;
     }
 
     // ====================================================
     // GET ALL USERS (borrowers)
     // ====================================================
     public function getAll() {
-        $sql = "SELECT user_id, user_name, username, user_address, user_phone, registration_date, user_status
+        $sql = "SELECT user_id, username, user_address, user_phone, registration_date, user_status
                 FROM {$this->table}
                 ORDER BY user_id DESC";
 
@@ -81,13 +80,13 @@ class User {
     // ====================================================
     // UPDATE USER PROFILE
     // ====================================================
-    public function update($user_id, $name, $address, $phone) {
+    public function update($user_id, $username, $address, $phone) {
         $sql = "UPDATE {$this->table}
-                SET user_name=?, user_address=?, user_phone=?
+                SET username=?, user_address=?, user_phone=?
                 WHERE user_id=?";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("sssi", $name, $address, $phone, $user_id);
+        $stmt->bind_param("sssi",$username, $address, $phone, $user_id);
 
         return $stmt->execute();
     }

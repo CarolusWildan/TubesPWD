@@ -1,3 +1,49 @@
+<?php
+require_once __DIR__ . "/../app/init.php";
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$controller = $_GET['controller'] ?? null;
+$action     = $_GET['action']     ?? null;
+
+// Kalau yang diminta adalah AUTH (login/logout)
+if ($controller === 'auth') {
+    $authController = new AuthController($conn);
+
+    switch ($action) {
+        case 'login':
+            // proses login (POST)
+            $authController->login();
+            break;
+
+        case 'logout':
+            $authController->logout();
+            break;
+    }
+
+    // HENTIKAN SCRIPT DI SINI
+    exit;
+}
+
+if (!isset($_SESSION['role'])) {
+    header("Location: index.php?controller=auth&action=login");
+    exit;
+}
+?>
+
+<?php if (isset($_SESSION['alert_success'])) : ?>
+  <script>
+      alert("<?php echo $_SESSION['alert_success']; ?>");
+  </script>
+  <?php 
+      // PENTING: Hapus pesan setelah ditampilkan
+      // Supaya kalau di-refresh, alertnya tidak muncul lagi
+      unset($_SESSION['alert_success']); 
+  ?>
+<?php endif; ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -16,7 +62,7 @@
 
     <!-- HERO -->
     <section class="hero">
-        <img src="./asset/fotoBeranda.png" alt="Bookshelf" />
+        <img src="./asset/background.png" alt="Bookshelf" />
     </section>
 
     <!-- SEARCH BAR -->
@@ -34,22 +80,22 @@
 
         <div class="book-list">
             <div class="book-card">
-                <img src="./asset/Buku1.jpg" />
+                <img src="./asset/coverPeter.jpg" />
                 <p>PETER AND THE WOLF</p>
             </div>
 
             <div class="book-card">
-                <img src="./asset/Buku3.jpeg" />
+                <img src="./asset/coverWibu.jpeg" />
                 <p>THE PROPHET</p>
             </div>
 
             <div class="book-card">
-                <img src="./asset/Buku2.jpg" />
+                <img src="./asset/coverPurpose.jpg" />
                 <p>PURPOSE</p>
             </div>
 
             <div class="book-card">
-                <img src="./asset/Buku4.jpg" />
+                <img src="./asset/coverMonk.jpg" />
                 <p>THE MONK Of MOKHA</p>
             </div>
         </div>
