@@ -9,26 +9,40 @@ class User {
         $this->conn = $conn;
     }
 
+    //BONUS
+    public function checkUserExists($username, $email) {
+        $sql = "SELECT user_id FROM {$this->table} WHERE username = ? OR user_email = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("ss", $username, $email);
+        $stmt->execute();
+        $stmt->store_result();
+        
+        return $stmt->num_rows > 0; // Return true jika sudah ada
+    }
+
     // ====================================================
     // REGISTER USER (Mahasiswa)
     // ====================================================
-    public function register($address, $phone, $username, $password, $activation_token) {
-
+    public function register($data) 
+    {
+        // Query Insert
         $sql = "INSERT INTO {$this->table} 
-                (user_address, user_phone, registration_date, username, password, user_status, activation_token)
-                VALUES (?, ?, NOW(), ?, ?, 'INACTIVE', ?)";
+                (user_name, username, user_email, password, user_phone, user_address, activation_token, user_status, registration_date)
+                VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', NOW())";
 
         $stmt = $this->conn->prepare($sql);
 
-        $hashed = password_hash($password, PASSWORD_DEFAULT);
-
+        // Binding parameter (sssssss = 7 string)
+        // Kita ambil datanya satu-satu dari dalam array $data
         $stmt->bind_param(
-            "sssss",
-            $address,
-            $phone,
-            $username,
-            $hashed,
-            $activation_token
+            "sssssss",
+            $data['user_name'],
+            $data['username'],
+            $data['user_email'],
+            $data['password'], 
+            $data['user_phone'],
+            $data['user_address'],
+            $data['activation_token']
         );
 
         return $stmt->execute();
@@ -58,7 +72,7 @@ class User {
     // GET ALL USERS (borrowers)
     // ====================================================
     public function getAll() {
-        $sql = "SELECT user_id, username, user_address, user_phone, registration_date, user_status
+        $sql = "SELECT *
                 FROM {$this->table}
                 ORDER BY user_id DESC";
 
@@ -95,9 +109,19 @@ class User {
     // ACTIVATE ACCOUNT
     // ====================================================
     public function activate($token) {
-        $sql = "UPDATE {$this->table} SET user_status='ACTIVE'
-                WHERE activation_token = ?";
+        // Cek dulu apakah token valid
+        $checkSql = "SELECT user_id FROM {$this->table} WHERE activation_token = ? AND user_status = 'pending'";
+        $stmtCheck = $this->conn->prepare($checkSql);
+        $stmtCheck->bind_param("s", $token);
+        $stmtCheck->execute();
+        
+        if ($stmtCheck->get_result()->num_rows === 0) {
+            return false; // Token tidak ditemukan atau user sudah aktif
+        }
 
+        // Update status jadi active
+        $sql = "UPDATE {$this->table} SET user_status='active', activation_token=NULL 
+                WHERE activation_token = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s", $token);
 

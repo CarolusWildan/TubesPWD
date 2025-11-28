@@ -1,17 +1,22 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Register - GMS Library</title>
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css"> 
 </head>
 <body>
 
 <div class="login-background">
     <div class="login-container">
 
-        <!-- LEFT SECTION -->
         <div class="left-panel">
             <h1><span class="bold">GMS</span> Library</h1>
             <p>
@@ -20,17 +25,31 @@
             </p>
         </div>
 
-        <!-- RIGHT SECTION -->
         <div class="right-panel">
             <h2>Register</h2>
 
-            <form action="register_process.php" method="POST">
+            <?php if (isset($error_message)) : ?>
+                <div class="alert-error">
+                    <?php echo $error_message; ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if (isset($_SESSION['alert_success'])) : ?>
+                <div class="alert-success">
+                    <?php echo $_SESSION['alert_success']; ?>
+                </div>
+                <?php unset($_SESSION['alert_success']); ?>
+            <?php endif; ?>
+            <form action="index.php?controller=auth&action=register" method="POST">
 
                 <label>Nama Lengkap</label>
                 <input type="text" name="user_name" placeholder="Masukkan Nama Lengkap" required>
 
+                <label>Email (Aktif)</label>
+                <input type="email" name="user_email" placeholder="contoh@email.com" required>
+
                 <label>Alamat</label>
-                <textarea name="user_address" placeholder="Masukkan Alamat" required></textarea>
+                <input type="text" name="user_address" placeholder="Masukkan Alamat" required>
 
                 <label>No. Telepon</label>
                 <input type="text" name="user_phone" placeholder="Masukkan Nomor Telepon" required>
@@ -41,11 +60,12 @@
                 <label>Password</label>
                 <input type="password" name="password" placeholder="Masukkan Password" required>
 
-                <label>Konfirmasi Password</label>
-                <input type="password" name="confirm_password" placeholder="Ulangi Password" required>
-
                 <button type="submit" class="btn-login">Daftar</button>
             </form>
+            
+            <div style="margin-top: 15px; text-align: center; font-size: 0.9rem;">
+                Sudah punya akun? <a href="index.php?controller=auth&action=login" style="font-weight:bold;">Login disini</a>
+            </div>
 
         </div>
 

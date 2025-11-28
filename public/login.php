@@ -39,6 +39,10 @@ if (session_status() === PHP_SESSION_NONE) {
 
               <button type="submit" class="btn-login">Masuk</button>
           </form>
+          <div style="margin-top: 15px; text-align: center; font-size: 0.9rem;">
+                Belom punya akun? <a href="index.php?controller=auth&action=register" style="font-weight:bold;">Daftar Dsisini</a>
+            </div>
+
           <?php if (isset($error_message)) : ?>
             <script>
               // Munculkan pop-up alert browser
