@@ -20,11 +20,11 @@ class Mailer {
             // ===============================================
             // $mail->SMTPDebug = SMTP::DEBUG_SERVER; // Nyalakan ini kalau mau lihat log error detail
             $mail->isSMTP();
-            $mail->Host       = 'sandbox.smtp.mailtrap.io'; 
+            $mail->Host       = 'sandbox.smtp.mailtrap.io'; //ganti sesuai host di mailtrap
             $mail->SMTPAuth   = true;
             
             // --- GANTI DENGAN EMAIL & APP PASSWORD KAMU ---
-            $mail->Username   = '6074dc9b73bb1f'; 
+            $mail->Username   = '6074dc9b73bb1f'; //username credential
             $mail->Password   = 'a040f60d6028cd'; // Pakai APP PASSWORD, bukan password login biasa!
             // ----------------------------------------------
             
