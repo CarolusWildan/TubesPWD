@@ -1,6 +1,6 @@
 <?php
 // ...existing code...
-<?php
+// <?php
 // Replace old bootstrap / controller require with app init
 require_once __DIR__ . '/../app/init.php';
 
@@ -8,20 +8,20 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!isset($_SESSION['user_id'])) {
-    // Redirect to login via the app front controller
-    header("Location: index.php?controller=auth&action=login");
-    exit;
-}
+// if (!isset($_SESSION['user_id'])) {
+//     // Redirect to login via the app front controller
+//     header("Location: index.php?controller=auth&action=login");
+//     exit;
+// }
 
 // Use the User model (see: User::getById in app/models/User.php)
 $userModel = new User($conn);
 $user = $userModel->getById((int) $_SESSION['user_id']);
 
-if (!$user) {
-    header("Location: index.php");
-    exit;
-}
+// if (!$user) {
+//     header("Location: index.php");
+//     exit;
+// }
 
 $displayName = $user['user_name'] ?? $user['username'] ?? 'Pengguna';
 $avatar = $user['avatar'] ?? 'asset/default-avatar.png';
