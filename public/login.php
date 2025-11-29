@@ -13,11 +13,11 @@ if (session_status() === PHP_SESSION_NONE) {
 </head>
 <body>
 
-<div class="login-background">
+<div class="login-background fade-in">
     <div class="login-container">
 
         <!-- LEFT SECTION -->
-        <div class="left-panel">
+        <div class="left-panel slide-left">
             <h1><span class="bold">GMS</span> Library</h1>
             <p>
                 GMS Library adalah perpustakaan modern dengan koleksi buku dan sumber digital yang beragam.
@@ -27,7 +27,7 @@ if (session_status() === PHP_SESSION_NONE) {
         </div>
 
         <!-- RIGHT SECTION -->
-        <div class="right-panel">
+        <div class="right-panel slide-right">
             <h2>Login</h2>
           
             <form id="loginForm" action="index.php?controller=auth&action=login" method="POST">
