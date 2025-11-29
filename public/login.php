@@ -13,11 +13,11 @@ if (session_status() === PHP_SESSION_NONE) {
 </head>
 <body>
 
-<div class="login-background">
+<div class="login-background fade-in">
     <div class="login-container">
 
         <!-- LEFT SECTION -->
-        <div class="left-panel">
+        <div class="left-panel slide-left">
             <h1><span class="bold">GMS</span> Library</h1>
             <p>
                 GMS Library adalah perpustakaan modern dengan koleksi buku dan sumber digital yang beragam.
@@ -27,7 +27,7 @@ if (session_status() === PHP_SESSION_NONE) {
         </div>
 
         <!-- RIGHT SECTION -->
-        <div class="right-panel">
+        <div class="right-panel slide-right">
             <h2>Login</h2>
           
             <form id="loginForm" action="index.php?controller=auth&action=login" method="POST">
@@ -43,17 +43,21 @@ if (session_status() === PHP_SESSION_NONE) {
                 Belom punya akun? <a href="index.php?controller=auth&action=register" style="font-weight:bold;">Daftar Dsisini</a>
             </div>
 
-          <?php if (isset($error_message)) : ?>
+          <?php if (isset($_SESSION['error_message'])) : ?>
             <script>
-              // Munculkan pop-up alert browser
-              alert("<?php echo $error_message; ?>");
+                alert("<?php echo $_SESSION['error_message']; ?>");
             </script>
-            <?php 
-              // PENTING: Hapus pesan setelah ditampilkan
-              // Supaya kalau di-refresh, alertnya tidak muncul lagi
-              unset($error_message); 
-            ?>
-            <?php endif; ?>
+            <?php unset($_SESSION['error_message']); ?>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['alert_success'])) : ?>
+          <script>
+              alert("<?= $_SESSION['alert_success']; ?>");
+          </script>
+          <?php unset($_SESSION['alert_success']); ?>
+        <?php endif; ?>
+
+
         </div>
         <script src="js/validation.js"></script>
     </div>
