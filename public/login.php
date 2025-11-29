@@ -43,17 +43,21 @@ if (session_status() === PHP_SESSION_NONE) {
                 Belom punya akun? <a href="index.php?controller=auth&action=register" style="font-weight:bold;">Daftar Dsisini</a>
             </div>
 
-          <?php if (isset($error_message)) : ?>
+          <?php if (isset($_SESSION['error_message'])) : ?>
             <script>
-              // Munculkan pop-up alert browser
-              alert("<?php echo $error_message; ?>");
+                alert("<?php echo $_SESSION['error_message']; ?>");
             </script>
-            <?php 
-              // PENTING: Hapus pesan setelah ditampilkan
-              // Supaya kalau di-refresh, alertnya tidak muncul lagi
-              unset($error_message); 
-            ?>
-            <?php endif; ?>
+            <?php unset($_SESSION['error_message']); ?>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['alert_success'])) : ?>
+          <script>
+              alert("<?= $_SESSION['alert_success']; ?>");
+          </script>
+          <?php unset($_SESSION['alert_success']); ?>
+        <?php endif; ?>
+
+
         </div>
         <script src="js/validation.js"></script>
     </div>

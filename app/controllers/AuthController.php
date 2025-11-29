@@ -58,10 +58,10 @@ class AuthController
 
         if ($user) {
           // Cek Status Aktif/Pending
-            if ($user['user_status'] === 'pending') {
-                $error_message = "Akun belum aktif. Silakan cek email Anda.";
-                require 'login.php';
-                return;
+            if ($user['user_status'] !== 'active') {
+                $_SESSION['error_message'] = "Akun belum diaktivasi. Cek email Anda.";
+                header("Location: index.php?controller=auth&action=login");
+                exit;
             }
 
             $_SESSION['role']      = 'user';
@@ -76,9 +76,10 @@ class AuthController
         // ===============================
         // 3. Kalau dua-duanya gagal
         // ===============================
-        $error_message = "Username atau Password salah!";
-        require 'login.php';
-        return;
+        $_SESSION['error_message'] = "Username atau password salah";
+        header("Location: login.php");
+        exit;
+
     }
 
     public function register()
@@ -98,8 +99,6 @@ class AuthController
             return;
         }
 
-        // Ambil Data Input (Sesuai name di HTML)
-        // Kamu bilang pakai 'full_name', oke kita tangkap disini
         $nama     = trim($_POST['full_name'] ?? ''); 
         $username = trim($_POST['username'] ?? '');
         $email    = trim($_POST['user_email'] ?? '');
@@ -110,15 +109,15 @@ class AuthController
         // Validasi
         if (empty($nama) || empty($username) || empty($email) || empty($password)) {
             $error_message = "Nama, Username, Email, dan Password wajib diisi!";
-            require 'register.php'; 
-            return;
+            header("Location: index.php?controller=auth&action=register");
+            exit;
         }
 
         // Cek Duplikat
         if ($this->userModel->checkUserExists($username, $email)) {
             $error_message = "Username atau Email sudah terdaftar!";
-            require 'register.php'; 
-            return;
+            header("Location: index.php?controller=auth&action=register");
+            exit;
         }
 
         $token = bin2hex(random_bytes(32)); 
@@ -132,6 +131,7 @@ class AuthController
             'password'         => $hashed_password,
             'user_phone'       => $phone,
             'user_address'     => $address,
+            'user_status'      => 'inactive',
             'activation_token' => $token
         ];
 
@@ -158,7 +158,8 @@ class AuthController
 
         } else {
             $error_message = "Gagal mendaftar. Silakan coba lagi.";
-            require __DIR__ . '/../../register.php';
+            header("Location: index.php?controller=auth&action=register");
+            exit;
         }
     }
 
