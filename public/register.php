@@ -14,10 +14,10 @@ if (session_status() === PHP_SESSION_NONE) {
 </head>
 <body>
 
-<div class="login-background">
+<div class="login-background fade-in">
     <div class="login-container">
 
-        <div class="left-panel">
+        <div class="left-panel slide-left">
             <h1><span class="bold">GMS</span> Library</h1>
             <p>
                 Daftar sebagai anggota GMS Library dan dapatkan akses penuh ke koleksi buku,
@@ -25,7 +25,7 @@ if (session_status() === PHP_SESSION_NONE) {
             </p>
         </div>
 
-        <div class="right-panel">
+        <div class="right-panel slide-right">
             <h2>Register</h2>
 
             <?php if (isset($_SESSION['error_message'])) : ?>
