@@ -282,7 +282,8 @@ body {
     padding: 40px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    overflow-y: auto;
+    max-height: 80vh;
 }
 
 .right-panel h2 {
