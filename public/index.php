@@ -62,6 +62,16 @@ if (!isset($_SESSION['role'])) {
     <header class="navbar">
         <h2 class="logo">GMS Library</h2>
         <div class="toggle-btn"></div>
+        <nav class="nav-menu">
+        <ul>
+            <li><a href="index.php">Beranda</a></li>
+            <li><a href="#riwayat">Riwayat</a></li>
+            <li><a href="profile.php">Profil</a></li>
+        </ul>
+        <div class="icon-circle">
+            <!-- Bisa diganti dengan ikon SVG atau img -->
+            <div class="circle"></div>
+        </div>
     </header>
 
     <!-- HERO -->
