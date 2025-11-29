@@ -1,125 +1,86 @@
 <?php
-// ...existing code...
-// <?php
-// Replace old bootstrap / controller require with app init
-require_once __DIR__ . '/../app/init.php';
+session_start();
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+// Contoh data user (ganti dengan data dari UserController Anda nanti)
+$user = [
+    'name' => 'Kai',
+    'address' => 'Jl. Merdeka No. 123, Jakarta',
+    'phone' => '081234567890'
+];
 
-// if (!isset($_SESSION['user_id'])) {
-//     // Redirect to login via the app front controller
-//     header("Location: index.php?controller=auth&action=login");
-//     exit;
-// }
-
-// Use the User model (see: User::getById in app/models/User.php)
-$userModel = new User($conn);
-$user = $userModel->getById((int) $_SESSION['user_id']);
-
-// if (!$user) {
-//     header("Location: index.php");
-//     exit;
-// }
-
-$displayName = $user['user_name'] ?? $user['username'] ?? 'Pengguna';
-$avatar = $user['avatar'] ?? 'asset/default-avatar.png';
+// Jika sudah punya UserController, ganti bagian atas dengan:
+// require_once '../controllers/UserController.php';
+// $controller = new UserController();
+// $user = $controller->getCurrentUser();
+// if (!$user) { header("Location: login.php"); exit(); }
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile - <?= htmlspecialchars($displayName) ?></title>
+    <title>Profil Pengguna - GMS Library</title>
+    <link rel="stylesheet" href="./css/profile.css">
 </head>
-<link rel="stylesheet" href="css/profile.css">
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>My Profile</h1>
-            <p>Welcome back, <?= htmlspecialchars($displayName) ?>!</p>
+    <!-- Header -->
+    <header>
+        <div class="logo">GMS Library</div>
+        <nav>
+            <a href="index.php">Beranda</a>
+            <a href="history.php">Riwayat</a>
+            <a href="profile.php" class="active">Profil</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="profile-container">
+            <div class="avatar-section">
+                <div class="avatar-placeholder"></div>
+                <button class="edit-btn">Edit</button>
+            </div>
+
+            <form class="profile-form">
+                <div class="form-group">
+                    <label for="name">Nama</label>
+                    <input type="text" id="name" name="name" value="<?= htmlspecialchars($user['name']) ?>" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Alamat</label>
+                    <input type="text" id="address" name="address" value="<?= htmlspecialchars($user['address']) ?>" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">No. Telepon</label>
+                    <input type="text" id="phone" name="phone" value="<?= htmlspecialchars($user['phone']) ?>" readonly>
+                </div>
+            </form>
         </div>
+    </main>
 
-        <img src="<?= htmlspecialchars($avatar) ?>" alt="Profile Picture" class="avatar">
-
-        <div class="btn-group">
-            <button class="btn btn-edit" onclick="location.href='edit_profile.php'">Edit Profile</button>
-            <button class="btn btn-share" onclick="shareProfile()">Share Profile</button>
-        </div>
-
-        <div class="menu">
-            <div class="menu-item" onclick="location.href='favourites.php'">
-                <div class="icon">❤️</div>
-                <span class="menu-text">Favourites</span>
-                <span class="arrow">›</span>
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">GMS Library</div>
+            <div class="footer-nav">
+                <a href="index.php">Beranda</a>
+                <a href="history.php">Riwayat</a>
+                <a href="profile.php">Profil</a>
             </div>
-
-            <div class="menu-item" onclick="location.href='downloads.php'">
-                <div class="icon">⬇️</div>
-                <span class="menu-text">Downloads</span>
-                <span class="arrow">›</span>
+            <div class="footer-contact">
+                <p>📧 info@gmslibrary.com</p>
+                <p>📞 (021) 1234-5678</p>
             </div>
-
-            <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
-
-            <div class="menu-item" onclick="location.href='language.php'">
-                <div class="icon">🌐</div>
-                <span class="menu-text">Language</span>
-                <span class="arrow">›</span>
-            </div>
-
-            <div class="menu-item" onclick="location.href='location.php'">
-                <div class="icon">📍</div>
-                <span class="menu-text">Location</span>
-                <span class="arrow">›</span>
-            </div>
-
-            <div class="menu-item" onclick="location.href='display.php'">
-                <div class="icon">🖥️</div>
-                <span class="menu-text">Display</span>
-                <span class="arrow">›</span>
-            </div>
-
-            <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
-
-            <div class="menu-item" onclick="location.href='clear_history.php'">
-                <div class="icon">🔄</div>
-                <span class="menu-text">Clear History</span>
-                <span class="arrow">›</span>
-            </div>
-
-            <div class="menu-item logout" onclick="confirmLogout()">
-                <div class="icon">⛔</div>
-                <span class="menu-text">Logout</span>
-                <span class="arrow">›</span>
+            <div class="footer-map">
+                <img src="https://via.placeholder.com/150x100?text=Peta+Lokasi" alt="Lokasi GMS Library">
             </div>
         </div>
-
-        <div class="footer">
-            © 2025 Your App Name. All rights reserved.
+        <div class="footer-bottom">
+            &copy; 2025 GMS Library. All Rights Reserved.
         </div>
-    </div>
-
-    <script>
-        function shareProfile() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'My Profile',
-                    text: 'Check out my profile!',
-                    url: window.location.href
-                }).catch(console.error);
-            } else {
-                alert('Fitur Share tidak didukung di browser ini.');
-            }
-        }
-
-        function confirmLogout() {
-            if (confirm('Apakah Anda yakin ingin keluar?')) {
-                window.location.href = 'logout.php';
-            }
-        }
-    </script>
+    </footer>
 </body>
 </html>
-// ...existing code...
