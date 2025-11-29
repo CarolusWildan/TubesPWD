@@ -3,9 +3,9 @@ session_start();
 
 // Contoh data user (ganti dengan data dari UserController Anda nanti)
 $user = [
-    'name' => 'Kai',
-    'address' => 'Jl. Merdeka No. 123, Jakarta',
-    'phone' => '081234567890'
+    'user_name' => 'Kai',
+    'user_address' => 'Jl. Merdeka No. 123, Jakarta',
+    'user_phone' => '081234567890'
 ];
 
 // Jika sudah punya UserController, ganti bagian atas dengan:
@@ -44,18 +44,18 @@ $user = [
 
             <form class="profile-form">
                 <div class="form-group">
-                    <label for="name">Nama</label>
-                    <input type="text" id="name" name="name" value="<?= htmlspecialchars($user['name']) ?>" readonly>
+                    <label for="user">Nama</label>
+                    <input type="text" id="user" name="user" value="<?= htmlspecialchars($user['user_name']) ?>" readonly>
                 </div>
 
                 <div class="form-group">
                     <label for="address">Alamat</label>
-                    <input type="text" id="address" name="address" value="<?= htmlspecialchars($user['address']) ?>" readonly>
+                    <input type="text" id="address" name="address" value="<?= htmlspecialchars($user['user_address']) ?>" readonly>
                 </div>
 
                 <div class="form-group">
                     <label for="phone">No. Telepon</label>
-                    <input type="text" id="phone" name="phone" value="<?= htmlspecialchars($user['phone']) ?>" readonly>
+                    <input type="text" id="phone" name="phone" value="<?= htmlspecialchars($user['user_phone']) ?>" readonly>
                 </div>
             </form>
         </div>
