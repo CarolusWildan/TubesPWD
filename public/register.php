@@ -28,11 +28,13 @@ if (session_status() === PHP_SESSION_NONE) {
         <div class="right-panel">
             <h2>Register</h2>
 
-            <?php if (isset($error_message)) : ?>
-                <div class="alert-error">
-                    <?php echo $error_message; ?>
-                </div>
+            <?php if (isset($_SESSION['error_message'])) : ?>
+                <script>
+                    alert("<?= $_SESSION['error_message']; ?>");
+                </script>
+                <?php unset($_SESSION['error_message']); ?>
             <?php endif; ?>
+
 
             <?php if (isset($_SESSION['alert_success'])) : ?>
                 <div class="alert-success">
@@ -40,10 +42,10 @@ if (session_status() === PHP_SESSION_NONE) {
                 </div>
                 <?php unset($_SESSION['alert_success']); ?>
             <?php endif; ?>
-            <form action="index.php?controller=auth&action=register" method="POST">
+            <form action="index.php?controller=auth&action=registerProcess" method="POST">
 
                 <label>Nama Lengkap</label>
-                <input type="text" name="user_name" placeholder="Masukkan Nama Lengkap" required>
+                <input type="text" name="full_name" placeholder="Masukkan Nama Lengkap" required>
 
                 <label>Email (Aktif)</label>
                 <input type="email" name="user_email" placeholder="contoh@email.com" required>

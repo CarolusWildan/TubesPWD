@@ -27,22 +27,22 @@ class User {
     {
         // Query Insert
         $sql = "INSERT INTO {$this->table} 
-                (user_name, username, user_email, password, user_phone, user_address, activation_token, user_status, registration_date)
-                VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', NOW())";
+                (full_name, username, user_email, password, user_phone, user_address, activation_token, user_status, registration_date)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
         $stmt = $this->conn->prepare($sql);
 
         // Binding parameter (sssssss = 7 string)
-        // Kita ambil datanya satu-satu dari dalam array $data
         $stmt->bind_param(
-            "sssssss",
-            $data['user_name'],
+            "ssssssss",
+            $data['full_name'],
             $data['username'],
             $data['user_email'],
             $data['password'], 
             $data['user_phone'],
             $data['user_address'],
-            $data['activation_token']
+            $data['activation_token'],
+            $data['user_status']
         );
 
         return $stmt->execute();
@@ -110,7 +110,7 @@ class User {
     // ====================================================
     public function activate($token) {
         // Cek dulu apakah token valid
-        $checkSql = "SELECT user_id FROM {$this->table} WHERE activation_token = ? AND user_status = 'pending'";
+        $checkSql = "SELECT user_id FROM {$this->table} WHERE activation_token = ? AND user_status = 'inactive'";
         $stmtCheck = $this->conn->prepare($checkSql);
         $stmtCheck->bind_param("s", $token);
         $stmtCheck->execute();
