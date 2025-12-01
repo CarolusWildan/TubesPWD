@@ -51,7 +51,29 @@ if ($controller === 'auth') {
     }
 
     exit;
+}else if ($controller === 'user') {
+    $userController = new UserController($conn);
+
+    switch ($action) {
+        case 'profile':
+            $userController->profile();
+            break;
+
+        case 'updateProfile':
+            // proses update profil (POST)
+            $userController->updateProfile();
+            break;
+
+        case 'showLoginForm':
+            $userController->showLoginForm();
+            break;
+
+        // tambahkan action lain jika ada, register, delete, dll
+    }
+
+    exit;
 }
+
 
 
 // if (!isset($_SESSION['role'])) {
@@ -211,7 +233,7 @@ if ($controller === 'auth') {
         <div class="footer-mid">
             <p><b>Lokasi</b></p>
             <p>Jl. Masjid Al-Furqon No.RT.10, Cepit Baru, Condongcatur, Kec. Depok, Kabupaten Sleman, Daerah Istimewa Yogyakarta 55283</p>
-            <p><b>Kontak</b></p>
+            <p><b class="kontak-title">Kontak</b></p>
             <p>email@gmslibrary.com</p>
             <p>+62 812 3456 7890</p>
         </div>

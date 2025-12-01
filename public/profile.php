@@ -4,13 +4,13 @@ require_once __DIR__ . "/../app/init.php";
 
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
-    exit();
+    header("Location: index.php?controller=user&action=showLoginForm");
+    exit;
 }
-
 
 $userModel = new User($conn);
 $user = $userModel->getById($_SESSION['user_id']);
+
 
 ?>
 
@@ -20,7 +20,7 @@ $user = $userModel->getById($_SESSION['user_id']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Pengguna - GMS Library</title>
-    <link rel="stylesheet" href="./css/profile.css">
+    <link rel="stylesheet" href="css/profile.css">
 </head>
 <body>
     <!-- Header -->
@@ -32,7 +32,7 @@ $user = $userModel->getById($_SESSION['user_id']);
     <nav class="nav-menu">
         <ul>
             <li><a href="index.php">Beranda</a></li>
-            <li><a href="#riwayat">Riwayat</a></li>
+            <li><a href="history.php">Riwayat</a></li>
             <li><a href="profile.php">Profil</a></li>
         </ul>
 
@@ -73,7 +73,14 @@ $user = $userModel->getById($_SESSION['user_id']);
                         value="<?= htmlspecialchars($user['user_phone'] ?? '') ?>" readonly>
                 </div>
             </form>
+        <!-- alert sukses update -->
 
+        <?php if (isset($_SESSION['update_success'])): ?>
+            <script>
+                alert("<?= $_SESSION['update_success']; ?>");
+            </script>
+            <?php unset($_SESSION['update_success']); ?>
+        <?php endif; ?>
         </div>
     </main>
 
@@ -84,18 +91,21 @@ $user = $userModel->getById($_SESSION['user_id']);
                 <h2>GMS Library</h2>
             </div>
             <div class="footer-left">
-                <p>Pusat Informasi Buku & Edukasi</p>
+                <p>GMS Library adalah perpustakaan modern dengan koleksi buku dan sumber digital yang beragam. Menyediakan ruang baca nyaman, area diskusi, serta layanan peminjaman untuk mendukung belajar dan penelitian pengunjung.</p>
             </div>
         </div>
 
         <div class="footer-mid">
             <p><b>Navigasi</b></p>
             <p>Beranda</p>
-            <p>Pengguna</p>
+            <p>Riwayat</p>
+            <p>Profil</p>
         </div>
 
         <div class="footer-mid">
-            <p><b>Kontak</b></p>
+            <p><b>Lokasi</b></p>
+            <p>Jl. Masjid Al-Furqon No.RT.10, Cepit Baru, Condongcatur, Kec. Depok, Kabupaten Sleman, Daerah Istimewa Yogyakarta 55283</p>
+            <p><b class="kontak-title">Kontak</b></p>
             <p>email@gmslibrary.com</p>
             <p>+62 812 3456 7890</p>
         </div>

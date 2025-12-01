@@ -210,6 +210,11 @@ body {
     
 }
 
+.kontak-title {
+    display: block;
+    margin-top: 15px;
+}
+
 .footer-left p{
     margin-top: 25px;
     text-align: left;
