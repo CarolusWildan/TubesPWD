@@ -1,20 +1,10 @@
 <?php
-session_start();
-
-// Contoh data user (ganti dengan data dari UserController Anda nanti)
-$user = [
-    'user_name' => 'Kai',
-    'user_address' => 'Jl. Merdeka No. 123, Jakarta',
-    'user_phone' => '081234567890'
-];
-
-// Jika sudah punya UserController, ganti bagian atas dengan:
-// require_once '../controllers/UserController.php';
-// $controller = new UserController();
-// $user = $controller->getCurrentUser();
-// if (!$user) { header("Location: login.php"); exit(); }
+// asumsi: $user dikirim dari UserController->profile()
+// $user punya key: user_name, user_address, user_phone
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -34,12 +24,12 @@ $user = [
         <ul>
             <li><a href="index.php">Beranda</a></li>
             <li><a href="#riwayat">Riwayat</a></li>
-            <li><a href="profile.php">Profil</a></li>
+            <li><a href="index.php?controller=user&action=profile">Profil</a></li>
         </ul>
 
         <div class="user-action">
             <div class="icon-circle">
-                <a href="profile.php">
+                <a href="index.php?controller=user&action=profile">
                     <div class="circle"></div> 
                 </a>
             </div>
@@ -50,25 +40,46 @@ $user = [
     <!-- Main Content -->
     <main>
         <div class="profile-container">
-            <div class="avatar-section">
-                <div class="avatar-placeholder"></div>
-                <a href="editProfile.php"><button class="edit-btn">Edit</button></a>
+                    <div class="avatar-section">
+            <div class="avatar-placeholder">
+                <!-- Tombol + untuk upload -->
+                <label class="upload-btn">
+                    <input type="file" name="profile_image" accept="image/*" hidden>
+                    +
+                </label>
             </div>
+        </div>
 
-            <form class="profile-form">
+
+            <!-- FORM EDIT PROFIL -->
+            <form class="profile-form" 
+                  action="index.php?controller=user&action=updateProfile" 
+                  method="POST">
+                  
                 <div class="form-group">
                     <label for="user">Nama</label>
-                    <input type="text" id="user" name="user" value="<?= htmlspecialchars($user['user_name']) ?>" readonly>
+                    <input type="text" id="user" name="name"
+                           value="<?= htmlspecialchars($user['user_name'] ?? '') ?>" 
+                           required>
                 </div>
 
                 <div class="form-group">
                     <label for="address">Alamat</label>
-                    <input type="text" id="address" name="address" value="<?= htmlspecialchars($user['user_address']) ?>" readonly>
+                    <input type="text" id="address" name="address"
+                           value="<?= htmlspecialchars($user['user_address'] ?? '') ?>" 
+                           required>
                 </div>
 
                 <div class="form-group">
                     <label for="phone">No. Telepon</label>
-                    <input type="text" id="phone" name="phone" value="<?= htmlspecialchars($user['user_phone']) ?>" readonly>
+                    <input type="text" id="phone" name="phone"
+                           value="<?= htmlspecialchars($user['user_phone'] ?? '') ?>" 
+                           required>
+                </div>
+
+                <div class="button-row">
+                    <a href="profile.php?controller=userController&action=profile"><button type="button" class="btn-cancel" onclick="history.back()">Batal</button></a>
+                    <a href="profile.php?controller=userController&action=updateProfile"><button type="submit" class="btn-save">Simpan</button></a>
                 </div>
             </form>
         </div>
@@ -97,7 +108,6 @@ $user = [
             <p>+62 812 3456 7890</p>
         </div>
 
-        
         <div class="footer-right">
             <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.0881220390825!2d110.41220107476592!3d-7.780480992239148!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59f1d2361f71%3A0x4a2ce83adbcfd5aa!2sPerpustakaan%20Universitas%20Atma%20Jaya%20Yogyakarta!5e0!3m2!1sid!2sid!4v1764419745591!5m2!1sid!2sid"
