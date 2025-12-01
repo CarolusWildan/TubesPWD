@@ -12,17 +12,16 @@
     <header class="navbar">
         <h2 class="logo">GMS Library</h2>
         <div class="toggle-btn"></div>
-            <nav class="nav-menu">
-        <ul>
-            <li><a href="index.php">Beranda</a></li>
-            <li><a href="#riwayat">Riwayat</a></li>
-            <li><a href="profile.php">Profil</a></li>
-        </ul>
-        <div class="icon-circle">
-            <!-- Bisa diganti dengan ikon SVG atau img -->
-            <div class="circle"></div>
-        </div>
-    </nav>
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="index.php">Beranda</a></li>
+                <li><a href="#riwayat">Riwayat</a></li>
+                <li><a href="profile.php">Profil</a></li>
+            </ul>
+            <div class="icon-circle">
+                <div class="circle"></div>
+            </div>
+        </nav>
     </header>
 
     <!-- HERO -->
@@ -30,143 +29,162 @@
         <img src="./asset/background.png" alt="Bookshelf" />
     </section>
 
-    
+    <!-- CONTAINER RIWAYAT -->
     <div class="container">
-    <div class="riwayat-peminjaman">
-        <h1 class="title">Riwayat Peminjaman</h1>
-        <p class="subtitle">Anda dapat melihat semua riwayat peminjaman buku Anda</p>
-    
-        <div class="riwayat-list">
-        <!-- Card 1 -->
-        <div class="riwayat-card">
-        <div class="book-image">
-            <img src="./asset/coverPeter.jpg" alt="Peter and the Wolf" />
-        </div>
-        <div class="book-info">
-            <div class="status-badge dikembalikan">Dikembalikan</div>
-            <h3>PETER AND THE WOLF</h3>
-            <div class="detail">
-                <span class="label">Pengarang</span>
-                <span class="colon">:</span>
-                <span class="value">Sergei Prokofiev</span>
-            </div>
-            <div class="detail">
-                <span class="label">Tahun Terbit</span>
-                <span class="colon">:</span>
-                <span class="value">2024</span>
-            </div>
-            <div class="detail">
-                <span class="label">Kategori</span>
-                <span class="colon">:</span>
-                <span class="value">Anak-anak</span>
-            </div>
-            <div class="detail">
-                <span class="label2">Tanggal Peminjaman</span>
-                <span class="colon">:</span>
-                <span class="value">19-Oktober-2025</span>
-            </div>
-            <div class="detail">
-                <span class="label3">Tanggal Pengembalian</span>
-                <span class="colon">:</span>
-                <span class="value">21-Oktober-2025</span>
+        <div class="riwayat-peminjaman">
+            <h1 class="title">Riwayat Peminjaman</h1>
+            <p class="subtitle">Anda dapat melihat semua riwayat peminjaman buku Anda</p>
+
+            <div class="riwayat-list">
+
+                <!-- CARD 1 -->
+                <div class="riwayat-card">
+                    <div class="book-image">
+                        <img src="./asset/coverPeter.jpg" alt="Peter and the Wolf" />
+                    </div>
+                    <div class="book-info">
+                        <div class="status-badge dikembalikan">Dikembalikan</div>
+                        <h3>PETER AND THE WOLF</h3>
+
+                        <div class="detail">
+                            <span class="label">Pengarang</span>
+                            <span class="colon">:</span>
+                            <span class="value">Sergei Prokofiev</span>
+                        </div>
+
+                        <div class="detail">
+                            <span class="label">Tahun Terbit</span>
+                            <span class="colon">:</span>
+                            <span class="value">2024</span>
+                        </div>
+
+                        <div class="detail">
+                            <span class="label">Kategori</span>
+                            <span class="colon">:</span>
+                            <span class="value">Anak-anak</span>
+                        </div>
+
+                        <div class="detail">
+                            <span class="label2">Tanggal Peminjaman</span>
+                            <span class="colon">:</span>
+                            <span class="value">19-Oktober-2025</span>
+                        </div>
+
+                        <div class="detail">
+                            <span class="label3">Tanggal Pengembalian</span>
+                            <span class="colon">:</span>
+                            <span class="value">21-Oktober-2025</span>
+                        </div>
+
+                        <div class="detail">
+                            <span class="label">Denda</span>
+                            <span class="colon">:</span>
+                            <span class="value">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 2 -->
+                <div class="riwayat-card">
+                    <div class="book-image">
+                        <img src="./asset/coverWibu.jpeg" alt="The Prophet" />
+                    </div>
+
+                    <div class="book-info">
+                        <div class="status-badge dipinjam">Dipinjam</div>
+                        <h3>The Prophet</h3>
+
+                        <div class="detail">
+                            <span class="label">Pengarang</span>
+                            <span class="colon">:</span>
+                            <span class="value">Sergei Prokofiev</span>
+                        </div>
+
+                        <div class="detail">
+                            <span class="label">Tahun Terbit</span>
+                            <span class="colon">:</span>
+                            <span class="value">2024</span>
+                        </div>
+
+                        <div class="detail">
+                            <span class="label">Kategori</span>
+                            <span class="colon">:</span>
+                            <span class="value">Anak-anak</span>
+                        </div>
+
+                        <div class="detail">
+                            <span class="label2">Tanggal Peminjaman</span>
+                            <span class="colon">:</span>
+                            <span class="value">19-Oktober-2025</span>
+                        </div>
+
+                        <div class="detail">
+                            <span class="label3">Tanggal Pengembalian</span>
+                            <span class="colon">:</span>
+                            <span class="value">21-Oktober-2025</span>
+                        </div>
+
+                        <div class="detail">
+                            <span class="label">Denda</span>
+                            <span class="colon">:</span>
+                            <span class="value">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 3 -->
+                <div class="riwayat-card">
+                    <div class="book-image">
+                        <img src="./asset/coverMonk.jpg" alt="Monk" />
+                    </div>
+
+                    <div class="book-info">
+                        <div class="status-badge tersedia">Tersedia</div>
+                        <h3>The Monk</h3>
+
+                        <div class="detail">
+                            <span class="label">Pengarang</span>
+                            <span class="colon">:</span>
+                            <span class="value">Sergei Prokofiev</span>
+                        </div>
+
+                        <div class="detail">
+                            <span class="label">Tahun Terbit</span>
+                            <span class="colon">:</span>
+                            <span class="value">2024</span>
+                        </div>
+
+                        <div class="detail">
+                            <span class="label">Kategori</span>
+                            <span class="colon">:</span>
+                            <span class="value">Anak-anak</span>
+                        </div>
+
+                        <div class="detail">
+                            <span class="label2">Tanggal Peminjaman</span>
+                            <span class="colon">:</span>
+                            <span class="value">19-Oktober-2025</span>
+                        </div>
+
+                        <div class="detail">
+                            <span class="label3">Tanggal Pengembalian</span>
+                            <span class="colon">:</span>
+                            <span class="value">21-Oktober-2025</span>
+                        </div>
+
+                        <div class="detail">
+                            <span class="label">Denda</span>
+                            <span class="colon">:</span>
+                            <span class="value">-</span>
+                        </div>
+                    </div>
+                </div>
 
             </div>
-            <div class="detail">
-                <span class="label">Denda</span>
-                <span class="colon">:</span>
-                <span class="value">-</span>
-            </div>
         </div>
-        </div>
+    </div> <!-- END CONTAINER -->
 
-        <!-- Card 2 -->
-        <div class="riwayat-card">
-        <div class="book-image">
-            <img src="./asset/coverWibu.jpeg" alt="The Prophet" />
-        </div>
-        <div class="book-info">
-           <div class="status-badge dipinjam">Dipinjam</div>
-            <h3>The Prophet</h3>
-            <div class="detail">
-                <span class="label">Pengarang</span>
-                <span class="colon">:</span>
-                <span class="value">Sergei Prokofiev</span>
-            </div>
-            <div class="detail">
-                <span class="label">Tahun Terbit</span>
-                <span class="colon">:</span>
-                <span class="value">2024</span>
-            </div>
-            <div class="detail">
-                <span class="label">Kategori</span>
-                <span class="colon">:</span>
-                <span class="value">Anak-anak</span>
-            </div>
-            <div class="detail">
-                <span class="label2">Tanggal Peminjaman</span>
-                <span class="colon">:</span>
-                <span class="value">19-Oktober-2025</span>
-            </div>
-            <div class="detail">
-                <span class="label3">Tanggal Pengembalian</span>
-                <span class="colon">:</span>
-                <span class="value">21-Oktober-2025</span>
-
-            </div>
-            <div class="detail">
-                <span class="label">Denda</span>
-                <span class="colon">:</span>
-                <span class="value">-</span>
-            </div>
-        </div>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="riwayat-card">
-        <div class="book-image">
-            <img src="./asset/coverMonk.jpg" alt="Monk" />
-        </div>
-        <div class="book-info">
-            <div class="status-badge tersedia">Tersedia</div>
-            <h3>The Monk</h3>
-            <div class="detail">
-                <span class="label">Pengarang</span>
-                <span class="colon">:</span>
-                <span class="value">Sergei Prokofiev</span>
-            </div>
-            <div class="detail">
-                <span class="label">Tahun Terbit</span>
-                <span class="colon">:</span>
-                <span class="value">2024</span>
-            </div>
-            <div class="detail">
-                <span class="label">Kategori</span>
-                <span class="colon">:</span>
-                <span class="value">Anak-anak</span>
-            </div>
-            <div class="detail">
-                <span class="label2">Tanggal Peminjaman</span>
-                <span class="colon">:</span>
-                <span class="value">19-Oktober-2025</span>
-            </div>
-            <div class="detail">
-                <span class="label3">Tanggal Pengembalian</span>
-                <span class="colon">:</span>
-                <span class="value">21-Oktober-2025</span>
-
-            </div>
-            <div class="detail">
-                <span class="label">Denda</span>
-                <span class="colon">:</span>
-                <span class="value">-</span>
-            </div>
-        
-        </div>
-    </div>
-
-    <!-- Tambahkan lebih banyak card jika perlu -->
-  </div>
-    </div>
+    <!-- FOOTER -->
     <footer class="footer">
         <div class="footer-left">
             <div class="h2">
@@ -191,7 +209,15 @@
 
         
         <div class="footer-right">
-            <img src="./asset/Lokasi.png" width="250">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.0881220390825!2d110.41220107476592!3d-7.780480992239148!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59f1d2361f71%3A0x4a2ce83adbcfd5aa!2sPerpustakaan%20Universitas%20Atma%20Jaya%20Yogyakarta!5e0!3m2!1sid!2sid!4v1764419745591!5m2!1sid!2sid"
+                width="350"
+                height="250"
+                style="border:0; border-radius:10px;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
         </div>
     </footer>
 
