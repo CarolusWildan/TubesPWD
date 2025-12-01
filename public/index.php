@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once __DIR__ . "/../app/init.php";
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -23,7 +27,15 @@ if ($controller === 'auth') {
             break;
         
         case 'register':
+            $authController->register();
+            break;
+
+        case 'registerProcess':
             $authController->registerProcess();
+            break;
+
+        case 'activate':
+            $authController->activate();
             break;
     }
 
@@ -31,10 +43,10 @@ if ($controller === 'auth') {
     exit;
 }
 
-if (!isset($_SESSION['role'])) {
-    header("Location: index.php?controller=auth&action=login");
-    exit;
-}
+// if (!isset($_SESSION['role'])) {
+//     header("Location: index.php?controller=auth&action=login");
+//     exit;
+// }
 ?>
 
 <?php if (isset($_SESSION['alert_success'])) : ?>
@@ -59,10 +71,38 @@ if (!isset($_SESSION['role'])) {
 <body>
 
     <!-- NAVBAR -->
-    <header class="navbar">
-        <h2 class="logo">GMS Library</h2>
-        <div class="toggle-btn"></div>
-    </header>
+<header class="navbar">
+    <h2 class="logo">GMS Library</h2>
+    
+    <div class="toggle-btn"></div>
+    
+    <nav class="nav-menu">
+        <ul>
+            <li><a href="index.php">Beranda</a></li>
+
+            <?php if (isset($_SESSION['role'])): ?>
+                <li><a href="#riwayat">Riwayat</a></li>
+                <li><a href="profile.php">Profil</a></li>
+            <?php endif; ?>
+        </ul>
+
+        <div class="user-action">
+            <?php if (isset($_SESSION['role'])): ?>
+                
+                <div class="icon-circle">
+                    <a href="profile.php">
+                        <div class="circle"></div> 
+                        </a>
+                </div>
+
+            <?php else: ?>
+
+                <a href="login.php" class="btn-login">Login</a>
+
+            <?php endif; ?>
+        </div>
+    </nav>
+</header>
 
     <!-- HERO -->
     <section class="hero">
@@ -156,7 +196,15 @@ if (!isset($_SESSION['role'])) {
 
         
         <div class="footer-right">
-            <img src="./asset/Lokasi.png" width="250">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.0881220390825!2d110.41220107476592!3d-7.780480992239148!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59f1d2361f71%3A0x4a2ce83adbcfd5aa!2sPerpustakaan%20Universitas%20Atma%20Jaya%20Yogyakarta!5e0!3m2!1sid!2sid!4v1764419745591!5m2!1sid!2sid"
+                width="350"
+                height="250"
+                style="border:0; border-radius:10px;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
         </div>
     </footer>
 

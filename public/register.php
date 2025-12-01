@@ -14,10 +14,10 @@ if (session_status() === PHP_SESSION_NONE) {
 </head>
 <body>
 
-<div class="login-background">
+<div class="login-background fade-in">
     <div class="login-container">
 
-        <div class="left-panel">
+        <div class="left-panel slide-left">
             <h1><span class="bold">GMS</span> Library</h1>
             <p>
                 Daftar sebagai anggota GMS Library dan dapatkan akses penuh ke koleksi buku,
@@ -25,14 +25,16 @@ if (session_status() === PHP_SESSION_NONE) {
             </p>
         </div>
 
-        <div class="right-panel">
+        <div class="right-panel slide-right">
             <h2>Register</h2>
 
-            <?php if (isset($error_message)) : ?>
-                <div class="alert-error">
-                    <?php echo $error_message; ?>
-                </div>
+            <?php if (isset($_SESSION['error_message'])) : ?>
+                <script>
+                    alert("<?= $_SESSION['error_message']; ?>");
+                </script>
+                <?php unset($_SESSION['error_message']); ?>
             <?php endif; ?>
+
 
             <?php if (isset($_SESSION['alert_success'])) : ?>
                 <div class="alert-success">
@@ -40,10 +42,10 @@ if (session_status() === PHP_SESSION_NONE) {
                 </div>
                 <?php unset($_SESSION['alert_success']); ?>
             <?php endif; ?>
-            <form action="index.php?controller=auth&action=register" method="POST">
+            <form action="index.php?controller=auth&action=registerProcess" method="POST">
 
                 <label>Nama Lengkap</label>
-                <input type="text" name="user_name" placeholder="Masukkan Nama Lengkap" required>
+                <input type="text" name="full_name" placeholder="Masukkan Nama Lengkap" required>
 
                 <label>Email (Aktif)</label>
                 <input type="email" name="user_email" placeholder="contoh@email.com" required>

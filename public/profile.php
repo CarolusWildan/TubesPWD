@@ -25,14 +25,27 @@ $user = [
 </head>
 <body>
     <!-- Header -->
-    <header>
-        <div class="logo">GMS Library</div>
-        <nav>
-            <a href="index.php">Beranda</a>
-            <a href="history.php">Riwayat</a>
-            <a href="profile.php" class="active">Profil</a>
-        </nav>
-    </header>
+<header class="navbar">
+    <h2 class="logo">GMS Library</h2>
+    
+    <div class="toggle-btn"></div>
+    
+    <nav class="nav-menu">
+        <ul>
+            <li><a href="index.php">Beranda</a></li>
+            <li><a href="#riwayat">Riwayat</a></li>
+            <li><a href="profile.php">Profil</a></li>
+        </ul>
+
+        <div class="user-action">
+            <div class="icon-circle">
+                <a href="profile.php">
+                    <div class="circle"></div> 
+                </a>
+            </div>
+        </div>
+    </nav>
+</header>
 
     <!-- Main Content -->
     <main>
@@ -62,24 +75,39 @@ $user = [
     </main>
 
     <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-logo">GMS Library</div>
-            <div class="footer-nav">
-                <a href="index.php">Beranda</a>
-                <a href="history.php">Riwayat</a>
-                <a href="profile.php">Profil</a>
+    <footer class="footer">
+        <div class="footer-left">
+            <div class="h2">
+                <h2>GMS Library</h2>
             </div>
-            <div class="footer-contact">
-                <p>📧 info@gmslibrary.com</p>
-                <p>📞 (021) 1234-5678</p>
-            </div>
-            <div class="footer-map">
-                <img src="https://via.placeholder.com/150x100?text=Peta+Lokasi" alt="Lokasi GMS Library">
+            <div class="footer-left">
+                <p>Pusat Informasi Buku & Edukasi</p>
             </div>
         </div>
-        <div class="footer-bottom">
-            &copy; 2025 GMS Library. All Rights Reserved.
+
+        <div class="footer-mid">
+            <p><b>Navigasi</b></p>
+            <p>Beranda</p>
+            <p>Pengguna</p>
+        </div>
+
+        <div class="footer-mid">
+            <p><b>Kontak</b></p>
+            <p>email@gmslibrary.com</p>
+            <p>+62 812 3456 7890</p>
+        </div>
+
+        
+        <div class="footer-right">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.0881220390825!2d110.41220107476592!3d-7.780480992239148!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59f1d2361f71%3A0x4a2ce83adbcfd5aa!2sPerpustakaan%20Universitas%20Atma%20Jaya%20Yogyakarta!5e0!3m2!1sid!2sid!4v1764419745591!5m2!1sid!2sid"
+                width="350"
+                height="250"
+                style="border:0; border-radius:10px;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
         </div>
     </footer>
 </body>
