@@ -7,7 +7,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f4f4;
+    background: linear-gradient(to bottom, #8B0000, #D96A6A, #F2A7A7);
     color: #333;
 }
 
@@ -18,7 +18,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: white;
+    color: rgb(0, 0, 0);
 }
 
 .nav-menu {
@@ -93,8 +93,8 @@ main {
 }
 
 .avatar-placeholder {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     background-color: #e0e0e0;
     border-radius: 50%;
     margin: 0 auto 15px;
@@ -112,6 +112,7 @@ main {
     padding: 8px 20px;
     border-radius: 20px;
     cursor: pointer;
+    /* margin-bottom: 10px; */
     font-weight: bold;
     transition: background 0.3s;
 }
@@ -127,6 +128,7 @@ main {
 
 .form-group {
     margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 .form-group label {
@@ -177,6 +179,96 @@ main {
 .footer-left{
     margin: 10px;
 }
+
+/* Avatar utama */
+.avatar-section {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: auto;
+}
+
+.avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 4px solid #0a84ff; /* biru outline */
+    background: #fff;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Tombol plus */
+.upload-btn {
+    width: 50px;
+    height: 50px;
+    background: #ff5c5c;
+    color: white;
+    border-radius: 50%;
+    border: 4px solid white;
+    font-size: 32px;
+    font-weight: bold;
+    line-height: 40px;
+    text-align: center;
+    cursor: pointer;
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.2s;
+}
+
+.upload-btn:hover {
+    background: #ff3c3c;
+    transform: scale(1.1);
+}
+
+/* Wrapper tombol kiri-kanan */
+.button-row {
+    display: flex;
+    justify-content: space-between;  /* kiri dan kanan */
+    margin-top: 20px;
+}
+
+/* Tombol batal */
+.btn-cancel {
+    padding: 10px 23px;
+    background: #f72424;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    color: #333;
+    transition: 0.2s;
+    margin-left: 570px;
+}
+
+.btn-cancel:hover {
+    background: #bb2e2e;
+}
+
+/* Tombol simpan */
+.btn-save {
+    padding: 10px 18px;
+    background: #10d043;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    color: white;
+    transition: 0.2s;
+}
+
+.btn-save:hover {
+    background: #08af0b;
+}
+
+
 
 /* Responsif */
 @media (max-width: 768px) {
