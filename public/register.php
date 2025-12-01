@@ -37,11 +37,11 @@ if (session_status() === PHP_SESSION_NONE) {
 
 
             <?php if (isset($_SESSION['alert_success'])) : ?>
-                <div class="alert-success">
-                    <?php echo $_SESSION['alert_success']; ?>
-                </div>
+                <script>alert("<?= $_SESSION['alert_success']; ?>");</script>
                 <?php unset($_SESSION['alert_success']); ?>
             <?php endif; ?>
+
+
             <form action="index.php?controller=auth&action=registerProcess" method="POST">
 
                 <label>Nama Lengkap</label>

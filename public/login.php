@@ -32,27 +32,13 @@ if (session_status() === PHP_SESSION_NONE) {
             <div class="right-panel slide-right">
                 <h2>Login</h2>
 
-                <form id="loginForm" action="index.php?controller=auth&action=login" method="POST">
-                    <label>Username</label>
-                    <input type="text" name="username" placeholder="Masukkan Username" required>
-
-                    <label>Password</label>
-                    <input type="password" name="password" placeholder="Masukkan Password" required>
-
-                    <!-- error message login gagal -->
-                    <?php if (isset($_SESSION['error_message'])): ?>
-                        <div class="error-msg">
-                            <?= $_SESSION['error_message']; ?>
-                        </div>
-                        <?php unset($_SESSION['error_message']); ?>
-                    <?php endif; ?>
-
-                    <button type="submit" class="btn-login">Masuk</button>
-                </form>
-                <div style="margin-top: 15px; text-align: center; font-size: 0.9rem;">
-                    Belom punya akun? <a href="index.php?controller=auth&action=register"
-                        style="font-weight:bold;">Daftar Dsisini</a>
-                </div>
+                <!-- error message login gagal -->
+                <?php if (isset($_SESSION['error_message'])) : ?>
+                    <script>
+                        alert("<?= $_SESSION['error_message']; ?>");
+                    </script>
+                    <?php unset($_SESSION['error_message']); ?>
+                <?php endif; ?>
 
                 <!-- alert sukses registrasi -->
 
@@ -63,7 +49,19 @@ if (session_status() === PHP_SESSION_NONE) {
                     <?php unset($_SESSION['alert_success']); ?>
                 <?php endif; ?>
 
+                <form id="loginForm" action="index.php?controller=auth&action=login" method="POST">
+                    <label>Username</label>
+                    <input type="text" name="username" placeholder="Masukkan Username" required>
 
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="Masukkan Password" required>
+
+                    <button type="submit" class="btn-login">Masuk</button>
+                </form>
+                <div style="margin-top: 15px; text-align: center; font-size: 0.9rem;">
+                    Belom punya akun? <a href="index.php?controller=auth&action=register"
+                        style="font-weight:bold;">Daftar Dsisini</a>
+                </div>
             </div>
             <script src="js/validation.js"></script>
         </div>

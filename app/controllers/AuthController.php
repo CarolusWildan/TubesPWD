@@ -26,18 +26,18 @@ class AuthController
             session_start();
         }
 
-        // HARUS POST, kalau bukan POST balikin ke form
+        // Jika bukan POST, tampilkan form login
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            require_once 'login.php'; 
-            return; // Stop function disini agar kode bawah tidak jalan
+            require_once 'login.php';
+            return;
         }
-        //ambil data username dan pass dari form
+
         $username = $_POST['username'] ?? null;
         $password = $_POST['password'] ?? null;
 
-        // ===============================
-        // 1. Coba login sebagai LIBRARIAN
-        // ===============================
+        // ============================================
+        // 1. Cek login sebagai LIBRARIAN
+        // ============================================
         $lib = $this->librarianModel->loginLib($username, $password);
 
         if ($lib) {
@@ -46,18 +46,21 @@ class AuthController
             $_SESSION['librarian_name']     = $lib['librarian_name'] ?? null;
             $_SESSION['librarian_username'] = $lib['librarian_username'] ?? $username;
             $_SESSION['librarian_role']     = $lib['librarian_role'] ?? 'STAFF';
+
             $_SESSION['alert_success'] = "Selamat Datang, Librarian " . ($lib['librarian_name'] ?? $username);
-            header("Location: index.php"); 
+
+            header("Location: index.php");
             exit;
         }
 
-        // ===============================
-        // 2. Kalau bukan librarian, cek USER
-        // ===============================
+        // ============================================
+        // 2. Cek login sebagai USER
+        // ============================================
         $user = $this->userModel->loginUser($username, $password);
 
         if ($user) {
-          // Cek Status Aktif/Pending
+
+            // Cek aktivasi
             if ($user['user_status'] !== 'active') {
                 $_SESSION['error_message'] = "Akun belum diaktivasi. Cek email Anda.";
                 header("Location: index.php?controller=auth&action=login");
@@ -66,21 +69,25 @@ class AuthController
 
             $_SESSION['role']      = 'user';
             $_SESSION['user_id']   = $user['user_id'];
-            $_SESSION['username']  = $user['username']   ?? $username;
+            $_SESSION['username']  = $user['username'] ?? $username;
             $_SESSION['user_name'] = $user['full_name'];
+
             $_SESSION['alert_success'] = "Selamat Datang, " . ($user['username'] ?? $username);
-            header("Location: index.php"); 
+
+            header("Location: index.php");
             exit;
         }
 
-        // ===============================
-        // 3. Kalau dua-duanya gagal
-        // ===============================
-        $_SESSION['error_message'] = "Username atau password salah";
-        header("Location: login.php");
-        exit;
+        // ============================================
+        // 3. Jika login gagal
+        // ============================================
+        $_SESSION['error_message'] = "Username atau password salah.";
 
+        // FIX: gunakan routing sesuai sistem
+        header("Location: index.php?controller=auth&action=login");
+        exit;
     }
+
 
     public function register()
     {
@@ -106,16 +113,16 @@ class AuthController
         $address  = trim($_POST['user_address'] ?? '');
         $password = $_POST['password'] ?? '';
 
-        // Validasi
+        // Validasi input wajib
         if (empty($nama) || empty($username) || empty($email) || empty($password)) {
-            $error_message = "Nama, Username, Email, dan Password wajib diisi!";
+            $_SESSION['error_message'] = "Nama, Username, Email, dan Password wajib diisi!";
             header("Location: index.php?controller=auth&action=register");
             exit;
         }
 
         // Cek Duplikat
         if ($this->userModel->checkUserExists($username, $email)) {
-            $error_message = "Username atau Email sudah terdaftar!";
+            $_SESSION['error_message'] = "Username atau Email sudah terdaftar!";
             header("Location: index.php?controller=auth&action=register");
             exit;
         }
@@ -123,7 +130,6 @@ class AuthController
         $token = bin2hex(random_bytes(32)); 
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-        // BUNGKUS KE ARRAY (PENTING! Agar cocok dengan Model User.php)
         $data = [
             'full_name'        => $nama,
             'username'         => $username,
@@ -141,29 +147,36 @@ class AuthController
             $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
             $base_url = $protocol . "://" . $_SERVER['HTTP_HOST'] . "/";
 
-            // LINK AKTIVASI
             $link = $base_url . "index.php?controller=auth&action=activate&token=" . $token;
 
             $subject = "Aktivasi Akun GMS Library";
-            $message = "Halo $nama, silakan klik link ini: <a href='$link'>Aktifkan Akun</a>";
+            $message = "Halo $nama, klik link berikut untuk aktivasi akun:<br>
+                        <a href='$link'>Aktifkan Akun</a>";
 
-            $kirim = Mailer::sendEmail($email, $subject, $message);
+            // TRY - CATCH SUPAYA TIDAK MATI
+            try {
+                $kirim = Mailer::sendEmail($email, $subject, $message);
+            } catch (Exception $e) {
+                $kirim = false;
+            }
 
             if ($kirim) {
-                $_SESSION['alert_success'] = "Registrasi Berhasil! Cek email (Inbox Mailtrap) untuk aktivasi.";
+                $_SESSION['alert_success'] = "Registrasi Berhasil! Silakan cek email untuk aktivasi.";
             } else {
-                $_SESSION['alert_success'] = "Registrasi Berhasil, tapi email gagal terkirim.";
+                $_SESSION['alert_success'] = "Registrasi berhasil, tetapi email gagal dikirim.";
             }
-            
-            header("Location: index.php?controller=auth&action=login");
+
+            // PENTING: redirect ke REGISTER biar alert tampil di register.php
+            header("Location: index.php?controller=auth&action=register");
             exit;
 
         } else {
-            $error_message = "Gagal mendaftar. Silakan coba lagi.";
+            $_SESSION['error_message'] = "Gagal mendaftar. Silakan coba lagi.";
             header("Location: index.php?controller=auth&action=register");
             exit;
         }
     }
+
 
     public function activate()
     {
