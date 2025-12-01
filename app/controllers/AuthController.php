@@ -138,8 +138,10 @@ class AuthController
         // Simpan ke Database
         if ($this->userModel->register($data)) {
             
-            // Kirim Email
-            $base_url = "http://tubes.local/"; 
+            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
+            $base_url = $protocol . "://" . $_SERVER['HTTP_HOST'] . "/";
+
+            // LINK AKTIVASI
             $link = $base_url . "index.php?controller=auth&action=activate&token=" . $token;
 
             $subject = "Aktivasi Akun GMS Library";
