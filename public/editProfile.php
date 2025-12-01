@@ -79,7 +79,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
                 <div class="button-row">
                     <a href="profile.php?controller=userController&action=profile"><button type="button" class="btn-cancel" onclick="history.back()">Batal</button></a>
-                    <a href="profile.php?controller=userController&action=updateProfile"><button type="submit" class="btn-save">Simpan</button></a>
+                    <a href="profile.php?controller=userController&action=update"><button type="submit" class="btn-save">Simpan</button></a>
                 </div>
             </form>
         </div>
