@@ -1,18 +1,17 @@
 <?php
 session_start();
+require_once __DIR__ . "/../app/init.php";
 
-// Contoh data user (ganti dengan data dari UserController Anda nanti)
-$user = [
-    'user_name' => 'Kai',
-    'user_address' => 'Jl. Merdeka No. 123, Jakarta',
-    'user_phone' => '081234567890'
-];
 
-// Jika sudah punya UserController, ganti bagian atas dengan:
-// require_once '../controllers/UserController.php';
-// $controller = new UserController();
-// $user = $controller->getCurrentUser();
-// if (!$user) { header("Location: login.php"); exit(); }
+if (!isset($_SESSION['user_id'])) {
+    header('Location: index.php');
+    exit();
+}
+
+
+$userModel = new User($conn);
+$user = $userModel->getById($_SESSION['user_id']);
+
 ?>
 
 <!DOCTYPE html>
@@ -57,20 +56,24 @@ $user = [
 
             <form class="profile-form">
                 <div class="form-group">
-                    <label for="user">Nama</label>
-                    <input type="text" id="user" name="user" value="<?= htmlspecialchars($user['user_name']) ?>" readonly>
+                    <label for="full_name">Nama</label>
+                    <input type="text" id="full_name" name="full_name" 
+                        value="<?= htmlspecialchars($user['full_name'] ?? '') ?>" readonly>
                 </div>
 
                 <div class="form-group">
-                    <label for="address">Alamat</label>
-                    <input type="text" id="address" name="address" value="<?= htmlspecialchars($user['user_address']) ?>" readonly>
+                    <label for="user_address">Alamat</label>
+                    <input type="text" id="user_address" name="user_address" 
+                        value="<?= htmlspecialchars($user['user_address'] ?? '') ?>" readonly>
                 </div>
 
                 <div class="form-group">
-                    <label for="phone">No. Telepon</label>
-                    <input type="text" id="phone" name="phone" value="<?= htmlspecialchars($user['user_phone']) ?>" readonly>
+                    <label for="user_phone">No. Telepon</label>
+                    <input type="text" id="user_phone" name="user_phone" 
+                        value="<?= htmlspecialchars($user['user_phone'] ?? '') ?>" readonly>
                 </div>
             </form>
+
         </div>
     </main>
 
