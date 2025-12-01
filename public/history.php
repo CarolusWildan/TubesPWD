@@ -191,17 +191,20 @@
                 <h2>GMS Library</h2>
             </div>
             <div class="footer-left">
-                <p>Pusat Informasi Buku & Edukasi</p>
+                <p>GMS Library adalah perpustakaan modern dengan koleksi buku dan sumber digital yang beragam. Menyediakan ruang baca nyaman, area diskusi, serta layanan peminjaman untuk mendukung belajar dan penelitian pengunjung.</p>
             </div>
         </div>
 
         <div class="footer-mid">
             <p><b>Navigasi</b></p>
             <p>Beranda</p>
-            <p>Pengguna</p>
+            <p>Riwayat</p>
+            <p>Profil</p>
         </div>
 
         <div class="footer-mid">
+            <p><b>Lokasi</b></p>
+            <p>Jl. Masjid Al-Furqon No.RT.10, Cepit Baru, Condongcatur, Kec. Depok, Kabupaten Sleman, Daerah Istimewa Yogyakarta 55283</p>
             <p><b>Kontak</b></p>
             <p>email@gmslibrary.com</p>
             <p>+62 812 3456 7890</p>

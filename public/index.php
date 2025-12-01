@@ -1,8 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 require_once __DIR__ . "/../app/init.php";
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -41,7 +37,22 @@ if ($controller === 'auth') {
 
     // HENTIKAN SCRIPT DI SINI
     exit;
+}else if ($controller === 'book') {
+    $bookController = new BookController($conn);
+
+    switch ($action) {
+        case 'search':
+            $bookController->search();
+            break;
+
+        // case 'detail':
+        //     $bookController->detail();
+        //     break;
+    }
+
+    exit;
 }
+
 
 // if (!isset($_SESSION['role'])) {
 //     header("Location: index.php?controller=auth&action=login");
@@ -110,12 +121,20 @@ if ($controller === 'auth') {
     </section>
 
     <!-- SEARCH BAR -->
+    <?php if (isset($_SESSION['search_error'])) : ?>
+        <script>
+            alert("<?= $_SESSION['search_error']; ?>");
+        </script>
+        <?php unset($_SESSION['search_error']); ?>
+    <?php endif; ?>
     <section class="search-section input">
         <div class="search-box">
-        <input type="text" placeholder="Cari Buku..." />
-            <button type="submit">Cari</button>
+            <input id="searchInput" type="text" placeholder="Cari Buku..." />
+            <button id="searchBtn" type="button">Cari</button>
         </div>
     </section>
+
+    <script src="js/search.js"></script>
 
     <!-- BUKU POPULER -->
     <section class="popular-section">
@@ -178,17 +197,20 @@ if ($controller === 'auth') {
                 <h2>GMS Library</h2>
             </div>
             <div class="footer-left">
-                <p>Pusat Informasi Buku & Edukasi</p>
+                <p>GMS Library adalah perpustakaan modern dengan koleksi buku dan sumber digital yang beragam. Menyediakan ruang baca nyaman, area diskusi, serta layanan peminjaman untuk mendukung belajar dan penelitian pengunjung.</p>
             </div>
         </div>
 
         <div class="footer-mid">
             <p><b>Navigasi</b></p>
             <p>Beranda</p>
-            <p>Pengguna</p>
+            <p>Riwayat</p>
+            <p>Profil</p>
         </div>
 
         <div class="footer-mid">
+            <p><b>Lokasi</b></p>
+            <p>Jl. Masjid Al-Furqon No.RT.10, Cepit Baru, Condongcatur, Kec. Depok, Kabupaten Sleman, Daerah Istimewa Yogyakarta 55283</p>
             <p><b>Kontak</b></p>
             <p>email@gmslibrary.com</p>
             <p>+62 812 3456 7890</p>
