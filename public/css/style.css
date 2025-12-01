@@ -391,3 +391,15 @@ form input {
 .btn-login:active {
     transform: scale(0.95);
 }
+
+.error-msg {
+    color: #ff4d4d;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    background: #ffe5e5;
+    padding: 8px 10px;
+    border-left: 3px solid #ff1a1a;
+    border-radius: 3px;
+    animation: fadeIn 0.3s ease;
+}
