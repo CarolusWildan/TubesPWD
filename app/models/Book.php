@@ -40,6 +40,27 @@ class Book {
         return $stmt->get_result()->fetch_assoc();
     }
 
+    //search by title, author, category
+    public function search($keyword) {
+        $sql = "SELECT * FROM book 
+            WHERE title LIKE ? OR author LIKE ? OR category LIKE ?";
+        $key = "%$keyword%";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("sss", $key, $key, $key);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        // kalau tidak ada data, return array kosong
+        if ($result->num_rows === 0) {
+            return [];
+        }
+
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+
     // UPDATE
     public function update($book_id, $title, $author, $publish_year, $category, $cover) {
         $sql = "UPDATE {$this->table} SET 

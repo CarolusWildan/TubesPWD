@@ -1,6 +1,5 @@
 <?php
 
-
 class BookController
 {
     private mysqli $conn;
@@ -11,7 +10,9 @@ class BookController
         $this->conn = $conn;
         $this->bookModel = new Book($this->conn);
 
-        header('Content-Type: application/json; charset=utf-8');
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
     }
 
     // ================================
@@ -21,10 +22,8 @@ class BookController
     {
         $books = $this->bookModel->getAll();
 
-        echo json_encode([
-            "status" => "success",
-            "data"   => $books
-        ]);
+        require BASE_PATH . '/public/views/book_list.php';
+        return;
     }
 
     // ================================
@@ -48,6 +47,22 @@ class BookController
             "data"   => $book
         ]);
     }
+
+    public function search() {
+        $keyword = $_GET['keyword'] ?? '';
+
+        $books = $this->bookModel->search($keyword);
+
+        // Jika kosong → kirim pesan alert
+        if (empty($books)) {
+            $_SESSION['search_error'] = "Buku dengan kata kunci '$keyword' tidak ditemukan!";
+            header("Location: index.php");
+            exit;
+        }
+
+        require 'book_list.php';
+    }
+
 
     // ================================
     // POST /books/create
