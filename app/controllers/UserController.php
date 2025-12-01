@@ -49,14 +49,19 @@ class UserController
         // token aktivasi acak
         $activation_token = bin2hex(random_bytes(16));
 
-        $success = $this->userModel->register(
-            $name,
-            $address,
-            $phone,
-            $username,
-            $password,
-            $activation_token
-        );
+        $data = [
+            "full_name"        => $name,
+            "username"         => $username,
+            "user_email"       => $_POST['email'], // pastikan ada di form
+            "password"         => password_hash($password, PASSWORD_DEFAULT),
+            "user_phone"       => $phone,
+            "user_address"     => $address,
+            "activation_token" => $activation_token,
+            "user_status"      => "inactive"
+        ];
+
+        $success = $this->userModel->register($data);
+
 
         if ($success) {
             // di sini nanti bisa kirim email aktivasi pakai token
@@ -73,7 +78,8 @@ class UserController
     // ====================================================
     public function showLoginForm()
     {
-        include "../views/user/login.php";
+        header("Location: login.php");
+        exit;
     }
 
     // ====================================================
@@ -89,7 +95,7 @@ class UserController
             return;
         }
 
-        $user = $this->userModel->login($username, $password);
+        $user = $this->userModel->loginUser($username, $password);
 
         if (!$user) {
             echo "<script>alert('Username atau password salah'); history.back();</script>";
@@ -148,7 +154,8 @@ class UserController
         $user_id = $_SESSION['user_id'];
         $user    = $this->userModel->getById($user_id);
 
-        include "../views/user/profile.php";
+        header("Location: profile.php");
+        exit;
     }
 
     // ====================================================
@@ -167,23 +174,34 @@ class UserController
 
         $user_id = $_SESSION['user_id'];
 
-        $name    = $_POST['name']    ?? null;
-        $address = $_POST['address'] ?? null;
-        $phone   = $_POST['phone']   ?? null;
+        // Ambil data lama
+        $oldData = $this->userModel->getById($user_id);
 
-        if (!$name || !$address || !$phone) {
-            echo "<script>alert('Semua field profil wajib diisi'); history.back();</script>";
-            return;
-        }
+        // Gunakan data baru kalau ada, kalau tidak pakai data lama
+        $name    = $_POST['name']    ?: $oldData['full_name'];
+        $address = $_POST['address'] ?: $oldData['user_address'];
+        $phone   = $_POST['phone']   ?: $oldData['user_phone'];
 
+        // Update
         $success = $this->userModel->update($user_id, $name, $address, $phone);
 
+        // Simpan status di session
         if ($success) {
-            echo "<script>alert('Profil berhasil diperbarui'); window.location='index.php?controller=user&action=profile';</script>";
+            $_SESSION['update_success'] = "Data berhasil diupdate";
         } else {
-            echo "<script>alert('Gagal memperbarui profil'); history.back();</script>";
+            $_SESSION['update_error'] = "Gagal update";
         }
+
+        // Redirect ke halaman selanjutnya (misal profile.php)
+        header("Location: profile.php?controller=user&action=updateProfile");
+        exit;
     }
+
+    public function getUser() {
+        if (!isset($_SESSION['user_id'])) return null;
+        return $this->userModel->getById($_SESSION['user_id']);
+    }
+
 
     // ====================================================
     // AKTIVASI AKUN VIA TOKEN
