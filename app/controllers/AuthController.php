@@ -145,7 +145,10 @@ class AuthController
         if ($this->userModel->register($data)) {
             
             $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
-            $base_url = $protocol . "://" . $_SERVER['HTTP_HOST'] . "/";
+            $folder = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
+
+            $base_url = $protocol . "://" . $_SERVER['HTTP_HOST'] . $folder . "/";
+
 
             $link = $base_url . "index.php?controller=auth&action=activate&token=" . $token;
 
