@@ -147,15 +147,21 @@ if (isset($_SESSION['alert_success'])) {
             </ul>
 
             <div class="user-action">
-                <?php if (isset($_SESSION['role'])): ?>
-                    <div class="icon-circle">
-                        <a href="profile.php">
-                            <div class="circle"></div> 
-                        </a>
-                    </div>
-                <?php else: ?>
-                    <a href="login.php" class="btn-login">Login</a>
-                <?php endif; ?>
+                <div class="icon-circle">
+                    <a href="profile.php">
+                        
+                        <?php if (isset($_SESSION['profile_photo']) && !empty($_SESSION['profile_photo'])) : ?>
+                            
+                            <img src="<?= $_SESSION['profile_photo'] ?>" alt="Profile" class="header-profile-img">
+                        
+                        <?php else : ?>
+                            
+                            <div class="circle"></div>
+                        
+                        <?php endif; ?>
+
+                    </a>
+                </div>
             </div>
         </nav>
     </header>

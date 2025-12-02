@@ -94,16 +94,19 @@ class User {
     // ====================================================
     // UPDATE USER PROFILE
     // ====================================================
-    public function update($user_id, $username, $password, $address, $phone) {
-        $sql = "UPDATE {$this->table}
-                SET username=?, password=?, user_address=?, user_phone=?
-                WHERE user_id=?";
+        public function update($user_id, $username, $password, $address, $phone, $photoName) {
+            // Kita update kolom 'user_photo'
+            $sql = "UPDATE {$this->table}
+                    SET username=?, password=?, user_address=?, user_phone=?, user_photo=?
+                    WHERE user_id=?";
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("ssssi",$username, $password
-        , $address, $phone, $user_id);
-        return $stmt->execute();
-    }
+            $stmt = $this->conn->prepare($sql);
+            
+            // Bind param: ada 6 parameter sekarang (5 string, 1 integer)
+            $stmt->bind_param("sssssi", $username, $password, $address, $phone, $photoName, $user_id);
+            
+            return $stmt->execute();
+        }
 
     // ====================================================
     // ACTIVATE ACCOUNT

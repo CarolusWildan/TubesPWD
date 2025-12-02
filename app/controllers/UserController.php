@@ -163,46 +163,56 @@ class UserController
     // ====================================================
     public function updateProfile()
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
+        if (session_status() === PHP_SESSION_NONE) session_start();
         if (!isset($_SESSION['user_id'])) {
-            header("Location: index.php?controller=user&action=showLoginForm");
-            exit;
+            header("Location: index.php"); exit;
         }
 
         $user_id = $_SESSION['user_id'];
-
-        // Ambil data lama dari database
         $oldData = $this->userModel->getById($user_id);
 
-        // 1. Logic Update Password dengan Hashing
-        if (!empty($_POST['password'])) {
-            // Jika user mengetik password baru, kita HASH
-            $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-        } else {
-            // Jika kosong, gunakan password lama (yang sudah ter-hash di DB)
-            $password = $oldData['password'];
+        // 1. LOGIC PASSWORD
+        $password = !empty($_POST['password']) ? password_hash($_POST['password'], PASSWORD_DEFAULT) : $oldData['password'];
+
+        // 2. LOGIC UPLOAD FOTO (Sesuaikan dengan kolom user_photo)
+        $photoName = $oldData['user_photo']; // Default pakai yang lama
+
+        // Cek apakah ada file yang diupload di input bernama 'user_photo'
+        if (isset($_FILES['user_photo']) && $_FILES['user_photo']['error'] === 0) {
+            $targetDir = "uploads/"; // Pastikan folder ini ada
+            $fileType  = strtolower(pathinfo($_FILES["user_photo"]["name"], PATHINFO_EXTENSION));
+            $allowed   = ['jpg', 'jpeg', 'png', 'gif'];
+
+            if (in_array($fileType, $allowed)) {
+                // Nama file unik: IDUser_Timestamp.jpg
+                $newFileName = $user_id . '_' . time() . '.' . $fileType;
+                
+                if (move_uploaded_file($_FILES["user_photo"]["tmp_name"], $targetDir . $newFileName)) {
+                    $photoName = $newFileName; // Update nama file
+                    
+                    // Update session agar foto di navbar langsung berubah
+                    $_SESSION['profile_photo'] = 'uploads/' . $newFileName;
+                }
+            } else {
+                $_SESSION['update_error'] = "Format file tidak didukung (hanya JPG, PNG, GIF).";
+                header("Location: profile.php"); exit;
+            }
         }
 
-        // 2. Ambil data lain (Username, Address, Phone)
-        // Menggunakan ternary operator: kalau POST ada isinya pakai POST, kalau tidak pakai data lama
-        $name    = !empty($_POST['username'])     ? $_POST['username']     : $oldData['username'];
-        $address = !empty($_POST['user_address']) ? $_POST['user_address'] : $oldData['user_address']; // Sesuaikan name di form (user_address)
-        $phone   = !empty($_POST['user_phone'])   ? $_POST['user_phone']   : $oldData['user_phone'];   // Sesuaikan name di form (user_phone)
+        // 3. DATA LAIN
+        $name    = $_POST['username']     ?: $oldData['username'];
+        $address = $_POST['user_address'] ?: $oldData['user_address'];
+        $phone   = $_POST['user_phone']   ?: $oldData['user_phone'];
 
-        // 3. Eksekusi Update ke Model
-        $success = $this->userModel->update($user_id, $name, $password, $address, $phone);
+        // 4. UPDATE DATABASE (Kirim $photoName ke model)
+        $success = $this->userModel->update($user_id, $name, $password, $address, $phone, $photoName);
 
-        // Simpan status di session
         if ($success) {
-            $_SESSION['update_success'] = "Data berhasil diupdate";
+            $_SESSION['update_success'] = "Profil berhasil diupdate!";
         } else {
-            $_SESSION['update_error'] = "Gagal update";
+            $_SESSION['update_error'] = "Gagal update profil.";
         }
 
-        // Redirect
         header("Location: profile.php");
         exit;
     }

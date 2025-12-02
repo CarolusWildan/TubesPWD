@@ -31,19 +31,21 @@ if (session_status() === PHP_SESSION_NONE) {
             </ul>
 
             <div class="user-action">
-                <?php if (isset($_SESSION['role'])): ?>
-                    
-                    <div class="icon-circle">
-                        <a href="profile.php">
-                            <div class="circle"></div> 
-                            </a>
-                    </div>
+                <div class="icon-circle">
+                    <a href="profile.php">
+                        
+                        <?php if (isset($_SESSION['profile_photo']) && !empty($_SESSION['profile_photo'])) : ?>
+                            
+                            <img src="<?= $_SESSION['profile_photo'] ?>" alt="Profile" class="header-profile-img">
+                        
+                        <?php else : ?>
+                            
+                            <div class="circle"></div>
+                        
+                        <?php endif; ?>
 
-                <?php else: ?>
-
-                    <a href="login.php" class="btn-login">Login</a>
-
-                <?php endif; ?>
+                    </a>
+                </div>
             </div>
         </nav>
     </header>

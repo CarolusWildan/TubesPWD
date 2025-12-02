@@ -40,23 +40,48 @@ body {
   color: #ffcc00; /* Kuning saat hover */
 }
 
+/* * 1. Wadah Lingkaran Kuning  */
 .icon-circle {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background-color: #ffcc00; /* Kuning */
+  width: 35px;          /* Sedikit dibesarkan biar enak dilihat */
+  height: 35px;
+  border-radius: 50%;   /* Wajib bulat */
+  background-color: #ffcc00;
+  
+  /* Logika Center */
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  
+  overflow: hidden;     /* Potong apapun yang keluar dari lingkaran */
+  padding: 0;
 }
 
-.icon-circle .circle {
+/* 2. Link (<a>) di dalam lingkaran */
+/* Ini PENTING: Link harus jadi flex container juga */
+.icon-circle a {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;    /* Center Vertikal */
+  justify-content: center;/* Center Horizontal */
+  text-decoration: none;
+}
+
+/* 3. GAMBAR PROFIL */
+.header-profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;  /* Zoom & Crop otomatis biar penuh */
+  border-radius: 50%; /* Paksa gambar jadi bulat */
+  display: block;
+}
+
+/* 4. Titik Putih (Jika belum ada foto) */
+.circle {
   width: 20px;
   height: 20px;
-  border-radius: 50%;
   background-color: #fff;
-  /* Jika ingin isi icon, bisa tambahkan SVG atau font awesome */
+  border-radius: 50%;
 }
 
 .logo {
