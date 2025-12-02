@@ -134,7 +134,17 @@ $user = $userModel->getById($_SESSION['user_id']);
             <div class="user-action">
                 <div class="icon-circle">
                     <a href="profile.php">
-                        <div class="circle"></div>
+                        
+                        <?php if (isset($_SESSION['profile_photo']) && !empty($_SESSION['profile_photo'])) : ?>
+                            
+                            <img src="<?= $_SESSION['profile_photo'] ?>" alt="Profile" class="header-profile-img">
+                        
+                        <?php else : ?>
+                            
+                            <div class="circle"></div>
+                        
+                        <?php endif; ?>
+
                     </a>
                 </div>
             </div>
@@ -146,8 +156,24 @@ $user = $userModel->getById($_SESSION['user_id']);
 
             <div class="avatar-section">
                 <div class="avatar-placeholder">
+        
+                <?php 
+                    // 1. Tentukan path gambar
+                    $photoName = $user['user_photo'] ?? 'default.jpg';
+                    $photoPath = 'uploads/' . $photoName;
+
+                    // 2. Cek apakah ada datanya, filenya ada di folder, dan bukan default
+                    if (!empty($photoName) && file_exists($photoPath) && $photoName != 'default.jpg') : 
+                ?>
+                    <img src="<?= $photoPath ?>" alt="Foto Profil" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+                
+                <?php else: ?>
+                    
                     <span style="font-size: 40px;">👤</span>
-                </div>
+                
+                <?php endif; ?>
+
+            </div>
 
                 <div class="button-group">
                     <a href="editProfile.php" class="btn-action btn-edit">Edit Profil</a>

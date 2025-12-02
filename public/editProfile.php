@@ -44,19 +44,21 @@ $user = $userModel->getById($_SESSION['user_id']);
             </ul>
 
             <div class="user-action">
-                <?php if (isset($_SESSION['role'])): ?>
-                    
-                    <div class="icon-circle">
-                        <a href="profile.php">
-                            <div class="circle"></div> 
-                            </a>
-                    </div>
+                <div class="icon-circle">
+                    <a href="profile.php">
+                        
+                        <?php if (isset($_SESSION['profile_photo']) && !empty($_SESSION['profile_photo'])) : ?>
+                            
+                            <img src="<?= $_SESSION['profile_photo'] ?>" alt="Profile" class="header-profile-img">
+                        
+                        <?php else : ?>
+                            
+                            <div class="circle"></div>
+                        
+                        <?php endif; ?>
 
-                <?php else: ?>
-
-                    <a href="login.php" class="btn-login">Login</a>
-
-                <?php endif; ?>
+                    </a>
+                </div>
             </div>
         </nav>
     </header>
@@ -66,22 +68,32 @@ $user = $userModel->getById($_SESSION['user_id']);
 
             <form class="profile-form" action="index.php?controller=user&action=updateProfile" method="POST" enctype="multipart/form-data">
                 
-                <div class="avatar-section">
-                    <div class="avatar-placeholder">
-                        <span style="font-size: 40px;">👤</span>
+            <div class="avatar-section">
+                <div class="avatar-placeholder">
+                    <?php 
+                        // Cek apakah user punya foto dan filenya ada di folder uploads
+                        $photoPath = 'uploads/' . ($user['user_photo'] ?? 'default.jpg');
                         
-                        <label class="upload-btn">
-                            <input type="file" name="profile_image" accept="image/*" hidden>
-                            +
-                        </label>
-                    </div>
-                    <p style="font-size: 12px; color: #666; margin-top: 10px;">Ketuk '+' untuk ganti foto</p>
+                        // Jika file tidak ditemukan di folder uploads, tampilkan icon default atau gambar default
+                        if (!empty($user['user_photo']) && file_exists($photoPath) && $user['user_photo'] != 'default.jpg') : 
+                    ?>
+                        <img src="<?= $photoPath ?>" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+                    <?php else: ?>
+                        <span style="font-size: 40px;">👤</span>
+                    <?php endif; ?>
+
+                    <label class="upload-btn">
+                        <input type="file" name="user_photo" accept="image/*" hidden onchange="this.form.submit()">
+                        +
+                    </label>
                 </div>
+                <p style="font-size: 12px; color: #666; margin-top: 10px;">Ketuk '+' untuk ganti foto</p>
+            </div>
 
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" 
-                           value="<?= htmlspecialchars($user['username'] ?? '') ?>" required>
+                        value="<?= htmlspecialchars($user['username'] ?? '') ?>" required>
                 </div>
 
                 <div class="form-group">
