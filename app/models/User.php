@@ -94,13 +94,14 @@ class User {
     // ====================================================
     // UPDATE USER PROFILE
     // ====================================================
-    public function update($user_id, $full_name, $address, $phone) {
+    public function update($user_id, $username, $password, $address, $phone) {
         $sql = "UPDATE {$this->table}
-                SET full_name=?, user_address=?, user_phone=?
+                SET username=?, password=?, user_address=?, user_phone=?
                 WHERE user_id=?";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("sssi",$full_name, $address, $phone, $user_id);
+        $stmt->bind_param("ssssi",$username, $password
+        , $address, $phone, $user_id);
         return $stmt->execute();
     }
 

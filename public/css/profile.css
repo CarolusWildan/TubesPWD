@@ -78,16 +78,17 @@ main {
    ========================================= */
 .profile-form {
     margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .form-group {
-    margin-bottom: 20px;
-    margin-top: 20px;
+    margin-bottom: 0px;
+    margin-top: 40px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 6px;
+    margin-bottom: 0px;
     font-weight: 600;
     color: #555;
 }
@@ -126,21 +127,36 @@ main {
     display: inline-block;
 }
 
-/* Tombol Edit */
-.btn-edit {
-    background-color: #ffcc00; /* Kuning */
-    color: #333;
+/* Tombol Edit, logout */
+.btn-edit, .btn-logout {
+    display: inline-block;     /* Agar tombol bisa sejajar sblm/sesudah */
+    padding: 8px 20px;         /* Kecilkan angka ini untuk mengecilkan tombol */
+    font-size: 14px;           /* Ukuran huruf lebih kecil */
+    border-radius: 6px;        /* Sudut membulat */
+    text-decoration: none;     /* Hilangkan garis bawah link */
+    font-weight: bold;
+    cursor: pointer;
+    
+    /* PENTING: Jarak antar tombol dan jarak ke bawah */
+    margin: 0 5px 30px 5px;    /* Atas 0, Kanan 5px, BAWAH 30px, Kiri 5px */
 }
+
+.btn-edit {
+    background-color: #ffcc00; 
+    color: #333;
+    border: none;
+}
+
 .btn-edit:hover {
     background-color: #e6b800;
 }
 
-/* Tombol Logout */
 .btn-logout {
-    background-color: #8B0000; /* Merah Maroon */
+    background-color: #8B0000; 
     color: white;
     border: 1px solid #8B0000;
 }
+
 .btn-logout:hover {
     background-color: #a30000;
     box-shadow: 0 4px 8px rgba(139, 0, 0, 0.3);

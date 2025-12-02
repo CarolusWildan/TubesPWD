@@ -1,3 +1,10 @@
+<?php
+// Mulai session agar bisa baca $_SESSION
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -15,11 +22,28 @@
         <nav class="nav-menu">
             <ul>
                 <li><a href="index.php">Beranda</a></li>
-                <li><a href="#riwayat">Riwayat</a></li>
-                <li><a href="profile.php">Profil</a></li>
+
+                <?php if (isset($_SESSION['role'])): ?>
+                    <li><a href="booking.php">Booking</a></li>
+                    <li><a href="history.php">Riwayat</a></li>
+                    <li><a href="profile.php">Profil</a></li>
+                <?php endif; ?>
             </ul>
-            <div class="icon-circle">
-                <div class="circle"></div>
+
+            <div class="user-action">
+                <?php if (isset($_SESSION['role'])): ?>
+                    
+                    <div class="icon-circle">
+                        <a href="profile.php">
+                            <div class="circle"></div> 
+                            </a>
+                    </div>
+
+                <?php else: ?>
+
+                    <a href="login.php" class="btn-login">Login</a>
+
+                <?php endif; ?>
             </div>
         </nav>
     </header>

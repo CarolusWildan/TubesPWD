@@ -35,16 +35,28 @@ $user = $userModel->getById($_SESSION['user_id']);
         <nav class="nav-menu">
             <ul>
                 <li><a href="index.php">Beranda</a></li>
-                <li><a href="history.php">Riwayat</a></li>
-                <li><a href="profile.php">Profil</a></li>
+
+                <?php if (isset($_SESSION['role'])): ?>
+                    <li><a href="booking.php">Booking</a></li>
+                    <li><a href="history.php">Riwayat</a></li>
+                    <li><a href="profile.php">Profil</a></li>
+                <?php endif; ?>
             </ul>
 
             <div class="user-action">
-                <div class="icon-circle">
-                    <a href="profile.php">
-                        <div class="circle"></div> 
-                    </a>
-                </div>
+                <?php if (isset($_SESSION['role'])): ?>
+                    
+                    <div class="icon-circle">
+                        <a href="profile.php">
+                            <div class="circle"></div> 
+                            </a>
+                    </div>
+
+                <?php else: ?>
+
+                    <a href="login.php" class="btn-login">Login</a>
+
+                <?php endif; ?>
             </div>
         </nav>
     </header>
@@ -67,9 +79,14 @@ $user = $userModel->getById($_SESSION['user_id']);
                 </div>
 
                 <div class="form-group">
-                    <label for="full_name">Nama Lengkap</label>
-                    <input type="text" id="full_name" name="full_name" 
-                           value="<?= htmlspecialchars($user['full_name'] ?? '') ?>" required>
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" 
+                           value="<?= htmlspecialchars($user['username'] ?? '') ?>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Kosongkan jika tidak ingin mengganti password">
                 </div>
 
                 <div class="form-group">
@@ -106,8 +123,8 @@ $user = $userModel->getById($_SESSION['user_id']);
             <div class="h2">
                 <h2>GMS Library</h2>
             </div>
-            <div class="footer-left-desc">
-                <p>GMS Library adalah perpustakaan modern dengan koleksi buku dan sumber digital yang beragam.</p>
+            <div class="footer-left">
+                <p>GMS Library adalah perpustakaan modern dengan koleksi buku dan sumber digital yang beragam. Menyediakan ruang baca nyaman, area diskusi, serta layanan peminjaman untuk mendukung belajar dan penelitian pengunjung.</p>
             </div>
         </div>
 
@@ -120,13 +137,22 @@ $user = $userModel->getById($_SESSION['user_id']);
 
         <div class="footer-mid">
             <p><b>Lokasi</b></p>
-            <p>Yogyakarta, Indonesia</p>
+            <p>Jl. Masjid Al-Furqon No.RT.10, Cepit Baru, Condongcatur, Kec. Depok, Kabupaten Sleman, Daerah Istimewa Yogyakarta 55283</p>
             <p><b class="kontak-title">Kontak</b></p>
             <p>email@gmslibrary.com</p>
+            <p>+62 812 3456 7890</p>
         </div>
         
         <div class="footer-right">
-             <div style="width:350px; height:250px; background:#ddd; border-radius:10px;">[Map Placeholder]</div>
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.0881220390825!2d110.41220107476592!3d-7.780480992239148!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59f1d2361f71%3A0x4a2ce83adbcfd5aa!2sPerpustakaan%20Universitas%20Atma%20Jaya%20Yogyakarta!5e0!3m2!1sid!2sid!4v1764419745591!5m2!1sid!2sid"
+                width="350"
+                height="250"
+                style="border:0; border-radius:10px;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
         </div>
     </footer>
 

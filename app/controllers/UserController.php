@@ -133,7 +133,7 @@ class UserController
         session_unset();
         session_destroy();
 
-        header("Location: index.php?controller=user&action=showLoginForm");
+        header("Location: index.php");
         exit;
     }
 
@@ -174,16 +174,26 @@ class UserController
 
         $user_id = $_SESSION['user_id'];
 
-        // Ambil data lama
+        // Ambil data lama dari database
         $oldData = $this->userModel->getById($user_id);
 
-        // Gunakan data baru kalau ada, kalau tidak pakai data lama
-        $name    = $_POST['name']    ?: $oldData['full_name'];
-        $address = $_POST['address'] ?: $oldData['user_address'];
-        $phone   = $_POST['phone']   ?: $oldData['user_phone'];
+        // 1. Logic Update Password dengan Hashing
+        if (!empty($_POST['password'])) {
+            // Jika user mengetik password baru, kita HASH
+            $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        } else {
+            // Jika kosong, gunakan password lama (yang sudah ter-hash di DB)
+            $password = $oldData['password'];
+        }
 
-        // Update
-        $success = $this->userModel->update($user_id, $name, $address, $phone);
+        // 2. Ambil data lain (Username, Address, Phone)
+        // Menggunakan ternary operator: kalau POST ada isinya pakai POST, kalau tidak pakai data lama
+        $name    = !empty($_POST['username'])     ? $_POST['username']     : $oldData['username'];
+        $address = !empty($_POST['user_address']) ? $_POST['user_address'] : $oldData['user_address']; // Sesuaikan name di form (user_address)
+        $phone   = !empty($_POST['user_phone'])   ? $_POST['user_phone']   : $oldData['user_phone'];   // Sesuaikan name di form (user_phone)
+
+        // 3. Eksekusi Update ke Model
+        $success = $this->userModel->update($user_id, $name, $password, $address, $phone);
 
         // Simpan status di session
         if ($success) {
@@ -192,8 +202,8 @@ class UserController
             $_SESSION['update_error'] = "Gagal update";
         }
 
-        // Redirect ke halaman selanjutnya (misal profile.php)
-        header("Location: profile.php?controller=user&action=updateProfile");
+        // Redirect
+        header("Location: profile.php");
         exit;
     }
 
