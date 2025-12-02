@@ -39,7 +39,7 @@ class AuthController
         // 1. Cek login sebagai LIBRARIAN
         // ============================================
         $lib = $this->librarianModel->loginLib($username, $password);
-
+        
         if ($lib) {
             $_SESSION['role']               = 'librarian';
             $_SESSION['librarian_id']       = $lib['librarian_id'];

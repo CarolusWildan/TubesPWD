@@ -8,90 +8,40 @@ if (session_status() === PHP_SESSION_NONE) {
 $controller = $_GET['controller'] ?? null;
 $action     = $_GET['action']     ?? null;
 
-// Kalau yang diminta adalah AUTH (login/logout)
+// --- LOGIKA ROUTING (SAMA SEPERTI SEBELUMNYA) ---
 if ($controller === 'auth') {
     $authController = new AuthController($conn);
-
     switch ($action) {
-        case 'login':
-            // proses login (POST)
-            $authController->login();
-            break;
-
-        case 'logout':
-            $authController->logout();
-            break;
-        
-        case 'register':
-            $authController->register();
-            break;
-
-        case 'registerProcess':
-            $authController->registerProcess();
-            break;
-
-        case 'activate':
-            $authController->activate();
-            break;
+        case 'login': $authController->login(); break;
+        case 'logout': $authController->logout(); break;
+        case 'register': $authController->register(); break;
+        case 'registerProcess': $authController->registerProcess(); break;
+        case 'activate': $authController->activate(); break;
     }
-
-    // HENTIKAN SCRIPT DI SINI
     exit;
-}else if ($controller === 'book') {
+} else if ($controller === 'book') {
     $bookController = new BookController($conn);
-
     switch ($action) {
-        case 'search':
-            $bookController->search();
-            break;
-
-        // case 'detail':
-        //     $bookController->detail();
-        //     break;
+        case 'search': $bookController->search(); break;
     }
-
     exit;
-}else if ($controller === 'user') {
+} else if ($controller === 'user') {
     $userController = new UserController($conn);
-
     switch ($action) {
-        case 'profile':
-            $userController->profile();
-            break;
-
-        case 'updateProfile':
-            // proses update profil (POST)
-            $userController->updateProfile();
-            break;
-
-        case 'showLoginForm':
-            $userController->showLoginForm();
-            break;
-
-        // tambahkan action lain jika ada, register, delete, dll
+        case 'profile': $userController->profile(); break;
+        case 'updateProfile': $userController->updateProfile(); break;
+        case 'showLoginForm': $userController->showLoginForm(); break;
     }
-
     exit;
 }
 
-
-
-// if (!isset($_SESSION['role'])) {
-//     header("Location: index.php?controller=auth&action=login");
-//     exit;
-// }
+// --- LOGIKA PESAN SUKSES (POP UP) ---
+$successMessage = '';
+if (isset($_SESSION['alert_success'])) {
+    $successMessage = $_SESSION['alert_success'];
+    unset($_SESSION['alert_success']); // Hapus session agar tidak muncul lagi saat refresh
+}
 ?>
-
-<?php if (isset($_SESSION['alert_success'])) : ?>
-  <script>
-      alert("<?php echo $_SESSION['alert_success']; ?>");
-  </script>
-  <?php 
-      // PENTING: Hapus pesan setelah ditampilkan
-      // Supaya kalau di-refresh, alertnya tidak muncul lagi
-      unset($_SESSION['alert_success']); 
-  ?>
-<?php endif; ?>
 
 <!DOCTYPE html>
 <html lang="id">
@@ -100,55 +50,126 @@ if ($controller === 'auth') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GMS Library</title>
     <link rel="stylesheet" href="css/style.css" />
+
+    <style>
+        /* Latar belakang gelap transparan */
+        .popup-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Hitam transparan */
+            display: flex;
+            justify-content: center; /* Tengah Horizontal */
+            align-items: center;     /* Tengah Vertikal */
+            z-index: 9999;           /* Pastikan di paling depan */
+            transition: opacity 0.5s ease; /* Animasi menghilang */
+        }
+
+        /* Kotak Pop-up */
+        .popup-content {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transform: scale(0.8);
+            animation: popIn 0.3s forwards; /* Animasi muncul */
+            max-width: 90%;
+            width: 350px;
+        }
+
+        .popup-icon {
+            font-size: 50px;
+            color: #2ecc71; /* Warna Hijau Sukses */
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .popup-content h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .popup-content p {
+            color: #666;
+            margin: 0;
+            font-size: 14px;
+        }
+
+        /* Animasi Pop In */
+        @keyframes popIn {
+            to { transform: scale(1); }
+        }
+    </style>
 </head>
 <body>
 
-    <!-- NAVBAR -->
-<header class="navbar">
-    <h2 class="logo">GMS Library</h2>
-    
-    <div class="toggle-btn"></div>
-    
-    <nav class="nav-menu">
-        <ul>
-            <li><a href="index.php">Beranda</a></li>
-
-            <?php if (isset($_SESSION['role'])): ?>
-                <li><a href="history.php">Riwayat</a></li>
-                <li><a href="profile.php">Profil</a></li>
-            <?php endif; ?>
-        </ul>
-
-        <div class="user-action">
-            <?php if (isset($_SESSION['role'])): ?>
-                
-                <div class="icon-circle">
-                    <a href="profile.php">
-                        <div class="circle"></div> 
-                        </a>
-                </div>
-
-            <?php else: ?>
-
-                <a href="login.php" class="btn-login">Login</a>
-
-            <?php endif; ?>
+    <?php if (!empty($successMessage)) : ?>
+        <div class="popup-overlay" id="successPopup">
+            <div class="popup-content">
+                <span class="popup-icon">&#10004;</span> <h3>Berhasil!</h3>
+                <p><?= htmlspecialchars($successMessage); ?></p>
+            </div>
         </div>
-    </nav>
-</header>
 
-    <!-- HERO -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Tunggu 2 Detik (2000 ms)
+                setTimeout(function() {
+                    const popup = document.getElementById('successPopup');
+                    if (popup) {
+                        // Ubah opacity jadi 0 (efek fade out)
+                        popup.style.opacity = '0';
+                        
+                        // Hapus elemen dari HTML setelah animasi selesai (500ms kemudian)
+                        setTimeout(function() {
+                            popup.remove();
+                        }, 500);
+                    }
+                }, 2000); // <-- WAKTU TUNGGU DI SINI
+            });
+        </script>
+    <?php endif; ?>
+    <header class="navbar">
+        <h2 class="logo">GMS Library</h2>
+        
+        <div class="toggle-btn"></div>
+        
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="index.php">Beranda</a></li>
+
+                <?php if (isset($_SESSION['role'])): ?>
+                    <li><a href="history.php">Riwayat</a></li>
+                    <li><a href="profile.php">Profil</a></li>
+                <?php endif; ?>
+            </ul>
+
+            <div class="user-action">
+                <?php if (isset($_SESSION['role'])): ?>
+                    <div class="icon-circle">
+                        <a href="profile.php">
+                            <div class="circle"></div> 
+                        </a>
+                    </div>
+                <?php else: ?>
+                    <a href="login.php" class="btn-login">Login</a>
+                <?php endif; ?>
+            </div>
+        </nav>
+    </header>
+
     <section class="hero">
         <img src="./asset/background.png" alt="Bookshelf" />
     </section>
 
-    <!-- SEARCH BAR -->
     <?php if (isset($_SESSION['search_error'])) : ?>
         <script>
             alert("<?= $_SESSION['search_error']; ?>");
         </script>
         <?php unset($_SESSION['search_error']); ?>
     <?php endif; ?>
+
     <section class="search-section input">
         <div class="search-box">
             <input id="searchInput" type="text" placeholder="Cari Buku..." />
@@ -158,7 +179,6 @@ if ($controller === 'auth') {
 
     <script src="js/search.js"></script>
 
-    <!-- BUKU POPULER -->
     <section class="popular-section">
         <h2>Buku Terpopuler!</h2>
         <p>Buku-buku kategori terpopuler yang banyak dipinjam dalam kurun waktu 3 bulan terakhir</p>
@@ -168,17 +188,14 @@ if ($controller === 'auth') {
                 <img src="./asset/coverPeter.jpg" />
                 <p>PETER AND THE WOLF</p>
             </div>
-
             <div class="book-card">
                 <img src="./asset/coverWibu.jpeg" />
                 <p>THE PROPHET</p>
             </div>
-
             <div class="book-card">
                 <img src="./asset/coverPurpose.jpg" />
                 <p>PURPOSE</p>
             </div>
-
             <div class="book-card">
                 <img src="./asset/coverMonk.jpg" />
                 <p>THE MONK Of MOKHA</p>
@@ -186,13 +203,10 @@ if ($controller === 'auth') {
         </div>
     </section>
 
-    <!-- BUKU TERBAIK TAHUN INI -->
     <section class="best-section">
         <h2>Buku Terbaik Tahun Ini</h2>
-
         <div class="best-container">
-            <button class="prev-btn">&#10094;</button>
-
+            <button class="prev-btn">❮</button>
             <div class="best-card">
                 <div class="best-text">
                     <h3>MINDSET: THE NEW PSYCHOLOGY OF SUCCESS</h3>
@@ -207,12 +221,10 @@ if ($controller === 'auth') {
                     <img src="./asset/Best1.png" class="best-img" />
                 </div>
             </div>
-
-            <button class="next-btn">&#10095;</button>
+            <button class="next-btn">❯</button>
         </div>
     </section>
 
-    <!-- FOOTER -->
     <footer class="footer">
         <div class="footer-left">
             <div class="h2">
@@ -237,7 +249,6 @@ if ($controller === 'auth') {
             <p>email@gmslibrary.com</p>
             <p>+62 812 3456 7890</p>
         </div>
-
         
         <div class="footer-right">
             <iframe

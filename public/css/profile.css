@@ -1,78 +1,8 @@
-/* Reset & Umum */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* =========================================
+   STYLE KHUSUS HALAMAN PROFIL
+   ========================================= */
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to bottom, #8B0000, #D96A6A, #F2A7A7);
-    color: #333;
-}
-
-/* Header */
-.navbar {
-    background: #8B0000;
-    padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: rgb(0, 0, 0);
-}
-
-.nav-menu {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.nav-menu ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  gap: 20px;
-}
-
-.nav-menu li a {
-  color: white;
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-
-.nav-menu li a:hover {
-  color: #ffcc00; /* Kuning saat hover */
-}
-
-.icon-circle {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background-color: #ffcc00; /* Kuning */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.icon-circle .circle {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background-color: #fff;
-  /* Jika ingin isi icon, bisa tambahkan SVG atau font awesome */
-}
-
-.logo {
-    color: white;
-    margin: 0;
-    font-size: 22px;
-}
-
-/* Main Content */
+/* Layout Container */
 main {
     padding: 40px 10%;
     min-height: 60vh;
@@ -82,46 +12,70 @@ main {
     background: white;
     border-radius: 12px;
     padding: 50px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     max-width: 900px;
     margin: 0 auto;
 }
 
+/* =========================================
+   AVATAR SECTION
+   ========================================= */
 .avatar-section {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 30px; /* Center horizontal & margin bottom */
     text-align: center;
-    margin-bottom: 30px;
 }
 
 .avatar-placeholder {
-    width: 100px;
-    height: 100px;
-    background-color: #e0e0e0;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
-    margin: 0 auto 15px;
+    border: 4px solid #0a84ff; /* outline biru */
+    background: #fff; /* fallback jika kosong */
+    background-color: #e0e0e0; /* warna dasar placeholder */
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     color: #999;
     font-size: 40px;
+    overflow: hidden; /* Agar gambar tidak keluar lingkaran */
 }
 
-.edit-btn {
-    background-color: #d32f2f;
+/* Tombol Upload (Plus) di Edit Profile */
+.upload-btn {
+    width: 50px;
+    height: 50px;
+    background: #ff5c5c;
     color: white;
-    border: none;
-    padding: 8px 20px;
-    border-radius: 20px;
-    cursor: pointer;
-    /* margin-bottom: 10px; */
+    border-radius: 50%;
+    border: 4px solid white;
+    font-size: 32px;
     font-weight: bold;
-    transition: background 0.3s;
+    line-height: 40px;
+    text-align: center;
+    cursor: pointer;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.2s;
+    z-index: 10;
 }
 
-.edit-btn:hover {
-    background-color: #b71c1c;
+.upload-btn:hover {
+    background: #ff3c3c;
+    transform: scale(1.1);
 }
 
-/* Form */
+/* =========================================
+   FORM INPUTS
+   ========================================= */
 .profile-form {
     margin-top: 30px;
 }
@@ -148,107 +102,58 @@ main {
     font-size: 16px;
 }
 
+/* =========================================
+   BUTTONS (EDIT, LOGOUT, SAVE, CANCEL)
+   ========================================= */
 
-/* footer */
-.footer {
-    margin-top: 100px; 
-    background: #8B0000;
-    color: white;
-    padding: 30px; 
+/* Grouping Tombol di Profil Utama */
+.button-group {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-.h2 h2{
-    margin-top: 40px; 
-    margin-bottom: 10px;
-    font-size: xx-large;
-    text-align: left;
-    line-height: 1;
-}
-
-.p-footer{
-    padding-top: 10px;
-    margin-top: 10px;
-}
-
-.footer-mid{
-    margin:40px;
-    margin-bottom: 10px;
-    
-}
-
-/* Styling Kontak Title agar ada jarak */
-.kontak-title {
-    margin-top: 15px; 
-}
-
-.footer-mid p {
-    margin-bottom: 5px;
-}
-
-.footer-left p{
-    margin-top: 25px;
-    text-align: left;
-}
-
-/* Avatar utama */
-.avatar-section {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    margin: auto;
-}
-
-.avatar-placeholder {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    border: 4px solid #0a84ff; /* biru outline */
-    background: #fff;
-    position: relative;
-    display: flex;
-    align-items: center;
+    gap: 10px;
     justify-content: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    margin-top: 15px;
 }
 
-/* Tombol plus */
-.upload-btn {
-    width: 50px;
-    height: 50px;
-    background: #ff5c5c;
-    color: white;
-    border-radius: 50%;
-    border: 4px solid white;
-    font-size: 32px;
-    font-weight: bold;
-    line-height: 40px;
-    text-align: center;
+.btn-action {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-    position: absolute;
-    bottom: -5px;
-    right: -5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: 0.2s;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
 }
 
-.upload-btn:hover {
-    background: #ff3c3c;
-    transform: scale(1.1);
+/* Tombol Edit */
+.btn-edit {
+    background-color: #ffcc00; /* Kuning */
+    color: #333;
+}
+.btn-edit:hover {
+    background-color: #e6b800;
 }
 
-/* Wrapper tombol kiri-kanan */
+/* Tombol Logout */
+.btn-logout {
+    background-color: #8B0000; /* Merah Maroon */
+    color: white;
+    border: 1px solid #8B0000;
+}
+.btn-logout:hover {
+    background-color: #a30000;
+    box-shadow: 0 4px 8px rgba(139, 0, 0, 0.3);
+}
+
+/* Tombol di Halaman Edit Profile (Simpan & Batal) */
 .button-row {
     display: flex;
-    justify-content: space-between;  /* kiri dan kanan */
-    margin-top: 20px;
+    justify-content: flex-end; /* Ubah ke flex-end agar rapi ke kanan */
+    gap: 15px;
+    margin-top: 30px;
 }
 
-/* Tombol batal */
 .btn-cancel {
     padding: 10px 23px;
     background: #f72424;
@@ -256,16 +161,13 @@ main {
     border-radius: 20px;
     font-size: 14px;
     cursor: pointer;
-    color: #333;
+    color: #fff; /* Ubah text jadi putih agar kontras */
     transition: 0.2s;
-    margin-left: 630px;
 }
-
 .btn-cancel:hover {
     background: #bb2e2e;
 }
 
-/* Tombol simpan */
 .btn-save {
     padding: 10px 18px;
     background: #10d043;
@@ -276,37 +178,17 @@ main {
     color: white;
     transition: 0.2s;
 }
-
 .btn-save:hover {
     background: #08af0b;
 }
 
-
-
-/* Responsif */
+/* Responsif Khusus Main Profile */
 @media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    header nav a {
-        margin: 0 8px;
-    }
-
     main {
         padding: 20px 5%;
     }
-
-    .footer-content {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    .footer-nav,
-    .footer-contact,
-    .footer-map {
-        text-align: center;
+    
+    .button-row {
+        justify-content: center;
     }
 }
