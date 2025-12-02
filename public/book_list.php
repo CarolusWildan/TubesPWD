@@ -1,27 +1,168 @@
 <?php
-// Jika ditekan tombol "Kembali", kembali ke index
+// Pastikan session dimulai jika belum, untuk menangani Navbar (Login/Logout state)
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+// Asumsi variabel $books sudah dikirim dari Controller
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Hasil Pencarian Buku</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Pencarian - GMS Library</title>
     <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        .search-results-container {
+            padding: 40px 20px;
+            min-height: 60vh; /* Agar footer tidak naik ke tengah jika hasil sedikit */
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .search-header h2 {
+            color: #7b0000;
+            margin: 0;
+        }
+
+        .btn-back {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            padding: 8px 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .btn-back:hover {
+            background-color: #7b0000;
+            color: white;
+            border-color: #7b0000;
+        }
+
+        /* Grid Layout untuk Hasil Pencarian */
+        .book-grid {
+            display: flex;
+            flex-wrap: wrap; /* Ini kuncinya: agar turun ke bawah */
+            gap: 25px;
+            justify-content: center; /* Posisi di tengah */
+        }
+
+        /* Menggunakan style dasar .book-card tapi memaksa ukurannya konsisten di grid */
+        .book-grid .book-card {
+            width: 200px; /* Lebar tetap agar rapi */
+            flex: 0 0 auto; 
+            margin: 0; /* Override margin bawaan css agar gap flexbox yang bekerja */
+        }
+        
+        .empty-state {
+            text-align: center;
+            margin-top: 50px;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
 
-<h2>Hasil Pencarian</h2>
-<a href="index.php" style="display:inline-block;margin-bottom:15px;">← Kembali</a>
+    <header class="navbar">
+        <h2 class="logo">GMS Library</h2>
+        
+        <div class="toggle-btn"></div>
+        
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="index.php">Beranda</a></li>
+                <?php if (isset($_SESSION['role'])): ?>
+                    <li><a href="history.php">Riwayat</a></li>
+                    <li><a href="profile.php">Profil</a></li>
+                <?php endif; ?>
+            </ul>
 
-<div class="book-list">
-    <?php foreach($books as $b): ?>
-        <div class="book-card">
-            <img src="<?= $b['cover'] ?>" alt="cover">
-            <p><?= $b['title'] ?></p>
-            <small><?= $b['author'] ?></small>
+            <div class="user-action">
+                <?php if (isset($_SESSION['role'])): ?>
+                    <div class="icon-circle">
+                        <a href="profile.php">
+                            <div class="circle"></div> 
+                        </a>
+                    </div>
+                <?php else: ?>
+                    <a href="login.php" class="btn-login">Login</a>
+                <?php endif; ?>
+            </div>
+        </nav>
+    </header>
+
+    <section class="search-results-container">
+        
+        <div class="search-header">
+            <h2>Hasil Pencarian</h2>
+            <a href="index.php" class="btn-back">← Kembali</a>
         </div>
-    <?php endforeach; ?>
-</div>
+
+        <?php if (empty($books)): ?>
+            <div class="empty-state">
+                <h3>Buku tidak ditemukan :(</h3>
+                <p>Coba gunakan kata kunci lain atau periksa ejaan Anda.</p>
+            </div>
+        <?php else: ?>
+            <div class="book-grid">
+                <?php foreach($books as $b): ?>
+                    <div class="book-card">
+                        <img src="<?= $b['cover'] ?>" alt="<?= htmlspecialchars($b['title']) ?>">
+                        
+                        <div class="book-info">
+                            <h3><?= htmlspecialchars($b['title']) ?></h3>
+                            <p class="book-author"><?= htmlspecialchars($b['author']) ?></p>
+                            </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+
+    </section>
+
+    <footer class="footer">
+        <div class="footer-left">
+            <div class="h2">
+                <h2>GMS Library</h2>
+            </div>
+            <div class="footer-left-desc">
+                <p>GMS Library adalah perpustakaan modern dengan koleksi buku dan sumber digital yang beragam.</p>
+            </div>
+        </div>
+
+        <div class="footer-mid">
+            <p><b>Navigasi</b></p>
+            <p>Beranda</p>
+            <p>Riwayat</p>
+            <p>Profil</p>
+        </div>
+
+        <div class="footer-mid">
+            <p><b>Lokasi</b></p>
+            <p>Yogyakarta, Indonesia</p>
+            <p><b class="kontak-title">Kontak</b></p>
+            <p>email@gmslibrary.com</p>
+        </div>
+        
+        <div class="footer-right">
+             <div style="width:350px; height:250px; background:#ccc; border-radius:10px; display:flex; align-items:center; justify-content:center;">
+                [Map Area]
+             </div>
+        </div>
+    </footer>
 
 </body>
 </html>
