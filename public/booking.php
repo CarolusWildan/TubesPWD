@@ -1,3 +1,10 @@
+<?php
+// Mulai session agar bisa baca $_SESSION
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -19,6 +26,7 @@
             <li><a href="index.php">Beranda</a></li>
 
             <?php if (isset($_SESSION['role'])): ?>
+                <li><a href="booking.php">Booking</a></li>
                 <li><a href="history.php">Riwayat</a></li>
                 <li><a href="profile.php">Profil</a></li>
             <?php endif; ?>

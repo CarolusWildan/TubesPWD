@@ -140,6 +140,7 @@ if (isset($_SESSION['alert_success'])) {
                 <li><a href="index.php">Beranda</a></li>
 
                 <?php if (isset($_SESSION['role'])): ?>
+                    <li><a href="booking.php">Booking</a></li>
                     <li><a href="history.php">Riwayat</a></li>
                     <li><a href="profile.php">Profil</a></li>
                 <?php endif; ?>
