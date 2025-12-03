@@ -265,4 +265,52 @@ class UserController
             echo "<script>alert('Gagal menghapus user'); history.back();</script>";
         }
     }
+
+    // File: app/controllers/UserController.php
+
+    public function history() {
+        // 1. Cek Login
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        if (!isset($_SESSION['user_id'])) {
+            header("Location: index.php?controller=user&action=showLoginForm");
+            exit;
+        }
+
+        $user_id = $_SESSION['user_id'];
+        
+        // 2. Ambil Data Mentah dari Model
+        $historyData = $this->userModel->getBorrowHistory($user_id);
+
+        // 3. PROSES DATA (Logika Tampilan dipindah ke sini)
+        // Kita loop data mentah dan tambahkan data yang siap tampil
+        foreach ($historyData as $key => $row) {
+            
+            // --- A. LOGIKA STATUS ---
+            $statusDB = strtoupper($row['status'] ?? ''); 
+
+            if ($statusDB == 'DIPINJAM') {
+                $historyData[$key]['status_label'] = "Dipinjam";
+                $historyData[$key]['status_class'] = "dipinjam";
+            } else {
+                $historyData[$key]['status_label'] = "Dikembalikan";
+                $historyData[$key]['status_class'] = "dikembalikan";
+            }
+
+            // --- B. LOGIKA GAMBAR ---
+            $folderAsset = 'asset/'; 
+            $namaCover   = $row['cover'] ?? '';
+            $pathCover   = $folderAsset . $namaCover;
+
+            // Cek fisik file (Relatif terhadap index.php)
+            if (!empty($namaCover) && file_exists($pathCover)) {
+                $historyData[$key]['final_cover'] = $pathCover;
+            } else {
+                // Fallback ke default
+                $historyData[$key]['final_cover'] = 'asset/background.png'; 
+            }
+        }
+
+        require 'history.php';
+        exit;
+    }
 }

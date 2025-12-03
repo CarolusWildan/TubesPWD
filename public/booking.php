@@ -12,6 +12,9 @@ $bookModel = new Book($conn);
 // Pencarian
 $keyword = $_GET['q'] ?? null;
 $books   = $keyword ? $bookModel->search($keyword) : [];
+
+$userModel = new User($conn);
+$user = $userModel->getById($_SESSION['user_id']);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -32,6 +35,24 @@ $books   = $keyword ? $bookModel->search($keyword) : [];
             <li><a href="history.php">Riwayat</a></li>
             <li><a href="profile.php">Profil</a></li>
         </ul>
+
+        <div class="user-action">
+            <div class="icon-circle">
+                <a href="profile.php">
+                    
+                    <?php if (isset($_SESSION['profile_photo']) && !empty($_SESSION['profile_photo'])) : ?>
+                        
+                        <img src="<?= $_SESSION['profile_photo'] ?>" alt="Profile" class="header-profile-img">
+                    
+                    <?php else : ?>
+                        
+                        <div class="circle"></div>
+                    
+                    <?php endif; ?>
+
+                </a>
+            </div>
+        </div>
     </nav>
 </header>
 
@@ -75,17 +96,20 @@ $books   = $keyword ? $bookModel->search($keyword) : [];
 
         <div class="form-group">
             <label for="nama">Nama Peminjam</label>
-            <input type="text" name="nama" required>
+            <input type="text" id="full_name" 
+                value="<?= htmlspecialchars($user['full_name'] ?? '') ?>" readonly>
         </div>
 
         <div class="form-group">
             <label for="alamat">Alamat</label>
-            <input type="text" name="alamat" required>
+            <input type="text" id="user_address" 
+                value="<?= htmlspecialchars($user['user_address'] ?? '') ?>" readonly>
         </div>
 
         <div class="form-group">
             <label for="telepon">No Telepon</label>
-            <input type="tel" name="telepon" required>
+            <input type="text" id="user_phone" 
+                value="<?= htmlspecialchars($user['user_phone'] ?? '') ?>" readonly>
         </div>
 
         <div class="form-group">

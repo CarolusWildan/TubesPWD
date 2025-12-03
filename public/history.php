@@ -1,5 +1,5 @@
 <?php
-// Mulai session agar bisa baca $_SESSION
+// Mulai session (jika belum) agar navbar bisa baca $_SESSION
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -12,10 +12,35 @@ if (session_status() === PHP_SESSION_NONE) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Riwayat - GMS Library</title>
     <link rel="stylesheet" href="css/history.css" />
+    
+    <style>
+        /* Badge Status */
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        
+        /* Warna untuk status Dipinjam */
+        .status-badge.dipinjam {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #bbdefb;
+        }
+
+        /* Warna untuk status Dikembalikan */
+        .status-badge.dikembalikan {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- NAVBAR -->
     <header class="navbar">
         <h2 class="logo">GMS Library</h2>
         <div class="toggle-btn"></div>
@@ -25,37 +50,29 @@ if (session_status() === PHP_SESSION_NONE) {
 
                 <?php if (isset($_SESSION['role'])): ?>
                     <li><a href="booking.php">Booking</a></li>
-                    <li><a href="history.php">Riwayat</a></li>
+                    <li><a href="index.php?controller=user&action=history">Riwayat</a></li>
                     <li><a href="profile.php">Profil</a></li>
                 <?php endif; ?>
             </ul>
 
             <div class="user-action">
                 <div class="icon-circle">
-                    <a href="profile.php">
-                        
+                    <a href="profile.php" style="display:flex; width:100%; height:100%; align-items:center; justify-content:center;">
                         <?php if (isset($_SESSION['profile_photo']) && !empty($_SESSION['profile_photo'])) : ?>
-                            
-                            <img src="<?= $_SESSION['profile_photo'] ?>" alt="Profile" class="header-profile-img">
-                        
+                            <img src="<?= $_SESSION['profile_photo'] ?>" alt="Profile" class="header-profile-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
                         <?php else : ?>
-                            
                             <div class="circle"></div>
-                        
                         <?php endif; ?>
-
                     </a>
                 </div>
             </div>
         </nav>
     </header>
 
-    <!-- HERO -->
     <section class="hero">
         <img src="./asset/background.png" alt="Bookshelf" />
     </section>
 
-    <!-- CONTAINER RIWAYAT -->
     <div class="container">
         <div class="riwayat-peminjaman">
             <h1 class="title">Riwayat Peminjaman</h1>
@@ -63,154 +80,76 @@ if (session_status() === PHP_SESSION_NONE) {
 
             <div class="riwayat-list">
 
-                <!-- CARD 1 -->
-                <div class="riwayat-card">
-                    <div class="book-image">
-                        <img src="./asset/coverPeter.jpg" alt="Peter and the Wolf" />
-                    </div>
-                    <div class="book-info">
-                        <div class="status-badge dikembalikan">Dikembalikan</div>
-                        <h3>PETER AND THE WOLF</h3>
-
-                        <div class="detail">
-                            <span class="label">Pengarang</span>
-                            <span class="colon">:</span>
-                            <span class="value">Sergei Prokofiev</span>
-                        </div>
-
-                        <div class="detail">
-                            <span class="label">Tahun Terbit</span>
-                            <span class="colon">:</span>
-                            <span class="value">2024</span>
-                        </div>
-
-                        <div class="detail">
-                            <span class="label">Kategori</span>
-                            <span class="colon">:</span>
-                            <span class="value">Anak-anak</span>
-                        </div>
-
-                        <div class="detail">
-                            <span class="label2">Tanggal Peminjaman</span>
-                            <span class="colon">:</span>
-                            <span class="value">19-Oktober-2025</span>
-                        </div>
-
-                        <div class="detail">
-                            <span class="label3">Tanggal Pengembalian</span>
-                            <span class="colon">:</span>
-                            <span class="value">21-Oktober-2025</span>
-                        </div>
-
-                        <div class="detail">
-                            <span class="label">Denda</span>
-                            <span class="colon">:</span>
-                            <span class="value">-</span>
-                        </div>
-                    </div>
+            <?php if (empty($historyData)) : ?>
+                <div style="text-align: center; padding: 50px;">
+                    <h3>Belum ada riwayat peminjaman.</h3>
+                    <p>Ayo pinjam buku sekarang!</p>
                 </div>
 
-                <!-- CARD 2 -->
-                <div class="riwayat-card">
-                    <div class="book-image">
-                        <img src="./asset/coverWibu.jpeg" alt="The Prophet" />
-                    </div>
-
-                    <div class="book-info">
-                        <div class="status-badge dipinjam">Dipinjam</div>
-                        <h3>The Prophet</h3>
-
-                        <div class="detail">
-                            <span class="label">Pengarang</span>
-                            <span class="colon">:</span>
-                            <span class="value">Sergei Prokofiev</span>
+            <?php else : ?>
+                
+                <?php foreach ($historyData as $row) : ?>
+                    
+                    <div class="riwayat-card">
+                        <div class="book-image">
+                            <img src="<?= $row['final_cover'] ?>" alt="<?= htmlspecialchars($row['title']) ?>" style="object-fit:cover; width:100%; height:100%;" />
                         </div>
+                        
+                        <div class="book-info">
+                            <div class="status-badge <?= $row['status_class'] ?>"><?= $row['status_label'] ?></div>
+                            
+                            <h3><?= htmlspecialchars($row['title']) ?></h3>
 
-                        <div class="detail">
-                            <span class="label">Tahun Terbit</span>
-                            <span class="colon">:</span>
-                            <span class="value">2024</span>
-                        </div>
+                            <div class="detail">
+                                <span class="label">Pengarang</span>
+                                <span class="colon">:</span>
+                                <span class="value"><?= htmlspecialchars($row['author']) ?></span>
+                            </div>
 
-                        <div class="detail">
-                            <span class="label">Kategori</span>
-                            <span class="colon">:</span>
-                            <span class="value">Anak-anak</span>
-                        </div>
+                            <div class="detail">
+                                <span class="label">Tahun Terbit</span>
+                                <span class="colon">:</span>
+                                <span class="value"><?= htmlspecialchars($row['publish_year']) ?></span>
+                            </div>
 
-                        <div class="detail">
-                            <span class="label2">Tanggal Peminjaman</span>
-                            <span class="colon">:</span>
-                            <span class="value">19-Oktober-2025</span>
-                        </div>
+                            <div class="detail">
+                                <span class="label">Kategori</span>
+                                <span class="colon">:</span>
+                                <span class="value"><?= htmlspecialchars($row['category']) ?></span>
+                            </div>
 
-                        <div class="detail">
-                            <span class="label3">Tanggal Pengembalian</span>
-                            <span class="colon">:</span>
-                            <span class="value">21-Oktober-2025</span>
-                        </div>
+                            <div class="detail">
+                                <span class="label2">Tanggal Peminjaman</span>
+                                <span class="colon">:</span>
+                                <span class="value"><?= date('d-M-Y', strtotime($row['borrow_date'])) ?></span>
+                            </div>
 
-                        <div class="detail">
-                            <span class="label">Denda</span>
-                            <span class="colon">:</span>
-                            <span class="value">-</span>
-                        </div>
-                    </div>
-                </div>
+                            <div class="detail">
+                                <span class="label3">Tanggal Pengembalian</span>
+                                <span class="colon">:</span>
+                                <span class="value"><?= date('d-M-Y', strtotime($row['due_date'])) ?></span>
+                            </div>
 
-                <!-- CARD 3 -->
-                <div class="riwayat-card">
-                    <div class="book-image">
-                        <img src="./asset/coverMonk.jpg" alt="Monk" />
-                    </div>
-
-                    <div class="book-info">
-                        <div class="status-badge tersedia">Tersedia</div>
-                        <h3>The Monk</h3>
-
-                        <div class="detail">
-                            <span class="label">Pengarang</span>
-                            <span class="colon">:</span>
-                            <span class="value">Sergei Prokofiev</span>
-                        </div>
-
-                        <div class="detail">
-                            <span class="label">Tahun Terbit</span>
-                            <span class="colon">:</span>
-                            <span class="value">2024</span>
-                        </div>
-
-                        <div class="detail">
-                            <span class="label">Kategori</span>
-                            <span class="colon">:</span>
-                            <span class="value">Anak-anak</span>
-                        </div>
-
-                        <div class="detail">
-                            <span class="label2">Tanggal Peminjaman</span>
-                            <span class="colon">:</span>
-                            <span class="value">19-Oktober-2025</span>
-                        </div>
-
-                        <div class="detail">
-                            <span class="label3">Tanggal Pengembalian</span>
-                            <span class="colon">:</span>
-                            <span class="value">21-Oktober-2025</span>
-                        </div>
-
-                        <div class="detail">
-                            <span class="label">Denda</span>
-                            <span class="colon">:</span>
-                            <span class="value">-</span>
+                            <!-- <div class="detail">
+                                <span class="label">Denda</span>
+                                <span class="colon">:</span>
+                                <span class="value">
+                                    <?= (isset($row['fine_amount']) && $row['fine_amount'] > 0) 
+                                        ? "Rp " . number_format($row['fine_amount'], 0, ',', '.') 
+                                        : "-" ?>
+                                </span>
+                            </div> -->
                         </div>
                     </div>
-                </div>
+                
+                <?php endforeach; ?>
+            
+            <?php endif; ?>
 
-            </div>
         </div>
-    </div> <!-- END CONTAINER -->
-
-    <!-- FOOTER -->
+        </div>
+    </div> 
+    
     <footer class="footer">
         <div class="footer-left">
             <div class="h2">
@@ -230,12 +169,11 @@ if (session_status() === PHP_SESSION_NONE) {
 
         <div class="footer-mid">
             <p><b>Lokasi</b></p>
-            <p>Jl. Masjid Al-Furqon No.RT.10, Cepit Baru, Condongcatur, Kec. Depok, Kabupaten Sleman, Daerah Istimewa Yogyakarta 55283<br></p>
+            <p>Jl. Masjid Al-Furqon No.RT.10, Cepit Baru, Condongcatur, Kec. Depok, Kabupaten Sleman, Daerah Istimewa Yogyakarta 55283</p>
             <p><b class="kontak-title">Kontak</b></p>
             <p>email@gmslibrary.com</p>
             <p>+62 812 3456 7890</p>
         </div>
-
         
         <div class="footer-right">
             <iframe

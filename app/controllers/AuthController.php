@@ -47,6 +47,17 @@ class AuthController
             $_SESSION['librarian_username'] = $lib['librarian_username'] ?? $username;
             $_SESSION['librarian_role']     = $lib['librarian_role'] ?? 'STAFF';
 
+            $foto = $user['user_photo'] ?? ''; 
+
+            if (!empty($foto) && $foto != 'default.jpg') {
+                // Simpan path gambar ke session
+                // Sesuaikan 'uploads/' dengan lokasi folder upload kamu
+                $_SESSION['profile_photo'] = 'uploads/' . $foto; 
+            } else {
+                // Jika tidak punya foto, kosongkan session
+                $_SESSION['profile_photo'] = ''; 
+            }
+
             $_SESSION['alert_success'] = "Selamat Datang, Librarian " . ($lib['librarian_name'] ?? $username);
 
             // Arahkan ke admin dashboard
@@ -72,6 +83,17 @@ class AuthController
             $_SESSION['user_id']   = $user['user_id'];
             $_SESSION['username']  = $user['username'] ?? $username;
             $_SESSION['user_name'] = $user['full_name'];
+
+            $foto = $user['user_photo'] ?? ''; 
+
+            if (!empty($foto) && $foto != 'default.jpg') {
+                // Simpan path gambar ke session
+                // Sesuaikan 'uploads/' dengan lokasi folder upload kamu
+                $_SESSION['profile_photo'] = 'uploads/' . $foto; 
+            } else {
+                // Jika tidak punya foto, kosongkan session
+                $_SESSION['profile_photo'] = ''; 
+            }
 
             $_SESSION['alert_success'] = "Selamat Datang, " . ($user['username'] ?? $username);
 

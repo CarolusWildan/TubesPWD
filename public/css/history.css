@@ -138,10 +138,20 @@ body {
     text-align: left;
 }
 
+/* =================================================================
+   BAGIAN KONTEN / ISI (Ganti bagian ini saja di file CSS kamu)
+   ================================================================= */
+
+/* Container Utama agar di tengah */
 .container {
-    margin: 0 auto;         /* ⭐ PENTING: pusatkan horizontal */
-    padding: 0 20px; 
-    max-width: 800px;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.riwayat-peminjaman {
+    text-align: center;
+    width: 100%;
 }
 
 .title {
@@ -157,199 +167,151 @@ body {
     color: #333;
 }
 
-.riwayat-peminjaman {
-  padding: 40px 20px;
-  max-width: 100%;
-  text-align: center;
-  width: 100%;
-  margin: 0 auto;
-}
-
-.riwayat-peminjaman h1{
-    font-size: 30px;
-    color: #7b0000;
-    font-weight: 700;
-    margin-bottom: 5px;
-}
-
-.riwayat-peminjaman h2 {
-  color: #7B0000; /* Merah marun */
-  font-size: 24px;
-  margin-bottom: 5px;
-}
-
-.riwayat-peminjaman p {
-    font-size: 14px;
-    text-align: center;
-    font-size: 14px;
-    margin-bottom: 30px;
-    color: #333;
-}
-
-/* Container untuk scroll vertikal */
+/* --- LIST & KARTU --- */
 .riwayat-list {
-  max-height: 100vh; /* Batasi tinggi agar bisa scroll */
-  overflow-y: auto; /* Aktifkan scroll vertikal */
-  padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Jarak antar kartu */
+    padding-bottom: 20px;
 }
 
-/* Card Riwayat — Persis seperti gambar */
 .riwayat-card {
-  display: flex;
-  align-items: center;
-  background: white;
-  border: 2px #7B0000; /* Merah muda */
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 50px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  position: relative;
+    display: flex; /* KUNCI: Flexbox biar Kiri-Kanan */
+    align-items: stretch; /* Biar tinggi gambar & teks sama */
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    margin-bottom: 0; /* Margin sudah dihandle oleh gap */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    position: relative; /* Untuk badge status absolute */
+    height: 260px; /* Kunci tinggi kartu biar rapi */
+    overflow: hidden;
 }
 
 .riwayat-card:hover {
-  border-color: #ffcc00; /* Lebih gelap saat hover */
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-color: #ffcc00;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* --- GAMBAR BUKU (KIRI) --- */
+.book-image {
+    width: 180px;       /* Lebar fix */
+    min-width: 180px;   /* Biar gak mengecil */
+    height: 100%;       /* Tinggi ngikut kartu */
+    background-color: #eee;
 }
 
 .book-image img {
-  width: 200px;
-  height: auto;
-  object-fit: cover;
-  border-radius: 4px;
-  margin-right: 0;
-  min-width: 100px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* KUNCI: Gambar di-crop rapi biar gak gepeng */
+    display: block;
+    border-radius: 0;   /* Hapus radius di gambar krn sudah ada di card */
+    margin: 0;
 }
 
+/* --- INFO BUKU (KANAN) --- */
 .book-info {
-  flex: 1;
-  min-width: 0; /* Agar teks tidak melebar */
-  margin-left: 50px;
+    flex: 1;            /* Mengambil sisa ruang */
+    padding: 20px 25px;
+    text-align: left;
+    overflow-y: auto;   /* Jaga-jaga kalau teks kepanjangan */
 }
 
 .book-info h3 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: bold;
-  color: #7B0000;
-  text-align: left;
+    margin: 0 0 15px 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: #7B0000;
+    padding-right: 100px; /* Kasih ruang biar judul gak nabrak badge status */
 }
 
+/* --- DETAIL TEXT --- */
 .detail {
-    align-items: center;
     display: flex;
-  font-size: 14px;
-  color: #555;
-  margin: 5px 0;
-  display: flex;
-  gap: 5px;
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 6px;
+    align-items: baseline; /* Biar titik dua sejajar teks */
 }
 
-.detail .label {
-  font-weight: bold;
-  color: #2b2b2b;
-  min-width: 130px; /* ⭐ Pastikan semua label lebarnya sama */
-  text-align: left;
-  padding-right: 50px;
-}
-
-.detail .label2 {
-  font-weight: bold;
-  color: #2b2b2b;
-  min-width: 130px; /* ⭐ Pastikan semua label lebarnya sama */
-  text-align: left;
-  padding-right: 24px;
-}
-
+/* Label diseragamkan lebarnya */
+.detail .label, 
+.detail .label2, 
 .detail .label3 {
-  font-weight: bold;
-  color: #2b2b2b;
-  min-width: 130px; /* ⭐ Pastikan semua label lebarnya sama */
-  text-align: left;
-  padding-right: 11px;
+    font-weight: 600;
+    color: #2b2b2b;
+    width: 140px; /* Lebar label dikunci 140px */
+    min-width: 140px;
 }
 
 .detail .colon {
-  color: #555;
-  margin: 0 0 0 0; /* Jarak antara label dan titik dua */
-  font-weight: normal;
-  max-width: 10px;
+    margin-right: 10px;
+    font-weight: 600;
 }
 
 .detail .value {
-  color: #555;
-  text-align: left; /* Optional: agar nilai rata kanan */
-  flex: 1;
-  padding-left: 5px; /* Jarak antara titik dua dan nilai */
+    flex: 1;
+    color: #555;
+    font-weight: 500;
 }
 
-.status-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-
-.status-btn button {
-  background-color: #7B0000; /* Merah marun */
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  font-weight: bold;
-}
-
-.status-btn button:hover {
-  background-color: #6d0000;
-}
-
+/* --- BADGE STATUS (DIPINJAM / DIKEMBALIKAN) --- */
 .status-badge {
-    justify-content: right;
-    text-align: right;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: bold;
-  margin-top: 10px;
-  width: fit-content;
-  align-self: flex-end; /* Agar tidak memenuhi lebar card */
-
+    position: absolute; /* Melayang bebas di pojok */
+    top: 20px;
+    right: 20px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    
+    /* Reset style lama */
+    margin: 0; 
+    width: auto;
+    text-align: center;
 }
 
-/* Warna berdasarkan status */
-.status-badge.dikembalikan {
-    text-align: right;
-  margin-left: 370px;
-  background-color: #e6f4ea; /* Hijau muda */
-  color: #137333; /* Hijau gelap */
-}
-
+/* Warna Status */
 .status-badge.dipinjam {
-    text-align: right;
-  margin-left: 370px;
-  background-color: #e8f0fe; /* Biru muda */
-  color: #1967d2; /* Biru gelap */
+    background-color: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #90caf9;
+}
+
+.status-badge.dikembalikan {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
 }
 
 .status-badge.tersedia {
-    text-align: right;
-  margin-left: 370px;
-  background-color: #fce8e6; /* Merah muda */
-  color:  #7B0000; /* Merah gelap */
+    background-color: #fff3e0;
+    color: #ef6c00;
+    border: 1px solid #ffcc80;
 }
 
-/* Scrollbar Style (Opsional) */
-.riwayat-list::-webkit-scrollbar {
-    padding-left: 10px;
-  width: 8px;
-}
+/* --- RESPONSIF (HP) --- */
+@media (max-width: 768px) {
+    .riwayat-card {
+        flex-direction: column; /* Gambar jadi di atas */
+        height: auto; /* Tinggi bebas */
+    }
 
-.riwayat-list::-webkit-scrollbar-thumb {
-  background-color: #7B0000;
-  border-radius: 6px;
-}
+    .book-image {
+        width: 100%;
+        height: 250px;
+    }
 
-.riwayat-list::-webkit-scrollbar-track {
-  background: #aeaeae;
+    .book-info h3 {
+        padding-right: 0;
+        margin-top: 10px;
+    }
+
+    .status-badge {
+        position: static; /* Balik jadi elemen biasa */
+        display: inline-block;
+        margin-bottom: 10px;
+    }
 }
