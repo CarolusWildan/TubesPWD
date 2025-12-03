@@ -55,6 +55,7 @@ class BorrowController
     // ==========================
     // API: create via JSON/POST body (kalau butuh API)
     // ==========================
+    // OPSIONAL: API create via JSON
     public function create(): void
     {
         header('Content-Type: application/json; charset=utf-8');
@@ -71,33 +72,35 @@ class BorrowController
             http_response_code(400);
             echo json_encode([
                 'status'  => 'error',
-                'message' => 'All fields (user_id, book_id, librarian_id, borrow_date, due_date) are required',
+                'message' => 'All fields are required'
             ]);
             return;
         }
 
-        $success = $this->borrowModel->create(
-            (int) $user_id,
-            (int) $book_id,
-            (int) $librarian_id,
+        $ok = $this->borrowModel->create(
+            (int)$user_id,
+            (int)$book_id,
+            (int)$librarian_id,
             $borrow_date,
             $due_date
         );
 
-        if (!$success) {
+        if (!$ok) {
             http_response_code(400);
             echo json_encode([
                 'status'  => 'error',
-                'message' => 'Failed to create borrow (book may be already borrowed or not found)',
+                'message' => 'Failed to create borrow'
             ]);
             return;
         }
 
         echo json_encode([
             'status'  => 'success',
-            'message' => 'Borrow created and book status updated to DIPINJAM',
+            'message' => 'Borrow created'
         ]);
     }
+
+
 
     // ==========================
     // FORM HTML: dari booking.php
@@ -107,13 +110,6 @@ class BorrowController
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header("Location: booking.php");
-            exit;
-        }
-
-        // pastikan user login
-        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'user') {
-            $_SESSION['error'] = "Silakan login terlebih dahulu.";
-            header("Location: index.php?controller=auth&action=login");
             exit;
         }
 

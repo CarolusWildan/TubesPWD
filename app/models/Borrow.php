@@ -8,12 +8,9 @@ class Borrow {
         $this->conn = $conn;
     }
 
-    // ==================================
     // CREATE BORROW (PINJAM BUKU)
-    // ==================================
     public function create($user_id, $book_id, $librarian_id, $borrow_date, $due_date) {
-
-        // 1. Cek status buku
+        // 1. Cek status buku di tabel book
         $sqlCheck = "SELECT status FROM book WHERE book_id = ?";
         $stmtCheck = $this->conn->prepare($sqlCheck);
         $stmtCheck->bind_param("i", $book_id);
@@ -28,31 +25,30 @@ class Borrow {
             return false; // buku sudah dipinjam
         }
 
-        // 2. Insert borrow
-        $sql = "INSERT INTO {$this->table} (user_id, book_id, librarian_id, borrow_date, due_date, status)
-                VALUES (?, ?, ?, ?, ?, 'DIPINJAM')";
+        // 2. Insert ke tabel borrow TANPA kolom status
+        $sql = "INSERT INTO {$this->table} (user_id, book_id, librarian_id, borrow_date, due_date)
+                VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("iiiss", $user_id, $book_id, $librarian_id, $borrow_date, $due_date);
 
-        if ($stmt->execute()) {
-            // 3. Update status buku
-            $sqlUpdate = "UPDATE book SET status = 'DIPINJAM' WHERE book_id = ?";
-            $stmtUpdate = $this->conn->prepare($sqlUpdate);
-            $stmtUpdate->bind_param("i", $book_id);
-            $stmtUpdate->execute();
-
-            return true;
+        if (!$stmt->execute()) {
+            // sementara buat debug
+            error_log("Borrow insert error: " . $this->conn->error);
+            return false;
         }
 
-        return false;
+        // 3. Update status buku di tabel book
+        $sqlUpdate = "UPDATE book SET status = 'DIPINJAM' WHERE book_id = ?";
+        $stmtUpdate = $this->conn->prepare($sqlUpdate);
+        $stmtUpdate->bind_param("i", $book_id);
+        $stmtUpdate->execute();
+
+        return true;
     }
 
-    // ==================================
-    // READ ALL BORROW DATA
-    // ==================================
     public function getAll() {
         $sql = "SELECT b.borrow_id, u.user_name, bk.title, l.librarian_name, 
-                    b.borrow_date, b.due_date
+                       b.borrow_date, b.due_date
                 FROM {$this->table} b
                 JOIN user u ON b.user_id = u.user_id
                 JOIN book bk ON b.book_id = bk.book_id
@@ -68,9 +64,6 @@ class Borrow {
         return $data;
     }
 
-    // ==================================
-    // GET BY ID
-    // ==================================
     public function getById($borrow_id) {
         $sql = "SELECT * FROM {$this->table} WHERE borrow_id = ?";
         $stmt = $this->conn->prepare($sql);
@@ -80,9 +73,6 @@ class Borrow {
         return $stmt->get_result()->fetch_assoc();
     }
 
-    // ==================================
-    // DELETE
-    // ==================================
     public function delete($borrow_id) {
         $sql = "DELETE FROM {$this->table} WHERE borrow_id = ?";
         $stmt = $this->conn->prepare($sql);
@@ -90,9 +80,6 @@ class Borrow {
         return $stmt->execute();
     }
 
-    // ==================================
-    // GET BORROW BY USER
-    // ==================================
     public function getByUser($user_id) {
         $sql = "SELECT * FROM {$this->table} WHERE user_id = ? ORDER BY borrow_id DESC";
         $stmt = $this->conn->prepare($sql);
@@ -109,4 +96,3 @@ class Borrow {
         return $data;
     }
 }
-?>

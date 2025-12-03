@@ -44,10 +44,20 @@ $books   = $keyword ? $bookModel->search($keyword) : [];
 
     <!-- Pesan -->
     <?php if (!empty($_SESSION['success'])): ?>
-        <p style="color:green"><?= $_SESSION['success']; unset($_SESSION['success']); ?></p>
+        <script>
+            alert("<?= addslashes($_SESSION['success']); ?>");
+            // setelah OK di popup, redirect ke beranda
+            window.location.href = "index.php";
+        </script>
+        <?php unset($_SESSION['success']); ?>
     <?php endif; ?>
+
     <?php if (!empty($_SESSION['error'])): ?>
-        <p style="color:red"><?= $_SESSION['error']; unset($_SESSION['error']); ?></p>
+        <script>
+            alert("<?= addslashes($_SESSION['error']); ?>");
+            // kalau error cukup stay di halaman booking
+        </script>
+        <?php unset($_SESSION['error']); ?>
     <?php endif; ?>
 
     <!-- FORM SEARCH (GET) -->
