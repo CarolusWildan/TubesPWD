@@ -32,6 +32,13 @@ if ($controller === 'auth') {
         case 'updateProfile': $userController->updateProfile(); break;
         case 'showLoginForm': $userController->showLoginForm(); break;
     }
+}else if ($controller === 'borrow') {
+    $borrowController = new BorrowController($conn);
+    switch ($action) {
+        case 'createFromForm':
+            $borrowController->createFromForm();
+            break;
+    }
     exit;
 }
 
@@ -147,6 +154,11 @@ if (isset($_SESSION['alert_success'])) {
 
                 <?php else: ?>
                     <!-- User SUDAH login -->
+                    <?php if ($_SESSION['role'] === 'librarian'): ?>
+                        <!-- Link Admin Dashboard -->
+                        <li><a href="indexAdmin.php" style="color: #e74c3c; font-weight: bold;">📊 Admin</a></li>
+                    <?php endif; ?>
+                    
                     <li><a href="booking.php">Booking</a></li>
                     <li><a href="history.php">Riwayat</a></li>
                     <li><a href="profile.php">Profil</a></li>

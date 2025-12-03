@@ -60,7 +60,8 @@ class AuthController
 
             $_SESSION['alert_success'] = "Selamat Datang, Librarian " . ($lib['librarian_name'] ?? $username);
 
-            header("Location: index.php");
+            // Arahkan ke admin dashboard
+            header("Location: indexAdmin.php");
             exit;
         }
 

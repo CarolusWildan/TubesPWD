@@ -1,6 +1,5 @@
 <?php
 
-
 class BorrowController
 {
     private mysqli $conn;
@@ -8,19 +7,21 @@ class BorrowController
 
     public function __construct(mysqli $conn)
     {
-        $this->conn = $conn;
+        $this->conn        = $conn;
         $this->borrowModel = new Borrow($this->conn);
 
-        // Supaya response selalu JSON
-        header('Content-Type: application/json; charset=utf-8');
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
     }
 
-    // ==================================
-    // GET: semua data peminjaman
-    // route: ?controller=borrow&action=index
-    // ==================================
+    // ==========================
+    // API: GET semua peminjaman
+    // ==========================
     public function index(): void
     {
+        header('Content-Type: application/json; charset=utf-8');
+
         $data = $this->borrowModel->getAll();
 
         echo json_encode([
@@ -29,12 +30,11 @@ class BorrowController
         ]);
     }
 
-    // ==================================
-    // GET: detail peminjaman by id
-    // route: ?controller=borrow&action=show&id=1
-    // ==================================
+    // API: detail peminjaman by id
     public function show(int $borrow_id): void
     {
+        header('Content-Type: application/json; charset=utf-8');
+
         $borrow = $this->borrowModel->getById($borrow_id);
 
         if (!$borrow) {
@@ -52,60 +52,106 @@ class BorrowController
         ]);
     }
 
-    // ==================================
-    // POST: create peminjaman
-    // route: ?controller=borrow&action=create
-    // body: user_id, book_id, librarian_id, borrow_date, due_date
-    // ==================================
+    // ==========================
+    // API: create via JSON/POST body (kalau butuh API)
+    // ==========================
+    // OPSIONAL: API create via JSON
     public function create(): void
     {
-        
+        header('Content-Type: application/json; charset=utf-8');
+
+        $input = json_decode(file_get_contents('php://input'), true) ?? [];
+
         $user_id      = $input['user_id']      ?? null;
         $book_id      = $input['book_id']      ?? null;
         $librarian_id = $input['librarian_id'] ?? null;
         $borrow_date  = $input['borrow_date']  ?? null;
         $due_date     = $input['due_date']     ?? null;
 
-        // validasi simpel
         if (!$user_id || !$book_id || !$librarian_id || !$borrow_date || !$due_date) {
             http_response_code(400);
             echo json_encode([
                 'status'  => 'error',
-                'message' => 'All fields (user_id, book_id, librarian_id, borrow_date, due_date) are required',
+                'message' => 'All fields are required'
             ]);
             return;
         }
 
-        $success = $this->borrowModel->create(
-            (int) $user_id,
-            (int) $book_id,
-            (int) $librarian_id,
+        $ok = $this->borrowModel->create(
+            (int)$user_id,
+            (int)$book_id,
+            (int)$librarian_id,
             $borrow_date,
             $due_date
         );
 
-        if (!$success) {
+        if (!$ok) {
             http_response_code(400);
             echo json_encode([
                 'status'  => 'error',
-                'message' => 'Failed to create borrow (book may be already borrowed or not found)',
+                'message' => 'Failed to create borrow'
             ]);
             return;
         }
 
         echo json_encode([
             'status'  => 'success',
-            'message' => 'Borrow created and book status updated to DIPINJAM',
+            'message' => 'Borrow created'
         ]);
     }
 
-    // ==================================
-    // DELETE: hapus peminjaman
-    // route: ?controller=borrow&action=delete&id=1
-    // (optional) kamu bisa tambahkan update status buku di model kalau mau
-    // ==================================
+
+
+    // ==========================
+    // FORM HTML: dari booking.php
+    // route: index.php?controller=borrow&action=createFromForm
+    // ==========================
+    public function createFromForm(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: booking.php");
+            exit;
+        }
+
+        // ⚠ user_id HARUS sesuai yang kamu set di AuthController::login()
+        $user_id = (int) ($_SESSION['user_id'] ?? 0);
+
+        $book_id      = (int) ($_POST['book_id'] ?? 0);
+        $librarian_id = (int) ($_POST['librarian_id'] ?? 1);
+        $borrow_date  = $_POST['tgl_pinjam']   ?? null;
+        $due_date     = $_POST['tgl_kembali']  ?? null;
+
+        if (!$user_id || !$book_id || !$borrow_date || !$due_date) {
+            $_SESSION['error'] = "Data peminjaman tidak lengkap.";
+            header("Location: booking.php");
+            exit;
+        }
+
+        $ok = $this->borrowModel->create(
+            $user_id,
+            $book_id,
+            $librarian_id,
+            $borrow_date,
+            $due_date
+        );
+
+        if ($ok) {
+            $_SESSION['success'] = "Peminjaman buku berhasil.";
+        } else {
+            $_SESSION['error'] = "Gagal meminjam buku. Buku mungkin sudah dipinjam atau terjadi error di database.";
+        }
+
+        header("Location: booking.php");
+        exit;
+    }
+
+    // ==========================
+    // API: delete
+    // ==========================
     public function delete(int $borrow_id): void
     {
+        header('Content-Type: application/json; charset=utf-8');
+
         $success = $this->borrowModel->delete($borrow_id);
 
         if (!$success) {
@@ -123,15 +169,14 @@ class BorrowController
         ]);
     }
 
-    // ==================================
-    // GET: semua peminjaman milik 1 user
-    // route: ?controller=borrow&action=byUser&user_id=3
-    // ==================================
+    // API: semua borrow milik 1 user
     public function getByUser(int $user_id): void
     {
+        header('Content-Type: application/json; charset=utf-8');
+
         $data = $this->borrowModel->getByUser($user_id);
 
-        if(!$data){
+        if (!$data) {
             http_response_code(404);
             echo json_encode([
                 'status'  => 'error',
@@ -139,6 +184,7 @@ class BorrowController
             ]);
             return;
         }
+
         echo json_encode([
             'status' => 'success',
             'data'   => $data,
@@ -147,6 +193,8 @@ class BorrowController
 
     public function getById(int $borrow_id): void
     {
+        header('Content-Type: application/json; charset=utf-8');
+
         $data = $this->borrowModel->getById($borrow_id);
 
         if (!$data) {
