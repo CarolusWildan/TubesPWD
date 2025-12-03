@@ -141,5 +141,33 @@ class User {
 
         return $stmt->execute();
     }
+
+    public function getBorrowHistory($user_id) {
+        // Pastikan query ini sama persis dengan yang berhasil di phpMyAdmin
+        $sql = "SELECT 
+                    b.borrow_id, 
+                    b.borrow_date, 
+                    b.due_date,
+                    bk.title, 
+                    bk.author, 
+                    bk.publish_year,  -- Sesuai DB
+                    bk.category, 
+                    bk.cover,         -- Sesuai DB
+                    bk.status
+                FROM borrow b
+                JOIN book bk ON b.book_id = bk.book_id
+                WHERE b.user_id = ?
+                ORDER BY b.borrow_date DESC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $user_id);
+        
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            return $result->fetch_all(MYSQLI_ASSOC);
+        } else {
+            return []; // Return array kosong jika gagal
+        }
+    }
 }
 ?>

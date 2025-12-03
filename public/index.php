@@ -31,6 +31,7 @@ if ($controller === 'auth') {
         case 'profile': $userController->profile(); break;
         case 'updateProfile': $userController->updateProfile(); break;
         case 'showLoginForm': $userController->showLoginForm(); break;
+        case 'history': $userController->history(); break;
     }
 }else if ($controller === 'borrow') {
     $borrowController = new BorrowController($conn);
@@ -160,7 +161,7 @@ if (isset($_SESSION['alert_success'])) {
                     <?php endif; ?>
                     
                     <li><a href="booking.php">Booking</a></li>
-                    <li><a href="history.php">Riwayat</a></li>
+                    <li><a href="index.php?controller=user&action=history">Riwayat</a></li>
                     <li><a href="profile.php">Profil</a></li>
                 <?php endif; ?>
             </ul>
