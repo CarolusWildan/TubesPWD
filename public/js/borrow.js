@@ -1,32 +1,45 @@
-// Fungsi untuk menambahkan leading zero
-function padZero(num) {
-    return String(num).padStart(2, '0');
+// Fungsi helper: format Date -> "YYYY-MM-DD"
+function formatDateToInput(date) {
+    const year  = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // bulan mulai dari 0
+    const day   = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
 
-// Set tanggal otomatis saat halaman dimuat
 document.addEventListener('DOMContentLoaded', function () {
-    // Cek apakah elemen tanggal ada (hindari error di halaman lain)
-    if (!document.getElementById('pinjam-hari')) return;
+    const tglPinjam  = document.getElementById('tgl_pinjam');
+    const tglKembali = document.getElementById('tgl_kembali');
+
+    // Kalau form ini tidak ada di halaman, langsung keluar biar nggak error
+    if (!tglPinjam || !tglKembali) return;
 
     const today = new Date();
     const returnDate = new Date(today);
-    returnDate.setDate(today.getDate() + 7);
+    returnDate.setDate(today.getDate() + 7); // H+7
 
-    // Ambil komponen tanggal
-    const pinjamHari = padZero(today.getDate());
-    const pinjamBulan = padZero(today.getMonth() + 1);
-    const pinjamTahun = today.getFullYear();
+    // Set nilai default
+    const todayStr      = formatDateToInput(today);
+    const returnDateStr = formatDateToInput(returnDate);
 
-    const kembaliHari = padZero(returnDate.getDate());
-    const kembaliBulan = padZero(returnDate.getMonth() + 1);
-    const kembaliTahun = returnDate.getFullYear();
+    // Tanggal peminjaman = hari ini, readonly
+    tglPinjam.value   = todayStr;
+    tglPinjam.readOnly = true; // readonly, tapi tetap ikut terkirim ke POST
 
-    // Isi input
-    document.getElementById('pinjam-hari').value = pinjamHari;
-    document.getElementById('pinjam-bulan').value = pinjamBulan;
-    document.getElementById('pinjam-tahun').value = pinjamTahun;
+    // Tanggal pengembalian:
+    tglKembali.value = returnDateStr;
+    tglKembali.min   = todayStr;      // tidak boleh sebelum hari ini
+    tglKembali.max   = returnDateStr; // tidak boleh lewat 7 hari
 
-    document.getElementById('kembali-hari').value = kembaliHari;
-    document.getElementById('kembali-bulan').value = kembaliBulan;
-    document.getElementById('kembali-tahun').value = kembaliTahun;
+    // Validasi kalau user mengubah tanggal pengembalian
+    tglKembali.addEventListener('change', function () {
+        if (this.value > this.max) {
+            alert('Tanggal pengembalian maksimal 7 hari dari hari ini.');
+            this.value = this.max;
+        }
+
+        if (this.value < this.min) {
+            alert('Tanggal pengembalian tidak boleh sebelum tanggal peminjaman.');
+            this.value = this.min;
+        }
+    });
 });
