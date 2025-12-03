@@ -32,6 +32,13 @@ if ($controller === 'auth') {
         case 'updateProfile': $userController->updateProfile(); break;
         case 'showLoginForm': $userController->showLoginForm(); break;
     }
+}else if ($controller === 'borrow') {
+    $borrowController = new BorrowController($conn);
+    switch ($action) {
+        case 'createFromForm':
+            $borrowController->createFromForm();
+            break;
+    }
     exit;
 }
 
