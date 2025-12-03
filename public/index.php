@@ -139,10 +139,14 @@ if (isset($_SESSION['alert_success'])) {
         <nav class="nav-menu">
             <ul>
                 <li><a href="index.php">Beranda</a></li>
-                <li><a href="login.php">Login</a></li>
-                <li><a href="register.php">Register</a></li>
 
-                <?php if (isset($_SESSION['role'])): ?>
+                <?php if (!isset($_SESSION['role'])): ?>
+                    <!-- User BELUM login -->
+                    <li><a href="login.php">Login</a></li>
+                    <li><a href="register.php">Register</a></li>
+
+                <?php else: ?>
+                    <!-- User SUDAH login -->
                     <li><a href="booking.php">Booking</a></li>
                     <li><a href="history.php">Riwayat</a></li>
                     <li><a href="profile.php">Profil</a></li>
