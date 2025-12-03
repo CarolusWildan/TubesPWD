@@ -91,5 +91,34 @@ class Book {
         $stmt->bind_param("i", $book_id);
         return $stmt->execute();
     }
+
+        // AMBIL SEMUA BUKU YANG TERSEDIA (bisa + search)
+    public function getAvailable(?string $keyword = null): array {
+        if ($keyword) {
+            $sql = "SELECT * FROM {$this->table}
+                    WHERE status = 'TERSEDIA'
+                    AND (title LIKE ? OR author LIKE ? OR category LIKE ?)
+                    ORDER BY book_id DESC";
+            $key = "%$keyword%";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("sss", $key, $key, $key);
+            $stmt->execute();
+            $result = $stmt->get_result();
+        } else {
+            $sql = "SELECT * FROM {$this->table}
+                    WHERE status = 'TERSEDIA'
+                    ORDER BY book_id DESC";
+            $result = $this->conn->query($sql);
+        }
+
+        $books = [];
+        while ($row = $result->fetch_assoc()) {
+            $books[] = $row;
+        }
+
+        return $books;
+    }
+
 }
 ?>
