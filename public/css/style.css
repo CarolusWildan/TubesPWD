@@ -328,37 +328,6 @@ body {
     color: #7b0000;
 }
 
-/* ANIMASI MASUK */
-.fade-in {
-    animation: fadeIn 0.8s ease-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-/* PANEL KIRI MASUK DARI KIRI */
-.slide-left {
-    animation: slideLeft 0.9s ease-out;
-}
-
-@keyframes slideLeft {
-    from { opacity: 0; transform: translateX(-40px); }
-    to   { opacity: 1; transform: translateX(0); }
-}
-
-/* PANEL KANAN MASUK DARI KANAN */
-.slide-right {
-    animation: slideRight 0.9s ease-out;
-}
-
-@keyframes slideRight {
-    from { opacity: 0; transform: translateX(40px); }
-    to   { opacity: 1; transform: translateX(0); }
-}
-
-
 /* ROLE SWITCH BUTTON */
 .role-switch {
     display: flex;
