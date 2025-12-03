@@ -4,7 +4,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -16,51 +15,52 @@ if (session_status() === PHP_SESSION_NONE) {
 <body>
 
     <!-- NAVBAR -->
-<header class="navbar">
-    <h2 class="logo">GMS Library</h2>
-    
-    <div class="toggle-btn"></div>
-    
-    <nav class="nav-menu">
-        <ul>
-            <li><a href="index.php">Beranda</a></li>
+    <header class="navbar">
+        <h2 class="logo">GMS Library</h2>
+        
+        <div class="toggle-btn"></div>
+        
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="index.php">Beranda</a></li>
 
-            <?php if (isset($_SESSION['role'])): ?>
-                <li><a href="booking.php">Booking</a></li>
-                <li><a href="history.php">Riwayat</a></li>
-                <li><a href="profile.php">Profil</a></li>
-            <?php endif; ?>
-        </ul>
+                <?php if (!isset($_SESSION['role'])): ?>
+                    <!-- BELUM login: tampilkan Login & Register -->
+                    <li><a href="login.php">Login</a></li>
+                    <li><a href="register.php">Register</a></li>
+                <?php else: ?>
+                    <!-- SUDAH login: tampilkan menu user -->
+                    <li><a href="booking.php">Booking</a></li>
+                    <li><a href="history.php">Riwayat</a></li>
+                    <li><a href="profile.php">Profil</a></li>
+                <?php endif; ?>
+            </ul>
 
-        <div class="user-action">
-                <div class="icon-circle">
-                    <a href="profile.php">
-                        
-                        <?php if (isset($_SESSION['profile_photo']) && !empty($_SESSION['profile_photo'])) : ?>
-                            
-                            <img src="<?= $_SESSION['profile_photo'] ?>" alt="Profile" class="header-profile-img">
-                        
-                        <?php else : ?>
-                            
-                            <div class="circle"></div>
-                        
-                        <?php endif; ?>
-
-                    </a>
-                </div>
+            <div class="user-action">
+                <?php if (isset($_SESSION['role'])): ?>
+                    <div class="icon-circle">
+                        <a href="profile.php">
+                            <?php if (isset($_SESSION['profile_photo']) && !empty($_SESSION['profile_photo'])) : ?>
+                                <img src="<?= $_SESSION['profile_photo'] ?>" alt="Profile" class="header-profile-img">
+                            <?php else : ?>
+                                <div class="circle"></div>
+                            <?php endif; ?>
+                        </a>
+                    </div>
+                <?php endif; ?>
             </div>
-    </nav>
-</header>
+        </nav>
+    </header>
 
     <!-- HERO -->
     <section class="hero">
         <img src="./asset/background.png" alt="Bookshelf" />
     </section>
 
-    
     <div class="form-container">
         <h2 class="form-title">Form Peminjaman Buku</h2>
 
+        <!-- ganti action="#" ke file proses kalau sudah ada, misal: action="proses_booking.php" -->
         <form action="#" method="POST">
             <!-- Nama Peminjam -->
             <div class="form-group">
@@ -79,13 +79,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <label for="telepon">No Telepon</label>
                 <input type="tel" id="telepon" name="telepon" required placeholder="Contoh: 081234567890">
             </div>
-            <script src="js/borrow.js"></script>        
-            <div class="form-group">
-                <label for="tgl_pinjam">Tanggal Peminjaman</label>
-                <input type="date" id="tgl_pinjam" name="tgl_pinjam" class="date-readonly">
-            </div>
-            
-            <script src="js/borrow.js"></script>
+
             <!-- Tanggal Peminjaman -->
             <div class="form-group">
                 <label for="tgl_pinjam">Tanggal Peminjaman</label>
@@ -97,6 +91,21 @@ if (session_status() === PHP_SESSION_NONE) {
                 <label for="tgl_kembali">Tanggal Pengembalian</label>
                 <input type="date" id="tgl_kembali" name="tgl_kembali" class="date-readonly">
             </div>
+            
+            <!-- search -->
+            <?php if (isset($_SESSION['search_error'])) : ?>
+                <script>
+                    alert("<?= $_SESSION['search_error']; ?>");
+                </script>
+                <?php unset($_SESSION['search_error']); ?>
+            <?php endif; ?>
+
+            <section class="search-section input">
+                <div class="search-box">
+                    <input id="searchInput" type="text" placeholder="Cari Buku..." />
+                    <button id="searchBtn" type="button">Cari</button>
+                </div>
+            </section>
 
             <!-- Divider -->
             <div class="divider"></div>
@@ -105,7 +114,9 @@ if (session_status() === PHP_SESSION_NONE) {
             <div class="book-section">
                 <h3>Pinjam Buku</h3>
                 <div class="book-card">
-                    <div class="book-image"><img src="./asset/coverPeter.jpg" alt="Cover Buku Peter and the Wolf" width="80" height="120"></div>
+                    <div class="book-image">
+                        <img src="./asset/coverPeter.jpg" alt="Cover Buku Peter and the Wolf" width="80" height="120">
+                    </div>
                     <div class="book-title">PETER AND THE WOLF</div>
                     <div class="book-author">Sergel Prokofiev</div>
                     <div class="book-year">2024</div>
@@ -117,8 +128,6 @@ if (session_status() === PHP_SESSION_NONE) {
             <button type="submit" class="submit-btn">Pinjam</button>
         </form>
     </div>           
-    
-
 
     <!-- FOOTER -->
     <footer class="footer">
@@ -146,7 +155,6 @@ if (session_status() === PHP_SESSION_NONE) {
             <p>+62 812 3456 7890</p>
         </div>
 
-        
         <div class="footer-right">
             <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.0881220390825!2d110.41220107476592!3d-7.780480992239148!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59f1d2361f71%3A0x4a2ce83adbcfd5aa!2sPerpustakaan%20Universitas%20Atma%20Jaya%20Yogyakarta!5e0!3m2!1sid!2sid!4v1764419745591!5m2!1sid!2sid"
@@ -160,5 +168,7 @@ if (session_status() === PHP_SESSION_NONE) {
         </div>
     </footer>
 
+    <!-- JS otomatis isi tanggal pinjam & kembali -->
+    <script src="js/borrow.js"></script>
 </body>
 </html>
