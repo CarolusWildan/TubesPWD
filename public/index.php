@@ -130,6 +130,7 @@ if (isset($_SESSION['alert_success'])) {
             });
         </script>
     <?php endif; ?>
+
     <header class="navbar">
         <h2 class="logo">GMS Library</h2>
         
@@ -138,6 +139,8 @@ if (isset($_SESSION['alert_success'])) {
         <nav class="nav-menu">
             <ul>
                 <li><a href="index.php">Beranda</a></li>
+                <li><a href="login.php">Login</a></li>
+                <li><a href="register.php">Register</a></li>
 
                 <?php if (isset($_SESSION['role'])): ?>
                     <li><a href="booking.php">Booking</a></li>

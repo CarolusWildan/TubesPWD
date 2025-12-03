@@ -120,7 +120,7 @@ if (session_status() === PHP_SESSION_NONE) {
             <div class="book-grid">
                 <?php foreach($books as $b): ?>
                     <div class="book-card">
-                        <img src="<?= $b['cover'] ?>" alt="<?= htmlspecialchars($b['title']) ?>">
+                        <img src="asset/<?= htmlspecialchars($b['cover']) ?>" alt="<?= htmlspecialchars($b['title']) ?>">
                         
                         <div class="book-info">
                             <h3><?= htmlspecialchars($b['title']) ?></h3>
