@@ -73,14 +73,32 @@ class BookController
         $author       = $_POST['author']       ?? null;
         $publish_year = $_POST['publish_year'] ?? null;
         $category     = $_POST['category']     ?? null;
-        $cover        = $_POST['cover']        ?? null;
+        $coverFile    = $_FILES['cover']       ?? null;
 
-        if (!$title || !$author || !$publish_year || !$category || !$cover) {
+        if (!$title || !$author || !$publish_year || !$category || !$coverFile) {
             http_response_code(400);
-            echo json_encode([
-                "status"  => "error",
-                "message" => "All fields (title, author, publish_year, category, cover) are required"
-            ]);
+            echo json_encode(["status" => "error", "message" => "Semua field wajib diisi."]);
+            return;
+        }
+
+        if ($coverFile['error'] !== UPLOAD_ERR_OK) {
+            http_response_code(400);
+            echo json_encode(["status" => "error", "message" => "Gagal upload file. Error code: " . $coverFile['error']]);
+            return;
+        }
+
+        $uploadDir = 'uploads/'; 
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true); 
+        }
+
+        $fileExtension = pathinfo($coverFile['name'], PATHINFO_EXTENSION);
+        $newFileName   = 'cover_' . time() . '.' . $fileExtension;
+        $destination   = $uploadDir . $newFileName;
+
+        if (!move_uploaded_file($coverFile['tmp_name'], $destination)) {
+            http_response_code(500);
+            echo json_encode(["status" => "error", "message" => "Gagal memindahkan file ke folder tujuan."]);
             return;
         }
 
@@ -89,13 +107,24 @@ class BookController
             $author,
             $publish_year,
             $category,
-            $cover
+            $newFileName 
         );
 
-        echo json_encode([
-            "status"  => $created ? "success" : "error",
-            "message" => $created ? "Book created" : "Failed to create book"
-        ]);
+        if ($created) {
+            echo json_encode([
+                "status"  => "success",
+                "message" => "Buku berhasil ditambahkan"
+                
+            ]);
+        } else {
+            unlink($destination); 
+            
+            echo json_encode([
+                "status"  => "error",
+                "message" => "Gagal menyimpan data ke database"
+            ]);
+        }
+        header("Location: manajemen_buku.php"); exit;
     }
 
     // ================================
@@ -103,7 +132,10 @@ class BookController
     // ================================
     public function update(int $book_id): void
     {
+        // 1. Ambil data buku lama dari database (PENTING)
         $book = $this->bookModel->getById($book_id);
+        
+        // Jika buku tidak ditemukan
         if (!$book) {
             http_response_code(404);
             echo json_encode([
@@ -113,25 +145,88 @@ class BookController
             return;
         }
 
+        // 2. Ambil data inputan Teks (Jika kosong, pakai data lama)
         $title        = $_POST['title']        ?? $book['title'];
         $author       = $_POST['author']       ?? $book['author'];
         $publish_year = $_POST['publish_year'] ?? $book['publish_year'];
         $category     = $_POST['category']     ?? $book['category'];
-        $cover        = $_POST['cover']        ?? $book['cover'];
 
+        // 3. LOGIKA UPLOAD FILE (COVER)
+        // Default: Gunakan cover lama
+        $coverName = $book['cover']; 
+        
+        // Cek apakah ada file baru yang diupload tanpa error
+        if (isset($_FILES['cover']) && $_FILES['cover']['error'] === UPLOAD_ERR_OK) {
+            
+            $uploadDir = 'uploads/'; // Pastikan folder ini sama dengan saat create
+            $fileTmp   = $_FILES['cover']['tmp_name'];
+            $fileName  = $_FILES['cover']['name'];
+            
+            // Validasi Ekstensi
+            $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+            $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+            if (!in_array($fileExt, $allowedTypes)) {
+                http_response_code(400);
+                echo json_encode([
+                    "status" => "error", 
+                    "message" => "Format file tidak valid. Gunakan JPG, PNG, atau GIF."
+                ]);
+                return;
+            }
+
+            // Generate nama unik baru
+            $newCoverName = uniqid() . '-' . basename($fileName);
+            $targetPath   = $uploadDir . $newCoverName;
+
+            // Pindahkan file baru
+            if (move_uploaded_file($fileTmp, $targetPath)) {
+                // BERHASIL UPLOAD:
+                
+                // (Opsional) Hapus file cover lama jika ada, biar server tidak penuh
+                $oldCoverPath = $uploadDir . $book['cover'];
+                if (!empty($book['cover']) && file_exists($oldCoverPath)) {
+                    unlink($oldCoverPath); 
+                }
+
+                // Update variabel coverName dengan yang baru
+                $coverName = $newCoverName; 
+                
+            } else {
+                // Gagal upload
+                http_response_code(500);
+                echo json_encode([
+                    "status" => "error", 
+                    "message" => "Gagal mengupload gambar ke server."
+                ]);
+                return;
+            }
+        }
+        // Jika tidak ada file baru, $coverName tetap berisi $book['cover'] (lama)
+
+        // 4. Update ke Database
         $updated = $this->bookModel->update(
             $book_id,
             $title,
             $author,
             $publish_year,
             $category,
-            $cover
+            $coverName // Mengirim nama file (entah baru atau lama)
         );
 
-        echo json_encode([
-            "status"  => $updated ? "success" : "error",
-            "message" => $updated ? "Book updated" : "Failed to update"
-        ]);
+        // 5. Response JSON
+        if ($updated) {
+            echo json_encode([
+                "status"  => "success",
+                "message" => "Data buku berhasil diperbarui"
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode([
+                "status"  => "error",
+                "message" => "Gagal memperbarui database"
+            ]);
+        }
     }
 
     // ================================
