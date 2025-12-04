@@ -42,6 +42,15 @@ if ($controller === 'auth') {
             echo json_encode(["status" => "error", "message" => "ID missing"]);
         }
         break;
+
+        case 'delete':
+        $id = $_GET['id'] ?? null; // Ambil ID dari URL
+        if ($id) {
+            $bookController->delete($id);
+        } else {
+            echo json_encode(["status" => "error", "message" => "ID missing"]);
+        }
+        break;
     }
     exit;
 } else if ($controller === 'user') {

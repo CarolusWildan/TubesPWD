@@ -36,7 +36,7 @@ class BookController
         if (!$book) {
             http_response_code(404);
             echo json_encode([
-                "status"  => "error",
+                "status" => "error",
                 "message" => "Book not found"
             ]);
             return;
@@ -44,11 +44,12 @@ class BookController
 
         echo json_encode([
             "status" => "success",
-            "data"   => $book
+            "data" => $book
         ]);
     }
 
-    public function search() {
+    public function search()
+    {
         $keyword = $_GET['keyword'] ?? '';
 
         $books = $this->bookModel->search($keyword);
@@ -69,11 +70,14 @@ class BookController
     // ================================
     public function create(): void
     {
-        $title        = $_POST['title']        ?? null;
-        $author       = $_POST['author']       ?? null;
+        // 1. Set Header agar JS tahu ini JSON
+        header('Content-Type: application/json');
+
+        $title = $_POST['title'] ?? null;
+        $author = $_POST['author'] ?? null;
         $publish_year = $_POST['publish_year'] ?? null;
-        $category     = $_POST['category']     ?? null;
-        $coverFile    = $_FILES['cover']       ?? null;
+        $category = $_POST['category'] ?? null;
+        $coverFile = $_FILES['cover'] ?? null;
 
         if (!$title || !$author || !$publish_year || !$category || !$coverFile) {
             http_response_code(400);
@@ -87,14 +91,14 @@ class BookController
             return;
         }
 
-        $uploadDir = 'uploads/'; 
+        $uploadDir = 'uploads/';
         if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true); 
+            mkdir($uploadDir, 0755, true);
         }
 
         $fileExtension = pathinfo($coverFile['name'], PATHINFO_EXTENSION);
-        $newFileName   = 'cover_' . time() . '.' . $fileExtension;
-        $destination   = $uploadDir . $newFileName;
+        $newFileName = 'cover_' . time() . '.' . $fileExtension;
+        $destination = $uploadDir . $newFileName;
 
         if (!move_uploaded_file($coverFile['tmp_name'], $destination)) {
             http_response_code(500);
@@ -107,24 +111,28 @@ class BookController
             $author,
             $publish_year,
             $category,
-            $newFileName 
+            $newFileName
         );
 
         if ($created) {
             echo json_encode([
-                "status"  => "success",
+                "status" => "success",
                 "message" => "Buku berhasil ditambahkan"
-                
+
             ]);
         } else {
-            unlink($destination); 
-            
+            // Hapus file jika db gagal insert
+            if (file_exists($destination)) {
+                unlink($destination);
+            }
+
+            http_response_code(500);
             echo json_encode([
-                "status"  => "error",
+                "status" => "error",
                 "message" => "Gagal menyimpan data ke database"
             ]);
         }
-        header("Location: manajemen_buku.php"); exit;
+        exit;
     }
 
     // ================================
@@ -134,34 +142,34 @@ class BookController
     {
         // 1. Ambil data buku lama dari database (PENTING)
         $book = $this->bookModel->getById($book_id);
-        
+
         // Jika buku tidak ditemukan
         if (!$book) {
             http_response_code(404);
             echo json_encode([
-                "status"  => "error",
+                "status" => "error",
                 "message" => "Book not found"
             ]);
             return;
         }
 
         // 2. Ambil data inputan Teks (Jika kosong, pakai data lama)
-        $title        = $_POST['title']        ?? $book['title'];
-        $author       = $_POST['author']       ?? $book['author'];
+        $title = $_POST['title'] ?? $book['title'];
+        $author = $_POST['author'] ?? $book['author'];
         $publish_year = $_POST['publish_year'] ?? $book['publish_year'];
-        $category     = $_POST['category']     ?? $book['category'];
+        $category = $_POST['category'] ?? $book['category'];
 
         // 3. LOGIKA UPLOAD FILE (COVER)
         // Default: Gunakan cover lama
-        $coverName = $book['cover']; 
-        
+        $coverName = $book['cover'];
+
         // Cek apakah ada file baru yang diupload tanpa error
         if (isset($_FILES['cover']) && $_FILES['cover']['error'] === UPLOAD_ERR_OK) {
-            
+
             $uploadDir = 'uploads/'; // Pastikan folder ini sama dengan saat create
-            $fileTmp   = $_FILES['cover']['tmp_name'];
-            $fileName  = $_FILES['cover']['name'];
-            
+            $fileTmp = $_FILES['cover']['tmp_name'];
+            $fileName = $_FILES['cover']['name'];
+
             // Validasi Ekstensi
             $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
             $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
@@ -169,7 +177,7 @@ class BookController
             if (!in_array($fileExt, $allowedTypes)) {
                 http_response_code(400);
                 echo json_encode([
-                    "status" => "error", 
+                    "status" => "error",
                     "message" => "Format file tidak valid. Gunakan JPG, PNG, atau GIF."
                 ]);
                 return;
@@ -177,26 +185,26 @@ class BookController
 
             // Generate nama unik baru
             $newCoverName = uniqid() . '-' . basename($fileName);
-            $targetPath   = $uploadDir . $newCoverName;
+            $targetPath = $uploadDir . $newCoverName;
 
             // Pindahkan file baru
             if (move_uploaded_file($fileTmp, $targetPath)) {
                 // BERHASIL UPLOAD:
-                
+
                 // (Opsional) Hapus file cover lama jika ada, biar server tidak penuh
                 $oldCoverPath = $uploadDir . $book['cover'];
                 if (!empty($book['cover']) && file_exists($oldCoverPath)) {
-                    unlink($oldCoverPath); 
+                    unlink($oldCoverPath);
                 }
 
                 // Update variabel coverName dengan yang baru
-                $coverName = $newCoverName; 
-                
+                $coverName = $newCoverName;
+
             } else {
                 // Gagal upload
                 http_response_code(500);
                 echo json_encode([
-                    "status" => "error", 
+                    "status" => "error",
                     "message" => "Gagal mengupload gambar ke server."
                 ]);
                 return;
@@ -217,13 +225,13 @@ class BookController
         // 5. Response JSON
         if ($updated) {
             echo json_encode([
-                "status"  => "success",
+                "status" => "success",
                 "message" => "Data buku berhasil diperbarui"
             ]);
         } else {
             http_response_code(500);
             echo json_encode([
-                "status"  => "error",
+                "status" => "error",
                 "message" => "Gagal memperbarui database"
             ]);
         }
@@ -233,12 +241,61 @@ class BookController
     // GET /books/delete?id=1
     // ================================
     public function delete(int $book_id): void
-    {
+{
+    // 1. Set Header JSON
+    header('Content-Type: application/json');
+
+    try {
+        // Coba langsung hapus
+        // Jika ID buku ada di tabel borrow (baik sedang dipinjam atau riwayat),
+        // Baris ini akan Error dan langsung loncat ke blok 'catch'
         $deleted = $this->bookModel->delete($book_id);
 
+        if ($deleted) {
+            // Hapus gambar fisik jika perlu (opsional)
+            $cek = $this->bookModel->getById($book_id);
+            if ($cek && !empty($cek['cover'])) {
+                $path = 'uploads/' . $cek['cover'];
+                if (file_exists($path)) unlink($path);
+            }
+
+            echo json_encode([
+                "status"  => "success",
+                "message" => "Buku berhasil dihapus permanen."
+            ]);
+        } else {
+            // Gagal tanpa exception (jarang terjadi di delete)
+            throw new Exception("Gagal menghapus data.");
+        }
+
+    } catch (mysqli_sql_exception $e) {
+        // 2. TANGKAP ERROR FOREIGN KEY (Code 1451)
+        // Error ini muncul karena buku ada di tabel 'borrow'
+        if ($e->getCode() == 1451) {
+            http_response_code(409); // Konflik data
+            echo json_encode([
+                "status"  => "error",
+                "message" => "Gagal: Buku tidak bisa dihapus karena memiliki riwayat peminjaman (tercatat di database)."
+            ]);
+        } else {
+            // Error database lainnya
+            http_response_code(500);
+            echo json_encode([
+                "status"  => "error",
+                "message" => "Database Error: " . $e->getMessage()
+            ]);
+        }
+    } catch (Exception $e) {
+        // Error umum
+        http_response_code(500);
         echo json_encode([
-            "status"  => $deleted ? "success" : "error",
-            "message" => $deleted ? "Book deleted" : "Failed to delete"
+            "status"  => "error",
+            "message" => $e->getMessage()
         ]);
     }
+
+    // 3. PENTING: HAPUS/JANGAN GUNAKAN header("Location: ...")
+    // Biarkan JavaScript yang menangani reload jika sukses.
+    exit; 
+}
 }

@@ -355,7 +355,7 @@ if (isset($_SESSION['alert_error'])) {
                                         data-category="<?= htmlspecialchars($book['category']) ?>"
                                     >Edit</button>
                                     
-                                    <form action="index.php?controller=book&action=delete&id=<?= $book['book_id'] ?>" 
+                                    <form action="indexAdmin.php?controller=book&action=delete&id=<?= $book['book_id'] ?>" 
                                         method="POST" style="display:inline;" 
                                         onsubmit="return confirm('Yakin ingin menghapus buku ini?');">
                                         <button type="submit" class="action-btn delete">Hapus</button>
