@@ -13,10 +13,38 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'librarian' && $_SESSION
     header("Location: index.php"); 
     exit;
 }
+// JANGAN ADA KODE PHP DI DALAM BLOK IF PROTEKSI DI ATAS, KECUALI REDIRECT!
+
+// ==========================================================
+// PEMBERSIHAN / DEKLARASI DATA (SEHARUSNYA DI SINI)
+// ==========================================================
+
+// --- DATA DUMMY DASHBOARD (AKAN DIGANTI DENGAN DATA DATABASE) ---
+$stats = [
+    'total_books' => 1250,
+    'total_users' => 450,
+    'active_borrows' => 85,
+    'overdue_books' => 12,
+    'total_borrows_all_time' => 780,
+    'total_returns_all_time' => 695,
+];
+
+$latestBorrows = [
+    ['user' => 'Rina S.', 'book' => 'The Purpose Driven Life', 'date' => '2025-11-28'],
+    ['user' => 'Joko P.', 'book' => 'Mindset', 'date' => '2025-11-27'],
+    ['user' => 'Ayu L.', 'book' => 'The Monk of Mokha', 'date' => '2025-11-26'],
+];
 
 
+// --- LOGIKA PESAN SUKSES (POP UP) ---
+$successMessage = '';
+if (isset($_SESSION['alert_success'])) {
+    $successMessage = $_SESSION['alert_success'];
+    unset($_SESSION['alert_success']);
+}
 
 ?>
+<!DOCTYPE html>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -24,7 +52,23 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'librarian' && $_SESSION
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard | GMS Library</title>
     <link rel="stylesheet" href="css/style.css" /> 
-    <link rel="stylesheet" href="css/admin.css" /> <style>
+    <link rel="stylesheet" href="css/admin.css" /> 
+    <style>
+        /* Tambahkan di sini */
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Pastikan navbar fixed */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 96%;
+            z-index: 1000;
+            /* ... properti lain ... */
+        }
+
         /* CSS Khusus Dashboard Admin */
         .admin-dashboard {
             padding: 20px;
@@ -65,34 +109,55 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'librarian' && $_SESSION
             margin: 0;
         }
 
-        .recent-activity {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .recent-activity h2 {
-            border-bottom: 1px solid #ecf0f1;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            color: #34495e;
-        }
-
-        .recent-activity ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .recent-activity li {
-            padding: 10px 0;
-            border-bottom: 1px dashed #ecf0f1;
+                /* Latar belakang gelap transparan */
+        .popup-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Hitam transparan */
             display: flex;
-            justify-content: space-between;
+            justify-content: center; /* Tengah Horizontal */
+            align-items: center;     /* Tengah Vertikal */
+            z-index: 9999;           /* Pastikan di paling depan */
+            transition: opacity 0.5s ease; /* Animasi menghilang */
         }
-        .recent-activity li:last-child {
-            border-bottom: none;
+
+        /* Kotak Pop-up */
+        .popup-content {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transform: scale(0.8);
+            animation: popIn 0.3s forwards; /* Animasi muncul */
+            max-width: 90%;
+            width: 350px;
         }
+
+        .popup-icon {
+            font-size: 50px;
+            color: #2ecc71; /* Warna Hijau Sukses */
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .popup-content h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .popup-content p {
+            color: #666;
+            margin: 0;
+            font-size: 14px;
+        }
+
+        /* Animasi Pop In */
+        @keyframes popIn {
+            to { transform: scale(1); }
+        }
+
     </style>
     </head>
 <body>
@@ -104,63 +169,135 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'librarian' && $_SESSION
                 <p><?= htmlspecialchars($successMessage); ?></p>
             </div>
         </div>
-        <script> /* Logika JS fade out diletakkan di sini */ </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Tunggu 2 Detik (2000 ms)
+                setTimeout(function() {
+                    const popup = document.getElementById('successPopup');
+                    if (popup) {
+                        // Ubah opacity jadi 0 (efek fade out)
+                        popup.style.opacity = '0';
+                        
+                        // Hapus elemen dari HTML setelah animasi selesai (500ms kemudian)
+                        setTimeout(function() {
+                            popup.remove();
+                        }, 500);
+                    }
+                }, 1000); // <-- WAKTU TUNGGU DI SINI
+            });
+        </script>
     <?php endif; ?>
 
     <header class="navbar">
         <h2 class="logo">Admin GMS Library</h2>
         
-        <nav class="nav-menu">
-            <ul>
-                <li><a href="index.php?controller=admin&action=dashboard">Dashboard</a></li>
-                <li><a href="index.php?controller=book_management&action=index">Manajemen Buku</a></li>
-                <li><a href="index.php?controller=user_management&action=index">Manajemen User</a></li>
-                <li><a href="index.php?controller=borrow_management&action=index">Peminjaman</a></li>
-                <li><a href="index.php?controller=fine_management&action=index">Denda</a></li>
-                <li><a href="../index.php?controller=auth&action=logout">Logout (<?= $_SESSION['username'] ?? 'Admin' ?>)</a></li>
-            </ul>
-        </nav>
+        <div class="nav-right-wrapper" style="display: flex; align-items: center; gap: 20px;">
+            
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="indexAdmin.php">Beranda</a></li>
+                    <li><a href="manajemen_buku.php?controller=book_management&action=manajemen_buku">Manajemen Buku</a></li>
+                    <li><a href="index.php?controller=user_management&action=index">Manajemen User</a></li>
+                    <li><a href="index.php?controller=borrow_management&action=index">Pengembalian</a></li>
+                    <li><a href="index.php?controller=borrow_management&action=index">profile</a></li>
+                </ul>
+            </nav>
+
+            <div class="user-action">
+                <div class="icon-circle">
+                    <a href="profile.php">
+                        <?php if (isset($_SESSION['profile_photo']) && !empty($_SESSION['profile_photo'])) : ?>
+                            <img src="<?= $_SESSION['profile_photo'] ?>" alt="Profile" class="header-profile-img">
+                        <?php else : ?>
+                            <div class="circle"></div>
+                        <?php endif; ?>
+                    </a>
+                </div>
+            </div>
+        </div>
     </header>
+        
+    <section class="hero">
+        <img src="./asset/background.png" alt="Bookshelf" />
+    </section>
 
     <section class="admin-dashboard">
         <h1>Dashboard Administrasi 👋</h1>
         <p>Ringkasan cepat status operasional perpustakaan Anda saat ini.</p>
 
         <div class="stats-grid">
-            <div class="stat-card">
+            <div class="stat-card yellow">
                 <h3>Total Buku</h3>
-                <p><?= $stats['total_books'] ?></p>
+                <p><?= $stats['total_books'] ?? 0 ?></p>
             </div>
-            <div class="stat-card">
+            <div class="stat-card blue">
                 <h3>Total User</h3>
-                <p><?= $stats['total_users'] ?></p>
+                <p><?= $stats['total_users'] ?? 0 ?></p>
             </div>
-            <div class="stat-card">
+            
+            <div class="stat-card yellow">
+                <h3>Total Peminjaman</h3>
+                <p><?= $stats['total_borrows_all_time'] ?? 0 ?></p>
+            </div>
+            
+            <div class="stat-card blue">
+                <h3>Total Dikembalikan</h3>
+                <p><?= $stats['total_returns_all_time'] ?? 0 ?></p>
+            </div>
+
+            <div class="stat-card blue">
                 <h3>Peminjaman Aktif</h3>
-                <p><?= $stats['active_borrows'] ?></p>
+                <p><?= $stats['active_borrows'] ?? 0 ?></p>
             </div>
             <div class="stat-card red">
                 <h3>Buku Terlambat</h3>
-                <p><?= $stats['overdue_books'] ?></p>
+                <p><?= $stats['overdue_books'] ?? 0 ?></p>
             </div>
         </div>
         
-        <div class="recent-activity">
-            <h2>Aktivitas Peminjaman Terbaru</h2>
-            <ul>
-                <?php foreach ($latestBorrows as $borrow) : ?>
-                    <li>
-                        <span>**<?= htmlspecialchars($borrow['user']) ?>** meminjam: *<?= htmlspecialchars($borrow['book']) ?>*</span>
-                        <small><?= htmlspecialchars($borrow['date']) ?></small>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
+        
         
     </section>
 
-    <footer class="footer" style="margin-top: 50px; text-align: center; background: #34495e; color: white;">
-        <p>&copy; <?= date('Y') ?> GMS Library Admin Panel. All rights reserved.</p>
+    <footer class="footer">
+        <div class="footer-left">
+            <div class="h2">
+                <h2>GMS Library</h2>
+            </div>
+            <div class="footer-left">
+                <p>GMS Library adalah perpustakaan modern dengan koleksi buku dan sumber digital yang beragam. Menyediakan ruang baca nyaman, area diskusi, serta layanan peminjaman untuk mendukung belajar dan penelitian pengunjung.</p>
+            </div>
+        </div>
+
+        <div class="footer-mid">
+            <p><b>Navigasi</b></p>
+            <p>Beranda</p>
+            <p>Manajemen Buku</p>
+            <p>Manajemen User</p>
+            <p>Pengembalian</p>
+            <p>profile</p>     
+        </div>
+
+        <div class="footer-mid">
+            <p><b>Lokasi</b></p>
+            <p>Jl. Masjid Al-Furqon No.RT.10, Cepit Baru, Condongcatur, Kec. Depok, Kabupaten Sleman, Daerah Istimewa Yogyakarta 55283</p>
+            <p><b class="kontak-title">Kontak</b></p>
+            <p>email@gmslibrary.com</p>
+            <p>+62 812 3456 7890</p>
+        </div>
+        
+        <div class="footer-right">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.0881220390825!2d110.41220107476592!3d-7.780480992239148!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59f1d2361f71%3A0x4a2ce83adbcfd5aa!2sPerpustakaan%20Universitas%20Atma%20Jaya%20Yogyakarta!5e0!3m2!1sid!2sid!4v1764419745591!5m2!1sid!2sid"
+                width="350"
+                height="250"
+                style="border:0; border-radius:10px;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
     </footer>
 
 </body>
