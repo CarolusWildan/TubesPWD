@@ -76,7 +76,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <div class="container">
         <div class="riwayat-peminjaman">
             <h1 class="title">Riwayat Peminjaman</h1>
-            <p class="subtitle">Anda dapat melihat semua riwayat peminjaman buku Anda</p>
+            <p class="subtitle">Anda dapat melihat semua riwayat buku Anda</p>
 
             <div class="riwayat-list">
 

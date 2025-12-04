@@ -46,11 +46,8 @@ class ReturnBook {
         $stmtBook->bind_param("i", $book_id);
         $stmtBook->execute();
 
-        // 5. Update status borrow jadi DIKEMBALIKAN
-        $sqlUpdBorrow = "UPDATE borrow SET status = 'DIKEMBALIKAN' WHERE borrow_id = ?";
-        $stmtUpdBorrow = $this->conn->prepare($sqlUpdBorrow);
-        $stmtUpdBorrow->bind_param("i", $borrow_id);
-        $stmtUpdBorrow->execute();
+        // 5. Jangan hapus data borrow karena ada relasi di tabel return_book
+        //    Biarkan data borrow tetap ada agar integritas referensial tetap terjaga.
 
         return true;
     }

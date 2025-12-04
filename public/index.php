@@ -151,7 +151,6 @@ if (isset($_SESSION['alert_success'])) {
                 <?php if (!isset($_SESSION['role'])): ?>
                     <!-- User BELUM login -->
                     <li><a href="login.php">Login</a></li>
-                    <li><a href="register.php">Register</a></li>
 
                 <?php else: ?>
                     <!-- User SUDAH login -->
