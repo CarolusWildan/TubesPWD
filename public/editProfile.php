@@ -38,7 +38,7 @@ $user = $userModel->getById($_SESSION['user_id']);
 
                 <?php if (isset($_SESSION['role'])): ?>
                     <li><a href="booking.php">Booking</a></li>
-                    <li><a href="history.php">Riwayat</a></li>
+                    <li><a href="index.php?controller=user&action=history">Riwayat</a></li>
                     <li><a href="profile.php">Profil</a></li>
                 <?php endif; ?>
             </ul>
