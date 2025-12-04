@@ -14,48 +14,95 @@ body {
 
 /* --- NAVBAR KHUSUS ADMIN --- */
 .navbar {
-    background-color: #34495e; /* Warna gelap khas Admin */
-    color: white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
+    background: #8B0000;
+    padding: 15px 30px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 10px 40px;
-}
-
-.navbar .logo {
-    margin: 0;
-    font-size: 24px;
-    font-weight: 600;
-}
-
-.navbar .nav-menu ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-}
-
-.navbar .nav-menu li {
-    margin-left: 20px;
-}
-
-.navbar .nav-menu a {
+    align-items: center;    
     color: white;
-    text-decoration: none;
-    padding: 8px 12px;
-    border-radius: 6px;
-    transition: background-color 0.3s ease;
-    font-size: 14px;
-    font-weight: 500;
+
+    /* === KODE KRITIS YANG HILANG/PERLU DITAMBAH === */
+    position: fixed; /* Menjadikan navbar tetap di viewport */
+    top: 0;          /* Memastikan navbar menempel di tepi atas */
+    width: 100%;     /* Memastikan navbar membentang penuh */
+    z-index: 1000;   /* Memastikan navbar berada di atas konten lain */
+    /* ============================================== */
 }
 
-.navbar .nav-menu a:hover {
-    background-color: #2c3e50; /* Sedikit lebih gelap saat hover */
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-menu ul {
+  list-style: none;
+  /* margin: 0; */
+  /* padding: 0; */
+  display: flex;
+  gap: 20px;
+}
+
+.nav-menu li a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500px;
+  transition: color 0.2s;
+}
+
+.nav-menu li a:hover {
+  color: #ffcc00; /* Kuning saat hover */
+}
+
+/* 1. Wadah Lingkaran Kuning */
+.icon-circle {
+  width: 35px;          /* Sedikit dibesarkan biar enak dilihat */
+  height: 35px;
+  border-radius: 50%;   /* Wajib bulat */
+  background-color: #ffcc00;
+  
+  /* Logika Center */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  overflow: hidden;     /* Potong apapun yang keluar dari lingkaran */
+  padding: 0;
+}
+
+/* 2. Link (<a>) di dalam lingkaran */
+/* Ini PENTING: Link harus jadi flex container juga */
+.icon-circle a {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;    /* Center Vertikal */
+  justify-content: center;/* Center Horizontal */
+  text-decoration: none;
+}
+
+/* 3. GAMBAR PROFIL */
+.header-profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;  /* Zoom & Crop otomatis biar penuh */
+  border-radius: 50%; /* Paksa gambar jadi bulat */
+  display: block;
+}
+
+/* 4. Titik Putih (Jika belum ada foto) */
+.circle {
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+}
+
+.hero img {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
 }
 
 /* --- KONTEN UTAMA DASHBOARD --- */
@@ -180,8 +227,37 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    text-align: center;
-    font-size: 14px;
+}
+
+.best-text{
+    margin-left: 20px;
+}
+
+.h2 h2{
+    margin-bottom: 10px;
+    margin-top: 50px;
+    font-size: xx-large;
+    text-align: left;
+}
+
+.p-footer{
+    padding-top: 10px;
+    margin-top: 10px;
+}
+
+.footer-mid{
+    margin:40px;
+    
+}
+
+.kontak-title {
+    display: block;
+    margin-top: 15px;
+}
+
+.footer-left p{
+    margin-top: 25px;
+    text-align: left;
 }
 
 /* --- RESPONSIVENESS (Opsional, tapi penting) --- */
