@@ -169,7 +169,24 @@ if (isset($_SESSION['alert_success'])) {
                 <p><?= htmlspecialchars($successMessage); ?></p>
             </div>
         </div>
-        <script> /* Logika JS fade out diletakkan di sini */ </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Tunggu 2 Detik (2000 ms)
+                setTimeout(function() {
+                    const popup = document.getElementById('successPopup');
+                    if (popup) {
+                        // Ubah opacity jadi 0 (efek fade out)
+                        popup.style.opacity = '0';
+                        
+                        // Hapus elemen dari HTML setelah animasi selesai (500ms kemudian)
+                        setTimeout(function() {
+                            popup.remove();
+                        }, 500);
+                    }
+                }, 1000); // <-- WAKTU TUNGGU DI SINI
+            });
+        </script>
     <?php endif; ?>
 
     <header class="navbar">
@@ -179,8 +196,8 @@ if (isset($_SESSION['alert_success'])) {
             
             <nav class="nav-menu">
                 <ul>
-                    <li><a href="index.php?controller=admin&action=dashboard">Beranda</a></li>
-                    <li><a href="index.php?controller=book_management&action=index">Manajemen Buku</a></li>
+                    <li><a href="indexAdmin.php">Beranda</a></li>
+                    <li><a href="manajemen_buku.php?controller=book_management&action=manajemen_buku">Manajemen Buku</a></li>
                     <li><a href="index.php?controller=user_management&action=index">Manajemen User</a></li>
                     <li><a href="index.php?controller=borrow_management&action=index">Pengembalian</a></li>
                     <li><a href="index.php?controller=borrow_management&action=index">profile</a></li>
