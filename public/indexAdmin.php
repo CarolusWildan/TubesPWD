@@ -15,6 +15,53 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'librarian' && $_SESSION
 }
 // JANGAN ADA KODE PHP DI DALAM BLOK IF PROTEKSI DI ATAS, KECUALI REDIRECT!
 
+$controller = $_GET['controller'] ?? null;
+$action     = $_GET['action']     ?? null;
+
+// --- LOGIKA ROUTING (SAMA SEPERTI SEBELUMNYA) ---
+if ($controller === 'auth') {
+    $authController = new AuthController($conn);
+    switch ($action) {
+        case 'login': $authController->login(); break;
+        case 'logout': $authController->logout(); break;
+        case 'register': $authController->register(); break;
+        case 'registerProcess': $authController->registerProcess(); break;
+        case 'activate': $authController->activate(); break;
+    }
+    exit;
+} else if ($controller === 'book') {
+    $bookController = new BookController($conn);
+    switch ($action) {
+        case 'search': $bookController->search(); break;
+        case 'create': $bookController->create(); break;
+        case 'update':
+        $id = $_GET['id'] ?? null; // Ambil ID dari URL
+        if ($id) {
+            $bookController->update($id);
+        } else {
+            echo json_encode(["status" => "error", "message" => "ID missing"]);
+        }
+        break;
+    }
+    exit;
+} else if ($controller === 'user') {
+    $userController = new UserController($conn);
+    switch ($action) {
+        case 'profile': $userController->profile(); break;
+        case 'updateProfile': $userController->updateProfile(); break;
+        case 'showLoginForm': $userController->showLoginForm(); break;
+        case 'history': $userController->history(); break;
+    }
+}else if ($controller === 'borrow') {
+    $borrowController = new BorrowController($conn);
+    switch ($action) {
+        case 'createFromForm':
+            $borrowController->createFromForm();
+            break;
+    }
+    exit;
+}
+
 // ==========================================================
 // PEMBERSIHAN / DEKLARASI DATA (SEHARUSNYA DI SINI)
 // ==========================================================

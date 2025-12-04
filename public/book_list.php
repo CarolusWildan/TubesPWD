@@ -8,16 +8,33 @@ if (session_status() === PHP_SESSION_NONE) {
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hasil Pencarian - GMS Library</title>
     <link rel="stylesheet" href="css/style.css">
-    
+
     <style>
+        .btn-pinjam {
+            padding: 10px 20px;
+            background-color: #7b0000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .btn-pinjam:hover {
+            background-color: #a00000;
+        }
+
         .search-results-container {
             padding: 40px 20px;
-            min-height: 60vh; /* Agar footer tidak naik ke tengah jika hasil sedikit */
+            min-height: 60vh;
+            /* Agar footer tidak naik ke tengah jika hasil sedikit */
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -55,18 +72,22 @@ if (session_status() === PHP_SESSION_NONE) {
         /* Grid Layout untuk Hasil Pencarian */
         .book-grid {
             display: flex;
-            flex-wrap: wrap; /* Ini kuncinya: agar turun ke bawah */
+            flex-wrap: wrap;
+            /* Ini kuncinya: agar turun ke bawah */
             gap: 25px;
-            justify-content: center; /* Posisi di tengah */
+            justify-content: center;
+            /* Posisi di tengah */
         }
 
         /* Menggunakan style dasar .book-card tapi memaksa ukurannya konsisten di grid */
         .book-grid .book-card {
-            width: 200px; /* Lebar tetap agar rapi */
-            flex: 0 0 auto; 
-            margin: 0; /* Override margin bawaan css agar gap flexbox yang bekerja */
+            width: 200px;
+            /* Lebar tetap agar rapi */
+            flex: 0 0 auto;
+            margin: 0;
+            /* Override margin bawaan css agar gap flexbox yang bekerja */
         }
-        
+
         .empty-state {
             text-align: center;
             margin-top: 50px;
@@ -74,13 +95,14 @@ if (session_status() === PHP_SESSION_NONE) {
         }
     </style>
 </head>
+
 <body>
 
     <header class="navbar">
         <h2 class="logo">GMS Library</h2>
-        
+
         <div class="toggle-btn"></div>
-        
+
         <nav class="nav-menu">
             <ul>
                 <li><a href="index.php">Beranda</a></li>
@@ -94,7 +116,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <?php if (isset($_SESSION['role'])): ?>
                     <div class="icon-circle">
                         <a href="profile.php">
-                            <div class="circle"></div> 
+                            <div class="circle"></div>
                         </a>
                     </div>
                 <?php else: ?>
@@ -105,7 +127,7 @@ if (session_status() === PHP_SESSION_NONE) {
     </header>
 
     <section class="search-results-container">
-        
+
         <div class="search-header">
             <h2>Hasil Pencarian</h2>
             <a href="index.php" class="btn-back">← Kembali</a>
@@ -118,14 +140,19 @@ if (session_status() === PHP_SESSION_NONE) {
             </div>
         <?php else: ?>
             <div class="book-grid">
-                <?php foreach($books as $b): ?>
-                    <div class="book-card">
+                <?php foreach ($books as $b): ?>
+                    <!-- Kita panggil fungsi loadDetail() dengan ID buku -->
+                    <div class="book-card" onclick="loadDetail('<?= $b['book_id'] ?>')">
+
                         <img src="asset/<?= htmlspecialchars($b['cover']) ?>" alt="<?= htmlspecialchars($b['title']) ?>">
-                        
+
                         <div class="book-info">
                             <h3><?= htmlspecialchars($b['title']) ?></h3>
+                            <!-- Perhatikan: sesuaikan nama kolom lain jika perlu -->
                             <p class="book-author"><?= htmlspecialchars($b['author']) ?></p>
-                            </div>
+                            <!-- Jika ingin menampilkan tahun, gunakan $b['publish_year'] -->
+                        </div>
+
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -156,13 +183,71 @@ if (session_status() === PHP_SESSION_NONE) {
             <p><b class="kontak-title">Kontak</b></p>
             <p>email@gmslibrary.com</p>
         </div>
-        
+
         <div class="footer-right">
-             <div style="width:350px; height:250px; background:#ccc; border-radius:10px; display:flex; align-items:center; justify-content:center;">
+            <div
+                style="width:350px; height:250px; background:#ccc; border-radius:10px; display:flex; align-items:center; justify-content:center;">
                 [Map Area]
-             </div>
+            </div>
         </div>
     </footer>
 
+    <div id="bookModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+
+            <!-- Di sini detail_book.php akan dimuat -->
+            <div id="modal-ajax-content">
+                <!-- Loading indicator default -->
+                <div style="padding:50px; text-align:center;">
+                    <p>Memuat data buku...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('bookModal');
+        const modalContent = document.getElementById('modal-ajax-content');
+
+        // Fungsi membuka modal & request data ke detail_book.php
+        function loadDetail(id) {
+            // 1. Tampilkan modal dengan state loading
+            modal.style.display = "block";
+            document.body.style.overflow = "hidden"; // Disable scroll background
+            modalContent.innerHTML = '<div style="padding:50px; text-align:center;">Sedang mengambil data...</div>';
+
+            // 2. Request AJAX ke detail_book.php
+            fetch('detail_book.php?id=' + id)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // 3. Masukkan hasil HTML ke dalam modal
+                    modalContent.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    modalContent.innerHTML = '<div style="padding:20px; color:red; text-align:center;">Gagal memuat data buku.</div>';
+                });
+        }
+
+        function closeModal() {
+            modal.style.display = "none";
+            document.body.style.overflow = "auto";
+        }
+
+        // Tutup jika klik di luar area konten
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+
 </body>
+
 </html>

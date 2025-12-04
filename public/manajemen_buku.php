@@ -294,10 +294,12 @@ if (isset($_SESSION['alert_error'])) {
 
         <!-- Struktur Form Expand -->
         <div id="addBookFormContainer">
-            <h2 style="margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #eee;">Form Tambah Buku Baru</h2>
+            <h2 id="formTitle" style="margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #eee;">Form Tambah Buku Baru</h2>
             
-            <form id="addBookForm" action="controller=book&action=create" method="POST">
+            <form id="addBookForm" action="indexAdmin.php?controller=book&action=create" method="POST" enctype="multipart/form-data">
                 
+                <input type="hidden" id="book_id" name="book_id"> 
+
                 <div class="form-group">
                     <label for="title">Judul Buku:</label>
                     <input type="text" id="title" name="title" required>
@@ -319,60 +321,51 @@ if (isset($_SESSION['alert_error'])) {
                 </div>
 
                 <div class="form-group form-group-full">
-                    <label for="stock">Cover</label>
-                    <input type="file" id="cover" name="cover" required>
+                    <label for="cover">Cover</label> 
+                    <input type="file" id="cover" name="cover" accept="image/*">
+                    <small id="cover-hint" style="color: #666; display: none;">Biarkan kosong jika tidak ingin mengubah cover.</small>
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn-submit">Simpan Data</button>
+                    <button type="submit" class="btn-submit" id="btnSave">Simpan Data</button>
+                    <button type="button" id="btnCancelEdit" style="display:none; background:#95a5a6; color:white; border:none; padding:10px 20px; border-radius:5px; margin-right:10px;">Batal</button>
                 </div>
             </form>
         </div>
-        <!-- Akhir Struktur Form Expand -->
 
         <div class="table-container">
             <table class="data-table">
                 <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Judul</th>
-                        <th>Penulis</th>
-                        <th>Tahun</th>
-                        <th>Category</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
+                    </thead>
                 <tbody>
-                    <?php 
-                    // Cek apakah data buku ada sebelum loop
-                    if (!empty($books)): 
-                        foreach ($books as $book): 
-                    ?>
-                        <tr>
-                            <td><?= htmlspecialchars($book['book_id']) ?></td>
-                            <td><?= htmlspecialchars($book['title']) ?></td>
-                            <td><?= htmlspecialchars($book['author']) ?></td>
-                            <td><?= htmlspecialchars($book['publish_year']) ?></td>
-                            <td><?= htmlspecialchars($book['category']) ?></td>
-                            <td><?= htmlspecialchars($book['status']) ?></td>
-                            <td>
-                
-                                <form action="index.php?controller=book&action=edit&id=<?= $book['book_id'] ?>" class="action-btn edit" method="POST">Edit</form>
-                                
-                                <form action="index.php?controller=book&action=delete&id=<?= $book['book_id'] ?>" 
-                                   onclick="return confirm('Yakin ingin menghapus buku ini?')" 
-                                   class="action-btn delete"  method="POST">Hapus</form>
-                            </td>
-                        </tr>
-                    <?php 
-                        endforeach; 
-                    else: 
-                    ?>
-                        <tr>
-                            <td colspan="7" style="text-align: center;">Tidak ada data buku yang ditemukan.</td>
-                        </tr>
-                    <?php endif; ?>
+                    <?php if (!empty($books)): ?>
+                        <?php foreach ($books as $book): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($book['book_id']) ?></td>
+                                <td><?= htmlspecialchars($book['title']) ?></td>
+                                <td><?= htmlspecialchars($book['author']) ?></td>
+                                <td><?= htmlspecialchars($book['publish_year']) ?></td>
+                                <td><?= htmlspecialchars($book['category']) ?></td>
+                                <td><?= htmlspecialchars($book['status']) ?></td>
+                                <td>
+                                    <button type="button" class="action-btn edit btn-edit-trigger"
+                                        data-id="<?= $book['book_id'] ?>"
+                                        data-title="<?= htmlspecialchars($book['title']) ?>"
+                                        data-author="<?= htmlspecialchars($book['author']) ?>"
+                                        data-year="<?= htmlspecialchars($book['publish_year']) ?>"
+                                        data-category="<?= htmlspecialchars($book['category']) ?>"
+                                    >Edit</button>
+                                    
+                                    <form action="index.php?controller=book&action=delete&id=<?= $book['book_id'] ?>" 
+                                        method="POST" style="display:inline;" 
+                                        onsubmit="return confirm('Yakin ingin menghapus buku ini?');">
+                                        <button type="submit" class="action-btn delete">Hapus</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <?php endif; ?>
                 </tbody>
             </table>
         </div>
