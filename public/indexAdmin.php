@@ -245,9 +245,8 @@ if (isset($_SESSION['alert_success'])) {
                 <ul>
                     <li><a href="indexAdmin.php">Beranda</a></li>
                     <li><a href="manajemen_buku.php?controller=book_management&action=manajemen_buku">Manajemen Buku</a></li>
-                    <li><a href="index.php?controller=user_management&action=index">Manajemen User</a></li>
-                    <li><a href="index.php?controller=borrow_management&action=index">Pengembalian</a></li>
-                    <li><a href="index.php?controller=borrow_management&action=index">profile</a></li>
+                    <li><a href="pengembalian.php?controller=borrow_management&action=pengembalian">Pengembalian</a></li>
+                    <li><a href="profile_admin.php?controller=borrow_management&action=profile_admin">profile</a></li>
                 </ul>
             </nav>
 
