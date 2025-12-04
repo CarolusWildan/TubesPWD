@@ -32,7 +32,7 @@ $user = $userModel->getById($_SESSION['user_id']);
         <ul>
             <li><a href="index.php">Beranda</a></li>
             <li><a href="booking.php">Booking</a></li>
-            <li><a href="history.php">Riwayat</a></li>
+            <li><a href="index.php?controller=user&action=history">Riwayat</a></li>
             <li><a href="profile.php">Profil</a></li>
         </ul>
 
