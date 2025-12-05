@@ -1,14 +1,11 @@
 <?php
-// Asumsi: File init.php dimuat untuk konfigurasi
+
 require_once __DIR__ . "/../app/init.php";
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// ==========================================================
-// PROTEKSI HALAMAN (Pastikan hanya Admin/Librarian yang bisa akses)
-// ==========================================================
 if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'librarian' && $_SESSION['role'] !== 'admin')) {
     $_SESSION['alert_error'] = "Akses ditolak!";
     header("Location: index.php"); 
@@ -37,12 +34,12 @@ $librarian = $adminModel->getById($_SESSION['librarian_id']);
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6); /* Hitam transparan */
-            display: none; /* Sembunyi secara default */
-            justify-content: center; /* Tengah Horizontal */
-            align-items: center;     /* Tengah Vertikal */
-            z-index: 9999;           /* Pastikan di atas segalanya */
-            backdrop-filter: blur(4px); /* Efek blur estetik */
+            background: rgba(0, 0, 0, 0.6); 
+            display: none; 
+            justify-content: center;
+            align-items: center;     
+            z-index: 9999;           
+            backdrop-filter: blur(4px); 
         }
 
         /* Kotak Putih Modal */
@@ -157,7 +154,6 @@ $librarian = $adminModel->getById($_SESSION['librarian_id']);
                 <div class="avatar-placeholder">
         
                 <?php 
-                    // 1. Tentukan path gambar
                     $photoName = $librarian['user_photo'] ?? 'default.jpg';
                     $photoPath = 'uploads/' . $photoName;
 
@@ -263,23 +259,19 @@ $librarian = $adminModel->getById($_SESSION['librarian_id']);
     </footer>
 
     <script>
-        // 1. Fungsi Buka Modal
+ 
         function openLogoutModal() {
             document.getElementById('logoutModal').style.display = 'flex';
         }
 
-        // 2. Fungsi Tutup Modal
         function closeLogoutModal() {
             document.getElementById('logoutModal').style.display = 'none';
         }
 
-        // 3. Fungsi Konfirmasi (Redirect ke Logout PHP)
         function confirmLogout() {
-            // Arahkan browser ke URL logout controller
             window.location.href = 'index.php?controller=auth&action=logout';
         }
 
-        // 4. Tutup modal jika klik di area gelap (luar kotak)
         window.onclick = function(event) {
             const modal = document.getElementById('logoutModal');
             if (event.target == modal) {

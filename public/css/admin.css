@@ -1,15 +1,10 @@
-/* ========================================================== */
-/* admin.css */
-/* Menggunakan font Poppins yang diasumsikan sudah dimuat di style.css */
-/* ========================================================== */
 
-/* --- GLOBAL LAYOUT & RESET --- */
 body {
-    background-color: #f4f7f6; /* Latar belakang abu-abu muda */
+    background-color: #f4f7f6; 
     font-family: 'Poppins', sans-serif;
     color: #333;
     margin: 0;
-    padding-top: 80px; /* Jarak atas untuk navbar yang fixed */
+    padding-top: 80px; 
 }
 
 /* --- NAVBAR KHUSUS ADMIN --- */
@@ -21,12 +16,10 @@ body {
     align-items: center;    
     color: white;
 
-    /* === KODE KRITIS YANG HILANG/PERLU DITAMBAH === */
-    position: fixed; /* Menjadikan navbar tetap di viewport */
-    top: 0;          /* Memastikan navbar menempel di tepi atas */
-    width: 100%;     /* Memastikan navbar membentang penuh */
-    z-index: 1000;   /* Memastikan navbar berada di atas konten lain */
-    /* ============================================== */
+    position: fixed; 
+    top: 0;         
+    width: 100%;     
+    z-index: 1000;   
 }
 
 .nav-menu {
@@ -37,8 +30,6 @@ body {
 
 .nav-menu ul {
   list-style: none;
-  /* margin: 0; */
-  /* padding: 0; */
   display: flex;
   gap: 20px;
 }
@@ -52,14 +43,14 @@ body {
 }
 
 .nav-menu li a:hover {
-  color: #ffcc00; /* Kuning saat hover */
+  color: #ffcc00;
 }
 
 /* 1. Wadah Lingkaran Kuning */
 .icon-circle {
-  width: 35px;          /* Sedikit dibesarkan biar enak dilihat */
+  width: 35px;          
   height: 35px;
-  border-radius: 50%;   /* Wajib bulat */
+  border-radius: 50%;   
   background-color: #ffcc00;
   
   /* Logika Center */
@@ -67,18 +58,16 @@ body {
   align-items: center;
   justify-content: center;
   
-  overflow: hidden;     /* Potong apapun yang keluar dari lingkaran */
+  overflow: hidden;    
   padding: 0;
 }
 
-/* 2. Link (<a>) di dalam lingkaran */
-/* Ini PENTING: Link harus jadi flex container juga */
 .icon-circle a {
   display: flex;
   width: 100%;
   height: 100%;
-  align-items: center;    /* Center Vertikal */
-  justify-content: center;/* Center Horizontal */
+  align-items: center;    
+  justify-content: center;
   text-decoration: none;
 }
 
@@ -86,8 +75,8 @@ body {
 .header-profile-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;  /* Zoom & Crop otomatis biar penuh */
-  border-radius: 50%; /* Paksa gambar jadi bulat */
+  object-fit: cover;  
+  border-radius: 50%; 
   display: block;
 }
 
@@ -266,9 +255,9 @@ body {
         padding: 10px 20px;
     }
     .navbar .nav-menu {
-        display: none; /* Sembunyikan menu di mobile, perlu JS untuk toggle */
+        display: none; 
     }
     .stats-grid {
-        grid-template-columns: 1fr; /* Stack card di mobile */
+        grid-template-columns: 1fr; 
     }
 }

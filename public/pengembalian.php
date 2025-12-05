@@ -1,14 +1,11 @@
 <?php
-// Asumsi: File init.php dimuat untuk konfigurasi
+
 require_once __DIR__ . "/../app/init.php";
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// ==========================================================
-// PROTEKSI HALAMAN (Pastikan hanya Admin/Librarian yang bisa akses)
-// ==========================================================
 if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'librarian' && $_SESSION['role'] !== 'admin')) {
     $_SESSION['alert_error'] = "Akses ditolak!";
     header("Location: index.php");
@@ -20,9 +17,6 @@ if (!ob_get_level()) {
     ob_start();
 }
 
-// ==========================================================
-// PROSES PENGEMBALIAN BUKU
-// ==========================================================
 $successMessage = '';
 $errorMessage = '';
 
@@ -34,14 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $member_id = isset($_POST['member_id']) ? htmlspecialchars($_POST['member_id']) : '';
 
     if ($borrow_id > 0) {
-        // Gunakan model ReturnBook untuk proses pengembalian
         $returnBookModel = new ReturnBook($conn);
         $return_date = date('Y-m-d H:i:s');
 
         if ($returnBookModel->returnBook($borrow_id, $return_date)) {
             $successMessage = "Pengembalian buku berhasil diproses.";
             $_SESSION['alert_success'] = $successMessage;
-            // Redirect ke halaman yang sama dengan parameter member_id untuk refresh data
             header("Location: pengembalian.php?member_id=" . urlencode($member_id));
             exit;
         } else {
@@ -52,13 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
-// ==========================================================
-// LOGIKA PERHITUNGAN DENDA
-// ==========================================================
-/**
- * Menghitung denda secara real-time berdasarkan tanggal jatuh tempo.
- * Denda ini bersifat sementara dan akan disimpan permanen saat pengembalian diproses.
- */
 function calculate_fine($due_date, $daily_fine_rate = 1000)
 {
     $due_timestamp = strtotime($due_date);
@@ -80,24 +65,10 @@ function format_rupiah($amount)
     return 'Rp ' . number_format($amount, 0, ',', '.');
 }
 
-// ==========================================================
-// FUNGSI PLACEHOLDER DATABASE (HARUS DIGANTI)
-// ==========================================================
-/**
- * FUNGSI INI HARUS ANDA GANTI dengan query database yang sebenarnya.
- * Tugas fungsi ini:
- * 1. Menerima user_id (member_id_to_search).
- * 2. Melakukan JOIN antara tabel 'borrow' (peminjaman) dan 'books' (untuk judul buku).
- * 3. Memastikan status pinjaman masih 'borrowed' atau 'dipinjam'.
- * 4. Mengembalikan array hasil pinjaman.
- * * @param string $user_id ID Pengguna/Anggota yang dicari
- * @return array Data pinjaman aktif
- */
 function get_active_loans_by_user_id($user_id)
 {
     global $conn;
 
-    // Query database untuk mendapatkan pinjaman aktif (kecuali yang sudah dikembalikan)
     $query = "SELECT 
         br.borrow_id, 
         br.book_id,
@@ -143,39 +114,29 @@ function get_active_loans_by_user_id($user_id)
 }
 
 
-// ==========================================================
-// FUNGSI PENCARIAN BERDASARKAN MEMBER ID & PERHITUNGAN DENDA REAL-TIME
-// ==========================================================
 $user_id_to_search = isset($_GET['member_id']) ? htmlspecialchars($_GET['member_id']) : '';
 $filtered_loans = [];
 $total_fine = 0;
 $member_name = '';
 
 if ($user_id_to_search) {
-    // 1. Ambil data pinjaman aktif dari database (via fungsi placeholder)
     $filtered_loans = get_active_loans_by_user_id($user_id_to_search);
 
     if (!empty($filtered_loans)) {
-        // 2. Hitung Denda Real-Time untuk setiap pinjaman
-        foreach ($filtered_loans as &$loan) { // Menggunakan referensi (&) untuk memodifikasi array asli
+        foreach ($filtered_loans as &$loan) { 
             $calc = calculate_fine($loan['due_date']);
 
-            // Kolom baru yang ditambahkan secara dinamis untuk ditampilkan di UI
             $loan['days_late'] = $calc['days_late'];
             $loan['fine_amount'] = $calc['fine_amount'];
             $loan['status_text'] = ($loan['days_late'] > 0) ? 'Terlambat' : 'Tepat Waktu';
 
             $total_fine += $calc['fine_amount'];
         }
-        unset($loan); // Hapus referensi untuk mencegah efek samping
-
-        // 3. Ambil Nama Anggota untuk ditampilkan di header
+        unset($loan);
         $member_name = $filtered_loans[0]['member_name'];
     }
 }
 
-
-// Inisialisasi pesan alert dari session (jika ada dari proses sebelumnya)
 if (!$successMessage) {
     $successMessage = isset($_SESSION['alert_success']) ? $_SESSION['alert_success'] : '';
 }
@@ -191,13 +152,9 @@ unset($_SESSION['alert_success'], $_SESSION['alert_error']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajemen Pengembalian | GMS Library Admin</title>
-    <!-- GANTIKAN DENGAN PATH CSS NYATA ANDA -->
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/admin.css" />
     <style>
-        /* ==================================== */
-        /* BASE STYLES & LAYOUT                 */
-        /* ==================================== */
         html,
         body {
             margin: 0;
@@ -232,9 +189,6 @@ unset($_SESSION['alert_success'], $_SESSION['alert_error']);
             margin: 0 auto;
         }
 
-        /* ==================================== */
-        /* SEARCH & ACTIONS                     */
-        /* ==================================== */
         .search-container,
         .summary-box {
             background-color: #ffffff;
@@ -273,9 +227,6 @@ unset($_SESSION['alert_success'], $_SESSION['alert_error']);
             background-color: #5c0000;
         }
 
-        /* ==================================== */
-        /* TABLE STYLES                         */
-        /* ==================================== */
         .table-container {
             overflow-x: auto;
             background: white;
@@ -332,14 +283,11 @@ unset($_SESSION['alert_success'], $_SESSION['alert_error']);
             background-color: #e74c3c;
         }
 
-        /* Red */
+
         .status-badge.tepat-waktu {
             background-color: #3498db;
         }
 
-        /* Blue */
-
-        /* Summary Box */
         .summary-box {
             display: flex;
             justify-content: space-between;
@@ -358,7 +306,6 @@ unset($_SESSION['alert_success'], $_SESSION['alert_error']);
             color: #e74c3c;
         }
 
-        /* Media Query untuk Responsif */
         @media (max-width: 768px) {
             .search-form {
                 flex-direction: column;
@@ -420,7 +367,6 @@ unset($_SESSION['alert_success'], $_SESSION['alert_error']);
                 <?= htmlspecialchars($errorMessage) ?></div>
         <?php endif; ?>
 
-        <!-- Form Pencarian Peminjam -->
         <div class="search-container">
             <h2 style="margin-top: 0;">Cari Pinjaman Aktif</h2>
             <form class="search-form" action="pengembalian.php" method="GET">

@@ -10,22 +10,19 @@ class FineController
         $this->conn = $conn;
         $this->fineModel = new Fine($this->conn);
 
-        // Supaya semua response dalam bentuk JSON
         header('Content-Type: application/json; charset=utf-8');
     }
 
-    // ==================================
     // GET: semua data denda
-    // ==================================
     public function index(): void
     {
         $data = $this->fineModel->getAll();
         echo json_encode(['status' => 'success', 'data' => $data]);
     }
 
-    // ==================================
+
     // GET: detail denda by fine_id
-    // ==================================
+
     public function show(int $fine_id): void
     {
         $fine = $this->fineModel->getById($fine_id);
@@ -37,9 +34,8 @@ class FineController
         echo json_encode(['status' => 'success', 'data' => $fine]);
     }
 
-    // ==================================
     // GET: denda berdasarkan return_id
-    // ==================================
+
     public function byReturn(int $return_id): void
     {
         $fine = $this->fineModel->getByReturnId($return_id);
@@ -51,12 +47,8 @@ class FineController
         echo json_encode(['status' => 'success', 'data' => $fine]);
     }
 
-    // ==================================
-    // POST: create denda manual
-    // ==================================
     public function create(): void
     {
-        // PERBAIKAN: Menambahkan logika pembacaan input
         $input = $_POST;
         if (empty($input)) {
             $raw  = file_get_contents("php://input");
@@ -86,9 +78,8 @@ class FineController
         }
     }
 
-    // ==================================
     // POST: update denda
-    // ==================================
+
     public function update(int $fine_id): void
     {
         $existing = $this->fineModel->getById($fine_id);
@@ -118,9 +109,8 @@ class FineController
         ]);
     }
 
-    // ==================================
     // DELETE: hapus denda
-    // ==================================
+
     public function delete(int $fine_id): void
     {
         $success = $this->fineModel->delete($fine_id);
@@ -130,9 +120,9 @@ class FineController
         ]);
     }
 
-    // ==================================
-    // POST: auto hitung & buat denda (Testing Only)
-    // ==================================
+
+    // POST: auto hitung & buat denda 
+
     public function auto(): void
     {
         $input = $_POST;

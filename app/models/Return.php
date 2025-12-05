@@ -46,9 +46,6 @@ class ReturnBook {
         $stmtBook->bind_param("i", $book_id);
         $stmtBook->execute();
 
-        // 5. Jangan hapus data borrow karena ada relasi di tabel return_book
-        //    Biarkan data borrow tetap ada agar integritas referensial tetap terjaga.
-
         return true;
     }
 
