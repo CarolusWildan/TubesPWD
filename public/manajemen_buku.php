@@ -11,13 +11,13 @@ if (session_status() === PHP_SESSION_NONE) {
 // ==========================================================
 if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'librarian' && $_SESSION['role'] !== 'admin')) {
     $_SESSION['alert_error'] = "Akses ditolak!";
-    header("Location: index.php"); 
+    header("Location: index.php");
     exit;
 }
 
 // Asumsi: Kita memuat Model Book dan mengambil data
-$bookModel = new Book($conn); 
-$books = $bookModel->getAll(); 
+$bookModel = new Book($conn);
+$books = $bookModel->getAll();
 
 // Logika pesan sukses (jika ada)
 $successMessage = '';
@@ -36,14 +36,14 @@ if (isset($_SESSION['alert_error'])) {
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajemen Buku | GMS Library Admin</title>
-    <link rel="stylesheet" href="css/style.css" /> 
-    <link rel="stylesheet" href="css/admin.css" /> 
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/admin.css" />
     <style>
-
         /* Pastikan navbar fixed */
         .navbar {
             position: fixed;
@@ -52,18 +52,21 @@ if (isset($_SESSION['alert_error'])) {
             z-index: 1000;
             /* ... properti lain ... */
         }
+
         /* CSS Khusus untuk halaman ini */
         .book-management-container {
             padding: 20px;
             max-width: 1200px;
             margin: 0 auto;
         }
+
         .header-actions {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
+
         .add-button {
             background-color: #2ecc71;
             color: white;
@@ -72,28 +75,34 @@ if (isset($_SESSION['alert_error'])) {
             border-radius: 5px;
             font-weight: bold;
         }
+
         .table-container {
             overflow-x: auto;
             background: white;
             padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         }
+
         .data-table {
             width: 100%;
             border-collapse: collapse;
         }
-        .data-table th, .data-table td {
+
+        .data-table th,
+        .data-table td {
             padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
+
         .data-table th {
             background-color: #f2f2f2;
             color: #333;
             text-transform: uppercase;
             font-size: 14px;
         }
+
         .data-table td .action-btn {
             padding: 5px 10px;
             margin-right: 5px;
@@ -103,10 +112,18 @@ if (isset($_SESSION['alert_error'])) {
             text-decoration: none;
             font-size: 12px;
         }
-        .action-btn.edit { background-color: #3498db; color: white; }
-        .action-btn.delete { background-color: #e74c3c; color: white; }
 
-         /* ==================================== */
+        .action-btn.edit {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .action-btn.delete {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        /* ==================================== */
         /* FORM EXPAND STYLES                   */
         /* ==================================== */
         #addBookFormContainer {
@@ -116,7 +133,7 @@ if (isset($_SESSION['alert_error'])) {
             margin-bottom: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            
+
             /* Properti untuk efek expand/collapse */
             max-height: 0;
             overflow: hidden;
@@ -127,7 +144,7 @@ if (isset($_SESSION['alert_error'])) {
 
         #addBookFormContainer.expanded {
             /* Nilai yang cukup besar untuk menampung form. Sesuaikan jika form lebih panjang */
-            max-height: 500px; 
+            max-height: 500px;
             padding-top: 20px;
             padding-bottom: 20px;
         }
@@ -137,33 +154,35 @@ if (isset($_SESSION['alert_error'])) {
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
-        
+
         .form-group-full {
-            grid-column: 1 / -1; /* Membuat elemen ini mengambil lebar penuh */
+            grid-column: 1 / -1;
+            /* Membuat elemen ini mengambil lebar penuh */
         }
-        
+
         #addBookFormContainer label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
             color: #555;
         }
-        
-        #addBookFormContainer input[type="text"], 
+
+        #addBookFormContainer input[type="text"],
         #addBookFormContainer input[type="number"],
         #addBookFormContainer select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            box-sizing: border-box; 
+            box-sizing: border-box;
         }
-        
+
         .form-actions {
             grid-column: 1 / -1;
             text-align: right;
             padding-top: 10px;
         }
+
         .btn-submit {
             background-color: #8B0000;
             color: white;
@@ -173,6 +192,7 @@ if (isset($_SESSION['alert_error'])) {
             cursor: pointer;
             transition: background-color 0.2s;
         }
+
         .btn-submit:hover {
             background-color: #5c0000;
         }
@@ -186,12 +206,14 @@ if (isset($_SESSION['alert_error'])) {
             max-width: 1200px;
             margin: 0 auto;
         }
+
         .header-actions {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
+
         .add-button {
             background-color: #2ecc71;
             color: white;
@@ -199,30 +221,36 @@ if (isset($_SESSION['alert_error'])) {
             text-decoration: none;
             border-radius: 5px;
             font-weight: bold;
-            cursor: pointer; 
+            cursor: pointer;
         }
+
         .table-container {
             overflow-x: auto;
             background: white;
             padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         }
+
         .data-table {
             width: 100%;
             border-collapse: collapse;
         }
-        .data-table th, .data-table td {
+
+        .data-table th,
+        .data-table td {
             padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
+
         .data-table th {
             background-color: #f2f2f2;
             color: #333;
             text-transform: uppercase;
             font-size: 14px;
         }
+
         .data-table td .action-btn {
             padding: 5px 10px;
             margin-right: 5px;
@@ -233,23 +261,33 @@ if (isset($_SESSION['alert_error'])) {
             font-size: 12px;
             display: inline-block;
         }
-        .action-btn.edit { background-color: #3498db; color: white; }
-        .action-btn.delete { background-color: #e74c3c; color: white; }
+
+        .action-btn.edit {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .action-btn.delete {
+            background-color: #e74c3c;
+            color: white;
+        }
 
         /* Media Query untuk Mobile */
         @media (max-width: 768px) {
             #addBookForm form {
-                grid-template-columns: 1fr; /* Form menjadi satu kolom di layar kecil */
+                grid-template-columns: 1fr;
+                /* Form menjadi satu kolom di layar kecil */
             }
         }
     </style>
 </head>
+
 <body>
-     <header class="navbar">
+    <header class="navbar">
         <h2 class="logo">Admin GMS Library</h2>
-        
+
         <div class="nav-right-wrapper" style="display: flex; align-items: center; gap: 20px;">
-            
+
             <nav class="nav-menu">
                 <ul>
                     <li><a href="indexAdmin.php">Beranda</a></li>
@@ -273,7 +311,7 @@ if (isset($_SESSION['alert_error'])) {
         </div>
     </header>
 
-<div class="book-management-container">
+    <div class="book-management-container">
         <h1>Manajemen Buku</h1>
         <p>Kelola semua koleksi buku perpustakaan di sini.</p>
 
@@ -294,10 +332,10 @@ if (isset($_SESSION['alert_error'])) {
         <!-- Struktur Form Expand -->
         <div id="addBookFormContainer">
             <h2 id="formTitle" style="margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #eee;">Form Tambah Buku Baru</h2>
-            
+
             <form id="addBookForm" action="indexAdmin.php?controller=book&action=create" method="POST" enctype="multipart/form-data">
-                
-                <input type="hidden" id="book_id" name="book_id"> 
+
+                <input type="hidden" id="book_id" name="book_id">
 
                 <div class="form-group">
                     <label for="title">Judul Buku:</label>
@@ -320,7 +358,7 @@ if (isset($_SESSION['alert_error'])) {
                 </div>
 
                 <div class="form-group form-group-full">
-                    <label for="cover">Cover</label> 
+                    <label for="cover">Cover</label>
                     <input type="file" id="cover" name="cover" accept="image/*">
                     <small id="cover-hint" style="color: #666; display: none;">Biarkan kosong jika tidak ingin mengubah cover.</small>
                 </div>
@@ -335,7 +373,16 @@ if (isset($_SESSION['alert_error'])) {
         <div class="table-container">
             <table class="data-table">
                 <thead>
-                    </thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Judul</th>
+                        <th>Penulis</th>
+                        <th>Tahun</th>
+                        <th>Kategori</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
                 <tbody>
                     <?php if (!empty($books)): ?>
                         <?php foreach ($books as $book): ?>
@@ -352,11 +399,10 @@ if (isset($_SESSION['alert_error'])) {
                                         data-title="<?= htmlspecialchars($book['title']) ?>"
                                         data-author="<?= htmlspecialchars($book['author']) ?>"
                                         data-year="<?= htmlspecialchars($book['publish_year']) ?>"
-                                        data-category="<?= htmlspecialchars($book['category']) ?>"
-                                    >Edit</button>
-                                    
-                                    <form action="indexAdmin.php?controller=book&action=delete&id=<?= $book['book_id'] ?>" 
-                                        method="POST" style="display:inline;" 
+                                        data-category="<?= htmlspecialchars($book['category']) ?>">Edit</button>
+
+                                    <form action="indexAdmin.php?controller=book&action=delete&id=<?= $book['book_id'] ?>"
+                                        method="POST" style="display:inline;"
                                         onsubmit="return confirm('Yakin ingin menghapus buku ini?');">
                                         <button type="submit" class="action-btn delete">Hapus</button>
                                     </form>
@@ -364,7 +410,10 @@ if (isset($_SESSION['alert_error'])) {
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <?php endif; ?>
+                        <tr>
+                            <td colspan="7" style="text-align:center;">Tidak ada data buku.</td>
+                        </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
@@ -386,7 +435,7 @@ if (isset($_SESSION['alert_error'])) {
             <p>Manajemen Buku</p>
             <p>Manajemen User</p>
             <p>Pengembalian</p>
-            <p>profile</p>     
+            <p>profile</p>
         </div>
 
         <div class="footer-mid">
@@ -396,7 +445,7 @@ if (isset($_SESSION['alert_error'])) {
             <p>email@gmslibrary.com</p>
             <p>+62 812 3456 7890</p>
         </div>
-        
+
         <div class="footer-right">
             <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.0881220390825!2d110.41220107476592!3d-7.780480992239148!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59f1d2361f71%3A0x4a2ce83adbcfd5aa!2sPerpustakaan%20Universitas%20Atma%20Jaya%20Yogyakarta!5e0!3m2!1sid!2sid!4v1764419745591!5m2!1sid!2sid"
@@ -411,4 +460,5 @@ if (isset($_SESSION['alert_error'])) {
     </footer>
 
 </body>
+
 </html>
