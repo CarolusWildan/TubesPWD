@@ -144,7 +144,10 @@ if (session_status() === PHP_SESSION_NONE) {
                     <!-- Kita panggil fungsi loadDetail() dengan ID buku -->
                     <div class="book-card" onclick="loadDetail('<?= $b['book_id'] ?>')">
 
-                        <img src="asset/<?= htmlspecialchars($b['cover']) ?>" alt="<?= htmlspecialchars($b['title']) ?>">
+                        <img
+                            src="asset/<?= htmlspecialchars($b['cover']) ?>"
+                            alt="<?= htmlspecialchars($b['title']) ?>"
+                            onerror="this.onerror=null; this.src='asset/background.png';">
 
                         <div class="book-info">
                             <h3><?= htmlspecialchars($b['title']) ?></h3>
@@ -241,7 +244,7 @@ if (session_status() === PHP_SESSION_NONE) {
         }
 
         // Tutup jika klik di luar area konten
-        window.onclick = function (event) {
+        window.onclick = function(event) {
             if (event.target == modal) {
                 closeModal();
             }
